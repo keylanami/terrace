@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "382616005490",
+    "project_id": "terrace-4e908",
+    "storage_bucket": "terrace-4e908.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:382616005490:android:ab3234f99442bf5a5b8beb",
+        "android_client_info": {
+          "package_name": "com.group10.terrace"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC4s47Eaa3a-B9TnjVhnxddcVzvRLfL4Ew"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
