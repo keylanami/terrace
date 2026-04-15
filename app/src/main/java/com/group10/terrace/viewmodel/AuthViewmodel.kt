@@ -2,11 +2,11 @@ package com.group10.terrace.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
+import com.google.firebase.auth.auth
 import com.google.firebase.firestore.FirebaseFirestore
-import com.google.firebase.firestore.ktx.firestore
-import com.google.firebase.ktx.Firebase
+import com.google.firebase.firestore.firestore
 // Ganti import di bawah ini jika lokasi Data Class User kamu berbeda
 import com.group10.terrace.model.User
 
@@ -48,8 +48,8 @@ class AuthViewModel : ViewModel() {
             name = "Keyla Tester",
             email = email,
             landSize = 10.5,
-            totalPoints = 100,      // Sebelumnya error karena kamu tulis 'points'
-            currentPoints = 100,
+            points = 100,      // Sebelumnya error karena kamu tulis 'points'
+            currentPoint = 100,
             currentStreak = 1
         )
 
