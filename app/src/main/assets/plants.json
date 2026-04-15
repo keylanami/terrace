@@ -1,0 +1,66 @@
+[
+  {
+    "plantId": "P001",
+    "name": "Sawi Hijau (Caisim)",
+    "type": "Sayur",
+    "difficulty": "Mudah",
+    "estimationDays": 30,
+    "description": "Sayuran daun yang sangat mudah ditanam di lahan sempit maupun pot. Sangat cocok untuk pemula.",
+    "careRequirements": "Sinar matahari parsial, penyiraman 1x sehari.",
+    "startingSteps": [
+      "Siapkan media tanam campuran tanah dan kompos.",
+      "Tebar biji dengan jarak 5 cm.",
+      "Siram perlahan agar biji tidak larut."
+    ],
+    "isPremium": false,
+    "imageUrl": "https://dummyimage.com/400x400/2ecc71/ffffff&text=Sawi+Hijau"
+  },
+  {
+    "plantId": "P002",
+    "name": "Tomat Ceri",
+    "type": "Buah",
+    "difficulty": "Sedang",
+    "estimationDays": 70,
+    "description": "Tomat berukuran kecil yang manis. Membutuhkan tiang penyangga saat tumbuh tinggi.",
+    "careRequirements": "Sinar matahari penuh (6-8 jam), penyiraman pagi dan sore jika panas terik.",
+    "startingSteps": [
+      "Semai biji di tray semai hingga berdaun empat.",
+      "Pindahkan ke pot minimal ukuran 30cm.",
+      "Tancapkan lanjaran (penyangga) sejak awal."
+    ],
+    "isPremium": false,
+    "imageUrl": "https://dummyimage.com/400x400/e74c3c/ffffff&text=Tomat+Ceri"
+  },
+  {
+    "plantId": "P003",
+    "name": "Monstera Deliciosa",
+    "type": "Tanaman Hias",
+    "difficulty": "Sedang",
+    "estimationDays": 365,
+    "description": "Tanaman hias estetik dengan daun berlubang unik. Cocok untuk indoor maupun teras teduh.",
+    "careRequirements": "Cahaya terang namun tidak langsung, kelembaban tinggi.",
+    "startingSteps": [
+      "Gunakan media tanam yang porous (banyak porositas).",
+      "Tanam bibit atau stek batang.",
+      "Pasang turus untuk tempat akar angin merambat."
+    ],
+    "isPremium": true,
+    "imageUrl": "https://dummyimage.com/400x400/27ae60/ffffff&text=Monstera"
+  },
+  {
+    "plantId": "P004",
+    "name": "Cabai Rawit",
+    "type": "Sayur",
+    "difficulty": "Sulit",
+    "estimationDays": 90,
+    "description": "Menantang namun sangat memuaskan. Rentan terhadap hama kutu putih dan patek, butuh perhatian ekstra.",
+    "careRequirements": "Sinar matahari penuh, nutrisi tinggi (pupuk NPK rutin).",
+    "startingSteps": [
+      "Rendam benih di air hangat semalaman.",
+      "Semai di tempat teduh hingga tinggi 10 cm.",
+      "Pindahkan ke lahan dengan jarak tanam 50 cm."
+    ],
+    "isPremium": false,
+    "imageUrl": "https://dummyimage.com/400x400/c0392b/ffffff&text=Cabai+Rawit"
+  }
+]
