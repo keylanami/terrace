@@ -7,8 +7,7 @@ data class UserPlant(
     val progressImageUrl: String = "",
     val progress: Int = 0,
     val status: String = "Growing",
-    val isWateredToday: Boolean = false,
-    val isFertilizedToday: Boolean = false,
     val lastTaskCompletionDate: Long = 0L,
+    val completedTaskToday: List<String> =emptyList(),
     val startDate: Long = System.currentTimeMillis()
 )
