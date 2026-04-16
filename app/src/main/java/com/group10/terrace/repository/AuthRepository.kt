@@ -1,6 +1,5 @@
 package com.group10.terrace.repository
 
-import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth

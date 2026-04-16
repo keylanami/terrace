@@ -2,7 +2,6 @@ package com.group10.terrace.viewmodel
 
 import android.app.Application
 import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.viewModelScope
 import com.group10.terrace.model.Plant
 import com.group10.terrace.model.User
 import com.group10.terrace.model.UserPlant
