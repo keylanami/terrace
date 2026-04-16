@@ -1,12 +1,15 @@
 package com.group10.terrace.repository
 
+import android.content.Context
 import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
+import com.google.gson.Gson
 import com.group10.terrace.model.CartItem
 import com.group10.terrace.model.Order
 import com.group10.terrace.model.Product
+import com.group10.terrace.model.ProductResponse
 import com.group10.terrace.model.User
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.tasks.await
@@ -131,4 +134,30 @@ class MarketplaceRepository {
                 onResult(orders)
             }
     }
+
+
+    fun uploadKatalogKeFirestore(context: Context) {
+        try {
+            // 1. Baca JSON dari folder assets
+            val jsonString = context.assets.open("marketplace.json").bufferedReader().use { it.readText() }
+
+            // 2. Ubah JSON menjadi Objek Kotlin
+            val response = Gson().fromJson(jsonString, ProductResponse::class.java)
+
+            // 3. Tembakkan satu per satu ke Firestore
+            response.products.forEach { product ->
+                db.collection("products").document(product.id).set(product)
+                    .addOnSuccessListener {
+                        Log.d("TERRACE_SEEDER", "Berhasil upload: ${product.name}")
+                    }
+                    .addOnFailureListener { e ->
+                        Log.e("TERRACE_SEEDER", "Gagal upload ${product.name}: ${e.message}")
+                    }
+            }
+        } catch (e: Exception) {
+            Log.e("TERRACE_SEEDER", "Error baca JSON: ${e.message}")
+        }
+    }
+
+
 }

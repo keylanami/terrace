@@ -1,0 +1,279 @@
+{
+  "products": [
+    {
+      "id": "b1",
+      "nama": "Bibit Kangkung Darat",
+      "category": "Bibit Sayuran",
+      "price": 10000,
+      "deskripsi": "Benih kangkung unggulan, tumbuh cepat dalam 21 hari.",
+      "stock": 49,
+      "image_url": "img_bibit_kangkung_darat",
+      "seller_name": "Toko Hijau Lembang",
+      "rating": 4.6
+    },
+    {
+      "id": "b2",
+      "nama": "Benih Bayam Hijau",
+      "category": "Bibit Sayuran",
+      "price": 8000,
+      "deskripsi": "Bayam segar kaya zat besi, sangat mudah dirawat.",
+      "stock": 48,
+      "image_url": "img_benih_bayam_hijau",
+      "seller_name": "Urban Garden Store",
+      "rating": 4.7
+    },
+    {
+      "id": "b3",
+      "nama": "Benih Sawi Pakcoy",
+      "category": "Bibit Sayuran",
+      "price": 11000,
+      "deskripsi": "Pakcoy renyah, cocok untuk pemula dan sistem hidroponik.",
+      "stock": 47,
+      "image_url": "img_benih_sawi_pakcoy",
+      "seller_name": "Tani Jaya Center",
+      "rating": 4.8
+    },
+    {
+      "id": "b4",
+      "nama": "Bibit Cabai Rawit",
+      "category": "Bibit Sayuran",
+      "price": 12000,
+      "deskripsi": "Cabai rawit super pedas, tahan cuaca panas.",
+      "stock": 46,
+      "image_url": "img_bibit_cabai_rawit",
+      "seller_name": "Terrace Official",
+      "rating": 4.9
+    },
+    {
+      "id": "b5",
+      "nama": "Benih Tomat Cherry",
+      "category": "Bibit Sayuran",
+      "price": 15000,
+      "deskripsi": "Tomat mungil yang manis, sangat produktif di pot.",
+      "stock": 45,
+      "image_url": "img_benih_tomat_cherry",
+      "seller_name": "Toko Hijau Lembang",
+      "rating": 4.5
+    },
+    {
+      "id": "b6",
+      "nama": "Bibit Strawberry Alpine",
+      "category": "Bibit Buah",
+      "price": 18000,
+      "deskripsi": "Bibit strawberry yang cocok untuk dataran tinggi maupun menengah.",
+      "stock": 44,
+      "image_url": "img_bibit_strawberry_alpine",
+      "seller_name": "Urban Garden Store",
+      "rating": 4.6
+    },
+    {
+      "id": "b7",
+      "nama": "Bibit Jeruk Nipis",
+      "category": "Bibit Buah",
+      "price": 45000,
+      "deskripsi": "Tanaman jeruk nipis dalam pot, cepat berbuah.",
+      "stock": 43,
+      "image_url": "img_bibit_jeruk_nipis",
+      "seller_name": "Tani Jaya Center",
+      "rating": 4.7
+    },
+    {
+      "id": "b8",
+      "nama": "Bibit Jambu Kristal",
+      "category": "Bibit Buah",
+      "price": 55000,
+      "deskripsi": "Jambu tanpa biji yang renyah dan cepat berbuah.",
+      "stock": 42,
+      "image_url": "img_bibit_jambu_kristal",
+      "seller_name": "Terrace Official",
+      "rating": 4.8
+    },
+    {
+      "id": "b9",
+      "nama": "Bibit Mangga Irwin Mini",
+      "category": "Bibit Buah",
+      "price": 75000,
+      "deskripsi": "Mangga ungu eksotis varietas kerdil untuk tabulampot.",
+      "stock": 41,
+      "image_url": "img_bibit_mangga_irwin_mini",
+      "seller_name": "Toko Hijau Lembang",
+      "rating": 4.9
+    },
+    {
+      "id": "b10",
+      "nama": "Bibit Pepaya California",
+      "category": "Bibit Buah",
+      "price": 35000,
+      "deskripsi": "Pepaya pendek yang produktif, manis dan tahan lama.",
+      "stock": 40,
+      "image_url": "img_bibit_pepaya_california",
+      "seller_name": "Urban Garden Store",
+      "rating": 4.5
+    },
+    {
+      "id": "b11",
+      "nama": "Pupuk Organik Cair 500ml",
+      "category": "Pupuk",
+      "price": 35000,
+      "deskripsi": "Nutrisi cair lengkap untuk merangsang pertumbuhan daun.",
+      "stock": 39,
+      "image_url": "img_pupuk_organik_cair_500ml",
+      "seller_name": "Tani Jaya Center",
+      "rating": 4.6
+    },
+    {
+      "id": "b12",
+      "nama": "Pupuk NPK Mutiara 1kg",
+      "category": "Pupuk",
+      "price": 25000,
+      "deskripsi": "Pupuk butiran seimbang untuk pertumbuhan tanaman.",
+      "stock": 38,
+      "image_url": "img_pupuk_npk_mutiara_1kg",
+      "seller_name": "Terrace Official",
+      "rating": 4.7
+    },
+    {
+      "id": "b13",
+      "nama": "Kompos Organik Super 5kg",
+      "category": "Pupuk",
+      "price": 20000,
+      "deskripsi": "Media tanam kaya unsur hara untuk tanah lebih gembur.",
+      "stock": 37,
+      "image_url": "img_kompos_organik_super_5kg",
+      "seller_name": "Toko Hijau Lembang",
+      "rating": 4.8
+    },
+    {
+      "id": "b14",
+      "nama": "Nutrisi AB Mix 1L",
+      "category": "Pupuk",
+      "price": 40000,
+      "deskripsi": "Larutan nutrisi khusus tanaman sistem air/hidroponik.",
+      "stock": 36,
+      "image_url": "img_nutrisi_ab_mix_1l",
+      "seller_name": "Urban Garden Store",
+      "rating": 4.9
+    },
+    {
+      "id": "b15",
+      "nama": "Pupuk Kohe Kambing Matang",
+      "category": "Pupuk",
+      "price": 15000,
+      "deskripsi": "Pupuk kandang fermentasi, tidak berbau dan siap pakai.",
+      "stock": 35,
+      "image_url": "img_pupuk_kohe_kambing_matang",
+      "seller_name": "Tani Jaya Center",
+      "rating": 4.5
+    },
+    {
+      "id": "b16",
+      "nama": "Pot Tanah Liat D20",
+      "category": "Pot",
+      "price": 25000,
+      "deskripsi": "Pot terakota klasik, menjaga kelembapan akar.",
+      "stock": 34,
+      "image_url": "img_pot_tanah_liat_d20",
+      "seller_name": "Terrace Official",
+      "rating": 4.6
+    },
+    {
+      "id": "b17",
+      "nama": "Pot Plastik Hitam Set 5",
+      "category": "Pot",
+      "price": 15000,
+      "deskripsi": "Set pot plastik ekonomis untuk pembibitan.",
+      "stock": 33,
+      "image_url": "img_pot_plastik_hitam_set_5",
+      "seller_name": "Toko Hijau Lembang",
+      "rating": 4.7
+    },
+    {
+      "id": "b18",
+      "nama": "Pot Gantung Putih",
+      "category": "Pot",
+      "price": 22000,
+      "deskripsi": "Pot gantung elegan untuk tanaman merambat.",
+      "stock": 32,
+      "image_url": "img_pot_gantung_putih",
+      "seller_name": "Urban Garden Store",
+      "rating": 4.8
+    },
+    {
+      "id": "b19",
+      "nama": "Pot Keramik Motif",
+      "category": "Pot",
+      "price": 65000,
+      "deskripsi": "Pot keramik premium untuk estetika interior.",
+      "stock": 31,
+      "image_url": "img_pot_keramik_motif",
+      "seller_name": "Tani Jaya Center",
+      "rating": 4.9
+    },
+    {
+      "id": "b20",
+      "nama": "Self-Watering Pot",
+      "category": "Pot",
+      "price": 30000,
+      "deskripsi": "Pot pintar dengan penampungan air, anti lupa siram.",
+      "stock": 50,
+      "image_url": "img_self-watering_pot",
+      "seller_name": "Terrace Official",
+      "rating": 4.5
+    },
+    {
+      "id": "b21",
+      "nama": "Sekop Mini Stainless",
+      "category": "Alat Berkebun",
+      "price": 15000,
+      "deskripsi": "Sekop tangan kuat untuk memindahkan tanaman.",
+      "stock": 49,
+      "image_url": "img_sekop_mini_stainless",
+      "seller_name": "Toko Hijau Lembang",
+      "rating": 4.6
+    },
+    {
+      "id": "b22",
+      "nama": "Gembor Air 2L",
+      "category": "Alat Berkebun",
+      "price": 20000,
+      "deskripsi": "Alat siram praktis dengan pancuran halus.",
+      "stock": 48,
+      "image_url": "img_gembor_air_2l",
+      "seller_name": "Urban Garden Store",
+      "rating": 4.7
+    },
+    {
+      "id": "b23",
+      "nama": "Gunting Stek Ranting",
+      "category": "Alat Berkebun",
+      "price": 50000,
+      "deskripsi": "Gunting tajam untuk pruning dan stek batang.",
+      "stock": 47,
+      "image_url": "img_gunting_stek_ranting",
+      "seller_name": "Tani Jaya Center",
+      "rating": 4.8
+    },
+    {
+      "id": "b24",
+      "nama": "Sarung Tangan Karet",
+      "category": "Alat Berkebun",
+      "price": 12000,
+      "deskripsi": "Melindungi tangan dari kotoran dan duri.",
+      "stock": 46,
+      "image_url": "img_sarung_tangan_karet",
+      "seller_name": "Terrace Official",
+      "rating": 4.9
+    },
+    {
+      "id": "b25",
+      "nama": "Hand Sprayer 1L",
+      "category": "Alat Berkebun",
+      "price": 28000,
+      "deskripsi": "Botol semprot untuk pestisida cair atau air.",
+      "stock": 45,
+      "image_url": "img_hand_sprayer_1l",
+      "seller_name": "Toko Hijau Lembang",
+      "rating": 4.5
+    }
+  ]
+}

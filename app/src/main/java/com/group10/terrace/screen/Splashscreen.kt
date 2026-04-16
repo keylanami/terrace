@@ -8,6 +8,8 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.material3.Button
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -20,13 +22,18 @@ import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import com.google.api.Context
 import com.group10.terrace.R
 import com.group10.terrace.ui.theme.Neutral50
 import com.group10.terrace.ui.theme.PrimaryGradient
+import com.group10.terrace.viewmodel.MarketplaceViewModel
 import kotlinx.coroutines.delay
 
 @Composable
-fun SplashScreen() {
+fun SplashScreen(
+    viewModel: MarketplaceViewModel,
+    context: Context
+) {
     var isGrowing by remember { mutableStateOf(false) }
     var isShrinking by remember { mutableStateOf(false) }
 
@@ -90,5 +97,9 @@ fun SplashScreen() {
                 .size(100.dp)
                 .scale(scale.value)
         )
+
+        Button(onClick = { viewModel.seedDatabase(context) }) {
+            Text("UPLOAD DATA KE FIREBASE")
+        }
     }
 }

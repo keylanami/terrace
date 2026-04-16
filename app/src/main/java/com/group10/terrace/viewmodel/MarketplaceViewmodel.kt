@@ -69,6 +69,10 @@ class MarketplaceViewModel : ViewModel() {
     fun resetCheckoutState() {
         _checkoutState.value = CheckoutState.Idle
     }
+
+    fun seedDatabase(context: com.google.api.Context) {
+        repository.uploadKatalogKeFirestore(context)
+    }
 }
 
 sealed class CheckoutState {
