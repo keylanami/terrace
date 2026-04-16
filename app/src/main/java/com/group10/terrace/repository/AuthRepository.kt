@@ -84,4 +84,23 @@ class AuthRepository {
     fun logout() {
         auth.signOut()
     }
+
+
+
+
+    fun getLeaderboard(onResult: (List<User>) -> Unit) {
+        db.collection("users")
+            .orderBy("totalPoints", com.google.firebase.firestore.Query.Direction.DESCENDING)
+            .limit(10) // Ambil Top 10 saja biar efisien
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    onResult(emptyList())
+                    return@addSnapshotListener
+                }
+                val topUsers = snapshot?.toObjects(User::class.java) ?: emptyList()
+                onResult(topUsers)
+            }
+    }
+
+
 }
