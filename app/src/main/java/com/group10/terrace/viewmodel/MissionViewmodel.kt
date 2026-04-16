@@ -1,29 +1,57 @@
 package com.group10.terrace.viewmodel
 
-
+import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.group10.terrace.model.Mission
+import com.group10.terrace.model.Plant
+import com.group10.terrace.model.UserPlant
 import com.group10.terrace.repository.GamificationRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class MissionViewModel : ViewModel() {
 
     private val gamificationRepo = GamificationRepository()
 
-    fun onTaskChecked(userId: String, userPlantId: String, plantDifficulty: String) {
+    private val _todayMissions = MutableStateFlow<List<Mission>>(emptyList())
+    val todayMissions: StateFlow<List<Mission>> = _todayMissions
 
-        gamificationRepo.completeMissionAndUpdateStats(userId, userPlantId, plantDifficulty) { success, points, streak ->
+    private val _gamificationEvent = MutableStateFlow<GamificationEvent?>(null)
+    val gamificationEvent: StateFlow<GamificationEvent?> = _gamificationEvent
+
+
+    fun loadTodayMissions(userPlant: UserPlant, plantMaster: Plant) {
+        _todayMissions.value = gamificationRepo.getTodayMissions(userPlant, plantMaster)
+    }
+
+    fun onTaskChecked(userId: String, userPlantId: String, mission: Mission) {
+
+        val updatedMissions = _todayMissions.value.map {
+            if (it.name == mission.name) it.copy(isCompleted = true) else it
+        }
+        _todayMissions.value = updatedMissions
+
+        gamificationRepo.completeMissionAndUpdateStats(userId, userPlantId, mission) { success, points, streak ->
             if (success) {
-                // berhasil!
-                // Besok di UI: Kamu bisa memunculkan animasi Lottie koin bertambah
-                // atau Toast "Selamat! Poin kamu jadi $points, Streak: $streak api!"
+                Log.d("TERRACE_VM", "Berhasil! Total Poin: $points, Streak: $streak")
+                _gamificationEvent.value = GamificationEvent.Success(mission.points, streak)
+            } else {
+                _todayMissions.value = updatedMissions.map {
+                    if (it.name == mission.name) it.copy(isCompleted = false) else it
+                }
+                _gamificationEvent.value = GamificationEvent.Error("Gagal menyimpan progres.")
             }
         }
     }
 
-    // Nanti bisa ditambahkan fungsi beli barang di sini
-    // (mengurangi currentPoints)
-
-    fun beliBarang(currentPoints: Int){
-
-
+     fun clearEvent() {
+        _gamificationEvent.value = null
     }
+}
+
+
+
+sealed class GamificationEvent {
+    data class Success(val earnedPoints: Int, val newStreak: Int) : GamificationEvent()
+    data class Error(val message: String) : GamificationEvent()
 }
