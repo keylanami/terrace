@@ -2,11 +2,11 @@ package com.group10.terrace.repository
 
 import android.util.Log
 import com.google.firebase.Firebase
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.group10.terrace.model.*
 import java.util.Calendar
-import kotlin.jvm.java
 
 class GamificationRepository {
 
@@ -15,9 +15,13 @@ class GamificationRepository {
 
     fun getTodayMissions(userPlant: UserPlant, plantMaster: Plant): List<Mission> {
         val todayMissions = mutableListOf<Mission>()
+        val todayMillis = System.currentTimeMillis()
 
-        val plantingAgeInDays = calculateDaysBetween(userPlant.startDate, System.currentTimeMillis())
+        val plantingAgeInDays = calculateDaysBetween(userPlant.startDate, todayMillis)
         val currentDay = if (plantingAgeInDays == 0L) 1 else plantingAgeInDays.toInt()
+
+        val isSameDay = isSameDay(userPlant.lastTaskCompletionDate, todayMillis)
+        val completedToday = if (isSameDay) userPlant.completedTaskToday else emptyList()
 
         val logic = plantMaster.tasks_logic ?: return emptyList()
 
@@ -27,12 +31,12 @@ class GamificationRepository {
                     Mission(
                         name = task.task_name,
                         points = task.points,
-                        isMilestone = false
+                        isMilestone = false,
+                        isCompleted = completedToday.contains(task.task_name)
                     )
                 )
             }
         }
-
 
         logic.milestoneTask.forEach { milestone ->
             if (currentDay == milestone.day) {
@@ -40,7 +44,8 @@ class GamificationRepository {
                     Mission(
                         name = milestone.task_name,
                         points = milestone.points,
-                        isMilestone = true
+                        isMilestone = true,
+                        isCompleted = completedToday.contains(milestone.task_name)
                     )
                 )
             }
@@ -49,64 +54,92 @@ class GamificationRepository {
         return todayMissions
     }
 
-    private fun calculateDaysBetween(startDateMillis: Long, endDateMillis: Long): Long {
-        val diffMillis = endDateMillis - startDateMillis
-        return diffMillis / (1000 * 60 * 60 * 24)
-    }
-
     fun completeMissionAndUpdateStats(
         userId: String,
-        difficulty: String,
-        onResult: (Boolean, Int, Int) -> Unit
+        userPlantId: String,
+        mission: Mission,
+        onResult: (Boolean, Int, Int) -> Unit // Return: (Success, NewTotalPoints, NewStreak)
     ) {
         val userRef = db.collection("users").document(userId)
+        val plantRef = userRef.collection("active_plants").document(userPlantId)
 
-        userRef.get().addOnSuccessListener { document ->
-            val user = document.toObject(User::class.java) ?: return@addOnSuccessListener
+        var updatedTotalPoints = 0
+        var updatedStreak = 0
 
-            val pointsEarned = when (difficulty) {
-                "Mudah" -> 10
-                "Sedang" -> 20
-                "Sulit" -> 35
-                else -> 10
-            }
-            val newTotalPoints = user.totalPoints + pointsEarned
+        db.runTransaction { transaction ->
+            val snapshot = transaction.get(userRef)
+            val user = snapshot.toObject(User::class.java) ?: return@runTransaction
+
+            val pointsEarned = mission.points
+
+            updatedTotalPoints = user.totalPoints + pointsEarned
             val newCurrentPoints = user.currentPoint + pointsEarned
+            updatedStreak = calculateStreak(user.lastActiveDays, user.currentStreak)
 
-            val newStreak = calculateStreak(user.lastActiveDays, user.currentStreak)
+            // UPDATE 1: Data User
+            transaction.update(userRef, "totalPoints", updatedTotalPoints)
+            transaction.update(userRef, "currentPoints", newCurrentPoints)
+            transaction.update(userRef, "currentStreak", updatedStreak)
+            transaction.update(userRef, "lastActiveDate", System.currentTimeMillis())
 
-            userRef.update(
-                mapOf(
-                    "totalPoints" to newTotalPoints,
-                    "currentPoints" to newCurrentPoints,
-                    "currentStreak" to newStreak,
-                    "lastActiveDate" to System.currentTimeMillis()
-                )
-            ).addOnSuccessListener {
-                Log.d("TERRACE_GAME", "Misi Selesai! +$pointsEarned Poin. Streak: $newStreak")
-                onResult(true, newTotalPoints, newStreak)
-            }.addOnFailureListener {
-                onResult(false, user.totalPoints, user.currentStreak)
-            }
-        }.addOnFailureListener {
+            // UPDATE 2: Data Tanaman
+            transaction.update(plantRef, "completedTasksToday", FieldValue.arrayUnion(mission.name))
+            transaction.update(plantRef, "lastTaskCompletionDate", System.currentTimeMillis())
+
+        }.addOnSuccessListener {
+            Log.d("TERRACE_GAME", "Misi Selesai! +${mission.points} Poin. Streak Baru: $updatedStreak")
+            // Mengirim data akurat ke UI
+            onResult(true, updatedTotalPoints, updatedStreak)
+        }.addOnFailureListener { e ->
+            Log.e("TERRACE_GAME", "Gagal menyimpan misi: ${e.message}")
             onResult(false, 0, 0)
         }
     }
 
 
+    private fun calculateDaysBetween(startDateMillis: Long, endDateMillis: Long): Long {
+        val diffMillis = endDateMillis - startDateMillis
+        return diffMillis / (1000 * 60 * 60 * 24)
+    }
+
+    private fun isSameDay(millis1: Long, millis2: Long): Boolean {
+        if (millis1 == 0L) return false
+        val cal1 = Calendar.getInstance().apply { timeInMillis = millis1 }
+        val cal2 = Calendar.getInstance().apply { timeInMillis = millis2 }
+        return cal1.get(Calendar.YEAR) == cal2.get(Calendar.YEAR) &&
+                cal1.get(Calendar.DAY_OF_YEAR) == cal2.get(Calendar.DAY_OF_YEAR)
+    }
+
+    private fun getMidnight(timeInMillis: Long): Calendar {
+        return Calendar.getInstance().apply {
+            this.timeInMillis = timeInMillis
+            set(Calendar.HOUR_OF_DAY, 0)
+            set(Calendar.MINUTE, 0)
+            set(Calendar.SECOND, 0)
+            set(Calendar.MILLISECOND, 0)
+        }
+    }
+
+
     private fun calculateStreak(lastActiveMillis: Long, currentStreak: Int): Int {
-        val today = Calendar.getInstance()
-        val lastActive = Calendar.getInstance().apply { timeInMillis = lastActiveMillis }
+        if (lastActiveMillis == 0L) return 1
 
-        val dayDifference = today.get(Calendar.DAY_OF_YEAR) - lastActive.get(Calendar.DAY_OF_YEAR)
-        val yearDifference = today.get(Calendar.YEAR) - lastActive.get(Calendar.YEAR)
+        val todayMidnight = getMidnight(System.currentTimeMillis())
+        val lastActiveMidnight = getMidnight(lastActiveMillis)
 
-        return if (yearDifference == 0 && dayDifference == 0) {
-            currentStreak
-        } else if ((yearDifference == 0 && dayDifference == 1) || (yearDifference == 1 && today.get(Calendar.DAY_OF_YEAR) == 1)) {
-            currentStreak + 1
-        } else {
-            1
+        val diffMillis = todayMidnight.timeInMillis - lastActiveMidnight.timeInMillis
+        val diffDays = (diffMillis / (1000 * 60 * 60 * 24)).toInt()
+
+        return when {
+            diffDays == 0 -> {
+                if (currentStreak == 0) 1 else currentStreak
+            }
+            diffDays == 1 -> {
+                currentStreak + 1
+            }
+            else -> {
+                1
+            }
         }
     }
 }
