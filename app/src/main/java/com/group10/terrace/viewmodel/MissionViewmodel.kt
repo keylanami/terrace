@@ -8,9 +8,9 @@ class MissionViewModel : ViewModel() {
 
     private val gamificationRepo = GamificationRepository()
 
-    fun onTaskChecked(userId: String, plantDifficulty: String) {
+    fun onTaskChecked(userId: String, userPlantId: String, plantDifficulty: String) {
 
-        gamificationRepo.completeMissionAndUpdateStats(userId, plantDifficulty) { success, points, streak ->
+        gamificationRepo.completeMissionAndUpdateStats(userId, userPlantId, plantDifficulty) { success, points, streak ->
             if (success) {
                 // berhasil!
                 // Besok di UI: Kamu bisa memunculkan animasi Lottie koin bertambah

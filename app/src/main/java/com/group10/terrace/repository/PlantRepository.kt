@@ -4,7 +4,7 @@ import android.content.Context
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
-import com.google.firebase.crashlytics.buildtools.reloc.com.google.common.reflect.TypeToken
+import com.google.gson.reflect.TypeToken
 import com.google.gson.Gson
 import com.group10.terrace.model.Plant
 import com.group10.terrace.model.UserPlant

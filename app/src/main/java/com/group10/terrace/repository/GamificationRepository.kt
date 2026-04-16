@@ -26,7 +26,7 @@ class GamificationRepository {
         val logic = plantMaster.tasks_logic ?: return emptyList()
 
         logic.recurringTask.forEach { task ->
-            if (currentDay % task.frequencyDays == 0) {
+            if (currentDay % task.frequency_days == 0) {
                 todayMissions.add(
                     Mission(
                         name = task.task_name,
@@ -58,7 +58,7 @@ class GamificationRepository {
         userId: String,
         userPlantId: String,
         mission: Mission,
-        onResult: (Boolean, Int, Int) -> Unit // Return: (Success, NewTotalPoints, NewStreak)
+        onResult: (Boolean, Int, Int) -> Unit
     ) {
         val userRef = db.collection("users").document(userId)
         val plantRef = userRef.collection("active_plants").document(userPlantId)
@@ -76,20 +76,19 @@ class GamificationRepository {
             val newCurrentPoints = user.currentPoint + pointsEarned
             updatedStreak = calculateStreak(user.lastActiveDays, user.currentStreak)
 
-            // UPDATE 1: Data User
             transaction.update(userRef, "totalPoints", updatedTotalPoints)
             transaction.update(userRef, "currentPoints", newCurrentPoints)
             transaction.update(userRef, "currentStreak", updatedStreak)
             transaction.update(userRef, "lastActiveDate", System.currentTimeMillis())
 
-            // UPDATE 2: Data Tanaman
+
             transaction.update(plantRef, "completedTasksToday", FieldValue.arrayUnion(mission.name))
             transaction.update(plantRef, "lastTaskCompletionDate", System.currentTimeMillis())
 
         }.addOnSuccessListener {
             Log.d("TERRACE_GAME", "Misi Selesai! +${mission.points} Poin. Streak Baru: $updatedStreak")
-            // Mengirim data akurat ke UI
             onResult(true, updatedTotalPoints, updatedStreak)
+
         }.addOnFailureListener { e ->
             Log.e("TERRACE_GAME", "Gagal menyimpan misi: ${e.message}")
             onResult(false, 0, 0)
