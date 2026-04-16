@@ -1,66 +1,567 @@
-[
-  {
-    "plantId": "P001",
-    "name": "Sawi Hijau (Caisim)",
-    "type": "Sayur",
-    "difficulty": "Mudah",
-    "estimationDays": 30,
-    "description": "Sayuran daun yang sangat mudah ditanam di lahan sempit maupun pot. Sangat cocok untuk pemula.",
-    "careRequirements": "Sinar matahari parsial, penyiraman 1x sehari.",
-    "startingSteps": [
-      "Siapkan media tanam campuran tanah dan kompos.",
-      "Tebar biji dengan jarak 5 cm.",
-      "Siram perlahan agar biji tidak larut."
-    ],
-    "isPremium": false,
-    "imageUrl": "https://dummyimage.com/400x400/2ecc71/ffffff&text=Sawi+Hijau"
-  },
-  {
-    "plantId": "P002",
-    "name": "Tomat Ceri",
-    "type": "Buah",
-    "difficulty": "Sedang",
-    "estimationDays": 70,
-    "description": "Tomat berukuran kecil yang manis. Membutuhkan tiang penyangga saat tumbuh tinggi.",
-    "careRequirements": "Sinar matahari penuh (6-8 jam), penyiraman pagi dan sore jika panas terik.",
-    "startingSteps": [
-      "Semai biji di tray semai hingga berdaun empat.",
-      "Pindahkan ke pot minimal ukuran 30cm.",
-      "Tancapkan lanjaran (penyangga) sejak awal."
-    ],
-    "isPremium": false,
-    "imageUrl": "https://dummyimage.com/400x400/e74c3c/ffffff&text=Tomat+Ceri"
-  },
-  {
-    "plantId": "P003",
-    "name": "Monstera Deliciosa",
-    "type": "Tanaman Hias",
-    "difficulty": "Sedang",
-    "estimationDays": 365,
-    "description": "Tanaman hias estetik dengan daun berlubang unik. Cocok untuk indoor maupun teras teduh.",
-    "careRequirements": "Cahaya terang namun tidak langsung, kelembaban tinggi.",
-    "startingSteps": [
-      "Gunakan media tanam yang porous (banyak porositas).",
-      "Tanam bibit atau stek batang.",
-      "Pasang turus untuk tempat akar angin merambat."
-    ],
-    "isPremium": true,
-    "imageUrl": "https://dummyimage.com/400x400/27ae60/ffffff&text=Monstera"
-  },
-  {
-    "plantId": "P004",
-    "name": "Cabai Rawit",
-    "type": "Sayur",
-    "difficulty": "Sulit",
-    "estimationDays": 90,
-    "description": "Menantang namun sangat memuaskan. Rentan terhadap hama kutu putih dan patek, butuh perhatian ekstra.",
-    "careRequirements": "Sinar matahari penuh, nutrisi tinggi (pupuk NPK rutin).",
-    "startingSteps": [
-      "Rendam benih di air hangat semalaman.",
-      "Semai di tempat teduh hingga tinggi 10 cm.",
-      "Pindahkan ke lahan dengan jarak tanam 50 cm."
-    ],
-    "isPremium": false,
-    "imageUrl": "https://dummyimage.com/400x400/c0392b/ffffff&text=Cabai+Rawit"
-  }
-]
+{
+  "plants": [
+    {
+      "id": "orn_01",
+      "name": "Lidah Mertua (Sansevieria)",
+      "category": "Tanaman Hias",
+      "difficulty": "Easy",
+      "harvest_duration": "90-120 hari",
+      "area_per_pot_m2": 0.15,
+      "description": "Sangat populer karena tahan banting, minim perawatan, dan mampu menyaring udara dari polusi.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pembersihan debu daun", "frequency_days": 14, "points": 10}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 45, "task_name": "Pemeliharaan intensif tengah periode", "points": 20},
+          {"day": 90, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "orn_02",
+      "name": "Monstera Deliciosa",
+      "category": "Tanaman Hias",
+      "difficulty": "Medium",
+      "harvest_duration": "120-180 hari",
+      "area_per_pot_m2": 0.5,
+      "description": "Memiliki ciri khas daun besar berlubang yang memberikan kesan tropis dan mewah pada teras atau dalam ruangan.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pembersihan debu daun", "frequency_days": 14, "points": 10}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 30, "task_name": "Pemangkasan / Merapikan ranting", "points": 20},
+          {"day": 90, "task_name": "Pemberian nutrisi fase lanjutan", "points": 25},
+          {"day": 120, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "orn_03",
+      "name": "Sirih Gading (Pothos)",
+      "category": "Tanaman Hias",
+      "difficulty": "Easy",
+      "harvest_duration": "30-60 hari",
+      "area_per_pot_m2": 0.1,
+      "description": "Tanaman merambat yang sangat mudah tumbuh. Bisa diletakkan di pot gantung atau merambat di pagar.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pembersihan debu daun", "frequency_days": 14, "points": 10}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 15, "task_name": "Pemeliharaan intensif tengah periode", "points": 20},
+          {"day": 30, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "orn_04",
+      "name": "Aglaonema (Sri Rejeki)",
+      "category": "Tanaman Hias",
+      "difficulty": "Easy",
+      "harvest_duration": "90-150 hari",
+      "area_per_pot_m2": 0.2,
+      "description": "Dikenal sebagai tanaman pembawa keberuntungan dengan corak daun warna-warni yang sangat dekoratif.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pembersihan debu daun", "frequency_days": 14, "points": 10}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 45, "task_name": "Pemeliharaan intensif tengah periode", "points": 20},
+          {"day": 90, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "orn_05",
+      "name": "Lidah Buaya (Aloe Vera)",
+      "category": "Tanaman Hias",
+      "difficulty": "Easy",
+      "harvest_duration": "90-120 hari",
+      "area_per_pot_m2": 0.25,
+      "description": "Selain indah di halaman, gel di dalamnya bermanfaat untuk kesehatan kulit dan rambut.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pembersihan debu daun", "frequency_days": 14, "points": 10}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 45, "task_name": "Pemeliharaan intensif tengah periode", "points": 20},
+          {"day": 90, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "orn_06",
+      "name": "Bougenville (Bunga Kertas)",
+      "category": "Tanaman Hias",
+      "difficulty": "Medium",
+      "harvest_duration": "180+ hari",
+      "area_per_pot_m2": 0.5,
+      "description": "Tanaman berbunga cerah yang tahan cuaca panas. Sangat bagus untuk menghias pagar atau halaman depan.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pembersihan debu daun", "frequency_days": 14, "points": 10}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 30, "task_name": "Pemangkasan / Merapikan ranting", "points": 20},
+          {"day": 90, "task_name": "Pemberian nutrisi fase lanjutan", "points": 25},
+          {"day": 180, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "orn_07",
+      "name": "Bunga Melati",
+      "category": "Tanaman Hias",
+      "difficulty": "Medium",
+      "harvest_duration": "90-120 hari",
+      "area_per_pot_m2": 0.4,
+      "description": "Bunga khas Indonesia dengan aroma harum yang menenangkan. Cocok ditanam langsung di tanah halaman.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pembersihan debu daun", "frequency_days": 14, "points": 10}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 45, "task_name": "Pemeliharaan intensif tengah periode", "points": 20},
+          {"day": 90, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "orn_08",
+      "name": "Pucuk Merah (Syzygium oleana)",
+      "category": "Tanaman Hias",
+      "difficulty": "Medium",
+      "harvest_duration": "180+ hari",
+      "area_per_pot_m2": 0.6,
+      "description": "Sering digunakan sebagai pagar hidup karena pucuk daun mudanya yang berwarna merah mencolok.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pembersihan debu daun", "frequency_days": 14, "points": 10}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 30, "task_name": "Pemangkasan / Merapikan ranting", "points": 20},
+          {"day": 90, "task_name": "Pemberian nutrisi fase lanjutan", "points": 25},
+          {"day": 180, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "orn_09",
+      "name": "Adenium (Kamboja Jepang)",
+      "category": "Tanaman Hias",
+      "difficulty": "Medium",
+      "harvest_duration": "180+ hari",
+      "area_per_pot_m2": 0.3,
+      "description": "Tanaman sukulen berbunga cantik yang menyerupai bonsai. Sangat tahan kekeringan.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pembersihan debu daun", "frequency_days": 14, "points": 10}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 30, "task_name": "Pemangkasan / Merapikan ranting", "points": 20},
+          {"day": 90, "task_name": "Pemberian nutrisi fase lanjutan", "points": 25},
+          {"day": 180, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "orn_10",
+      "name": "Anggrek",
+      "category": "Tanaman Hias",
+      "difficulty": "Hard",
+      "harvest_duration": "120-180 hari",
+      "area_per_pot_m2": 0.1,
+      "description": "Memberikan kesan elegan dengan bunga yang mekar tahan lama. Umumnya ditanam di pot gantung.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pembersihan debu daun", "frequency_days": 14, "points": 10}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 30, "task_name": "Pemangkasan / Merapikan ranting", "points": 20},
+          {"day": 90, "task_name": "Pemberian nutrisi fase lanjutan", "points": 25},
+          {"day": 120, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "orn_11",
+      "name": "Peace Lily",
+      "category": "Tanaman Hias",
+      "difficulty": "Easy",
+      "harvest_duration": "60-120 hari",
+      "area_per_pot_m2": 0.2,
+      "description": "Tanaman berbunga putih elegan yang juga berfungsi sebagai pembersih udara alami yang efektif.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pembersihan debu daun", "frequency_days": 14, "points": 10}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 30, "task_name": "Pemeliharaan intensif tengah periode", "points": 20},
+          {"day": 60, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "orn_12",
+      "name": "Kembang Sepatu (Hibiscus)",
+      "category": "Tanaman Hias",
+      "difficulty": "Medium",
+      "harvest_duration": "120-180 hari",
+      "area_per_pot_m2": 0.5,
+      "description": "Tanaman perdu dengan bunga besar berwarna kontras yang sangat umum menghiasi taman rumah Indonesia.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pembersihan debu daun", "frequency_days": 14, "points": 10}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 30, "task_name": "Pemangkasan / Merapikan ranting", "points": 20},
+          {"day": 90, "task_name": "Pemberian nutrisi fase lanjutan", "points": 25},
+          {"day": 120, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "food_01",
+      "name": "Kangkung",
+      "category": "Sayur & Buah",
+      "difficulty": "Easy",
+      "harvest_duration": "21-28 hari",
+      "area_per_pot_m2": 0.05,
+      "description": "Sayuran paling mudah ditanam bagi pemula. Bisa dipanen hanya dalam waktu 3-4 minggu.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pemberian nutrisi cair / pupuk", "frequency_days": 14, "points": 15}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 10, "task_name": "Pemeliharaan intensif tengah periode", "points": 20},
+          {"day": 21, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "food_02",
+      "name": "Bayam",
+      "category": "Sayur & Buah",
+      "difficulty": "Easy",
+      "harvest_duration": "30-35 hari",
+      "area_per_pot_m2": 0.05,
+      "description": "Tanaman adaptif yang tidak membutuhkan lahan luas. Dapat tumbuh subur di polybag.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pemberian nutrisi cair / pupuk", "frequency_days": 14, "points": 15}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 15, "task_name": "Pemeliharaan intensif tengah periode", "points": 20},
+          {"day": 30, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "food_03",
+      "name": "Sawi (Caisim/Pakcoy)",
+      "category": "Sayur & Buah",
+      "difficulty": "Easy",
+      "harvest_duration": "30-45 hari",
+      "area_per_pot_m2": 0.09,
+      "description": "Sayuran yang cepat tumbuh dan tidak rewel. Sangat cocok ditanam berdampingan dengan jenis sayuran lain.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pemberian nutrisi cair / pupuk", "frequency_days": 14, "points": 15}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 15, "task_name": "Pemeliharaan intensif tengah periode", "points": 20},
+          {"day": 30, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "food_04",
+      "name": "Cabai Rawit",
+      "category": "Sayur & Buah",
+      "difficulty": "Medium",
+      "harvest_duration": "60-90 hari",
+      "area_per_pot_m2": 0.2,
+      "description": "Tanaman wajib di rumah Indonesia. Sangat produktif, cepat berbuah, dan tahan lama.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pemberian nutrisi cair / pupuk", "frequency_days": 14, "points": 15}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 30, "task_name": "Pemeliharaan intensif tengah periode", "points": 20},
+          {"day": 60, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "food_05",
+      "name": "Tomat Cherry",
+      "category": "Sayur & Buah",
+      "difficulty": "Easy",
+      "harvest_duration": "60-70 hari",
+      "area_per_pot_m2": 0.16,
+      "description": "Membutuhkan sedikit penyangga (ajir), namun sangat dekoratif dan memberikan hasil panen melimpah.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pemberian nutrisi cair / pupuk", "frequency_days": 14, "points": 15}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 30, "task_name": "Pemeliharaan intensif tengah periode", "points": 20},
+          {"day": 60, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "food_06",
+      "name": "Strawberry",
+      "category": "Sayur & Buah",
+      "difficulty": "Hard",
+      "harvest_duration": "120-150 hari",
+      "area_per_pot_m2": 0.12,
+      "description": "Sangat cocok ditanam di pot kecil atau pot gantung. Memerlukan perawatan rutin.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pemberian nutrisi cair / pupuk", "frequency_days": 14, "points": 15}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 30, "task_name": "Pemangkasan / Merapikan ranting", "points": 20},
+          {"day": 90, "task_name": "Pemberian nutrisi fase lanjutan", "points": 25},
+          {"day": 120, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "food_07",
+      "name": "Terong",
+      "category": "Sayur & Buah",
+      "difficulty": "Medium",
+      "harvest_duration": "70-90 hari",
+      "area_per_pot_m2": 0.3,
+      "description": "Tanaman yang cukup tahan panas dan produktif. Varietas terong ungu atau bulat sering menjadi favorit.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pemberian nutrisi cair / pupuk", "frequency_days": 14, "points": 15}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 35, "task_name": "Pemeliharaan intensif tengah periode", "points": 20},
+          {"day": 70, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "food_08",
+      "name": "Bawang Merah",
+      "category": "Sayur & Buah",
+      "difficulty": "Medium",
+      "harvest_duration": "60-70 hari",
+      "area_per_pot_m2": 0.05,
+      "description": "Bisa ditanam di pot atau halaman sebagai bumbu dapur mandiri. Perawatannya sederhana.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pemberian nutrisi cair / pupuk", "frequency_days": 14, "points": 15}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 30, "task_name": "Pemeliharaan intensif tengah periode", "points": 20},
+          {"day": 60, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "food_09",
+      "name": "Jeruk Nipis/Lemon",
+      "category": "Sayur & Buah",
+      "difficulty": "Hard",
+      "harvest_duration": "365+ hari",
+      "area_per_pot_m2": 1.0,
+      "description": "Pohonnya rapi dan aromanya segar. Sangat populer ditanam dalam pot besar (Tabulampot).",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pemberian nutrisi cair / pupuk", "frequency_days": 14, "points": 15}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 30, "task_name": "Pemangkasan / Merapikan ranting", "points": 20},
+          {"day": 90, "task_name": "Pemberian nutrisi fase lanjutan", "points": 25},
+          {"day": 365, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "food_10",
+      "name": "Jambu Kristal",
+      "category": "Sayur & Buah",
+      "difficulty": "Hard",
+      "harvest_duration": "180-365 hari",
+      "area_per_pot_m2": 1.0,
+      "description": "Salah satu buah yang paling cepat berbuah dan tidak memerlukan pohon yang terlalu besar.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pemberian nutrisi cair / pupuk", "frequency_days": 14, "points": 15}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 30, "task_name": "Pemangkasan / Merapikan ranting", "points": 20},
+          {"day": 90, "task_name": "Pemberian nutrisi fase lanjutan", "points": 25},
+          {"day": 180, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "food_11",
+      "name": "Mangga (Varietas Mini)",
+      "category": "Sayur & Buah",
+      "difficulty": "Hard",
+      "harvest_duration": "365+ hari",
+      "area_per_pot_m2": 1.5,
+      "description": "Dengan pemangkasan rutin, mangga kini bisa ditanam di pot besar dan tetap manis.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pemberian nutrisi cair / pupuk", "frequency_days": 14, "points": 15}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 30, "task_name": "Pemangkasan / Merapikan ranting", "points": 20},
+          {"day": 90, "task_name": "Pemberian nutrisi fase lanjutan", "points": 25},
+          {"day": 365, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    },
+    {
+      "id": "food_12",
+      "name": "Pepaya California",
+      "category": "Sayur & Buah",
+      "difficulty": "Hard",
+      "harvest_duration": "210-270 hari",
+      "area_per_pot_m2": 1.0,
+      "description": "Varietas pepaya kerdil yang bisa ditanam di halaman atau pot besar dengan drainase baik.",
+      "tasks_logic": {
+        "recurring": [
+          {"task_name": "Penyiraman rutin", "frequency_days": 1, "points": 5},
+          {"task_name": "Pengecekan hama & kesehatan daun", "frequency_days": 7, "points": 10},
+          {"task_name": "Pemberian nutrisi cair / pupuk", "frequency_days": 14, "points": 15}
+        ],
+        "milestones": [
+          {"day": 1, "task_name": "Persiapan media tanam & wadah", "points": 20},
+          {"day": 3, "task_name": "Penyemaian / Penempatan bibit", "points": 15},
+          {"day": 7, "task_name": "Observasi adaptasi tanaman", "points": 10},
+          {"day": 30, "task_name": "Pemangkasan / Merapikan ranting", "points": 20},
+          {"day": 90, "task_name": "Pemberian nutrisi fase lanjutan", "points": 25},
+          {"day": 210, "task_name": "Masa panen / Dokumentasi hasil akhir", "points": 50}
+        ]
+      }
+    }
+  ]
+}
