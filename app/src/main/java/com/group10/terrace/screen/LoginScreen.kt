@@ -19,7 +19,7 @@ import androidx.compose.ui.text.withStyle
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.group10.terrace.R
-import com.group10.terrace.components.CustomTextField
+import com.group10.terrace.ui.components.CustomTextField
 import com.group10.terrace.ui.theme.*
 import com.group10.terrace.viewmodel.AuthViewModel
 
