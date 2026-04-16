@@ -103,4 +103,11 @@ class AuthRepository {
     }
 
 
+    fun updateLandSize(userId: String, newSize: Double, onResult: (Boolean) -> Unit) {
+        db.collection("users").document(userId)
+            .update("landSize", newSize)
+            .addOnSuccessListener { onResult(true) }
+            .addOnFailureListener { onResult(false) }
+    }
+
 }
