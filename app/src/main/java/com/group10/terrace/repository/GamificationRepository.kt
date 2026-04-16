@@ -4,12 +4,55 @@ import android.util.Log
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
-import com.group10.terrace.model.User
+import com.group10.terrace.model.*
 import java.util.Calendar
+import kotlin.jvm.java
 
 class GamificationRepository {
 
     private val db: FirebaseFirestore = Firebase.firestore
+
+
+    fun getTodayMissions(userPlant: UserPlant, plantMaster: Plant): List<Mission> {
+        val todayMissions = mutableListOf<Mission>()
+
+        val plantingAgeInDays = calculateDaysBetween(userPlant.startDate, System.currentTimeMillis())
+        val currentDay = if (plantingAgeInDays == 0L) 1 else plantingAgeInDays.toInt()
+
+        val logic = plantMaster.tasks_logic ?: return emptyList()
+
+        logic.recurringTask.forEach { task ->
+            if (currentDay % task.frequencyDays == 0) {
+                todayMissions.add(
+                    Mission(
+                        name = task.task_name,
+                        points = task.points,
+                        isMilestone = false
+                    )
+                )
+            }
+        }
+
+
+        logic.milestoneTask.forEach { milestone ->
+            if (currentDay == milestone.day) {
+                todayMissions.add(
+                    Mission(
+                        name = milestone.task_name,
+                        points = milestone.points,
+                        isMilestone = true
+                    )
+                )
+            }
+        }
+
+        return todayMissions
+    }
+
+    private fun calculateDaysBetween(startDateMillis: Long, endDateMillis: Long): Long {
+        val diffMillis = endDateMillis - startDateMillis
+        return diffMillis / (1000 * 60 * 60 * 24)
+    }
 
     fun completeMissionAndUpdateStats(
         userId: String,

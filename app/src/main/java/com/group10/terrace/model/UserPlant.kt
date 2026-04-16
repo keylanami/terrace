@@ -9,5 +9,6 @@ data class UserPlant(
     val status: String = "Growing",
     val isWateredToday: Boolean = false,
     val isFertilizedToday: Boolean = false,
+    val lastTaskCompletionDate: Long = 0L,
     val startDate: Long = System.currentTimeMillis()
 )
