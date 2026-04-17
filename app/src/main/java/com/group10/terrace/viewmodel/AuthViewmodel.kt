@@ -2,11 +2,16 @@ package com.group10.terrace.viewmodel
 
 import android.util.Log
 import androidx.lifecycle.ViewModel
+import com.group10.terrace.model.User
 import com.group10.terrace.repository.AuthRepository
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.StateFlow
 
 class AuthViewModel : ViewModel() {
 
     private val repository = AuthRepository()
+    private val _userData = MutableStateFlow<User?>(null)
+    val userData: StateFlow<User?> = _userData
 
     // Parameter landSize dihapus, karena sudah pindah ke layar Personalisasi
     fun registerUser(email: String, pass: String, name: String) {
