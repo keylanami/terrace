@@ -29,13 +29,12 @@ import com.group10.terrace.ui.theme.*
 import com.group10.terrace.viewmodel.HomeViewModel
 
 
-
-
 @Composable
 fun PlantDetailScreen(
     viewModel: HomeViewModel,
     userPlantId: String,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onNavigateToAddPlant: () -> Unit
 ) {
     val activePlants by viewModel.activePlants.collectAsState()
     val masterPlants by viewModel.masterPlants.collectAsState()
@@ -71,9 +70,7 @@ fun PlantDetailScreen(
             Icon(
                 Icons.AutoMirrored.Outlined.ArrowBack,
                 contentDescription = "Back",
-                modifier = Modifier
-                    .size(24.dp)
-                    .clickable { onBack() }
+                modifier = Modifier.size(24.dp).clickable { onBack() }
             )
             Text(
                 "Tanaman Mu",
@@ -88,27 +85,14 @@ fun PlantDetailScreen(
             painter = painterResource(id = R.drawable.fototanaman),
             contentDescription = "Foto Tanaman",
             contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .fillMaxWidth()
-                .height(198.dp)
+            modifier = Modifier.fillMaxWidth().height(198.dp)
         )
 
         Column(modifier = Modifier.padding(24.dp)) {
 
-            Row(
-                horizontalArrangement = Arrangement.spacedBy(8.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Box(
-                    modifier = Modifier
-                        .background(Green700, RoundedCornerShape(10.dp))
-                        .padding(horizontal = 10.dp, vertical = 4.dp)
-                ) {
-                    Text(
-                        masterPlant.type.ifEmpty { "Sayuran" },
-                        style = Typography.labelMedium.copy(fontSize = 10.sp),
-                        color = Neutral50
-                    )
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                Box(modifier = Modifier.background(Green700, RoundedCornerShape(10.dp)).padding(horizontal = 10.dp, vertical = 4.dp)) {
+                    Text(masterPlant.type.ifEmpty { "Sayuran" }, style = Typography.labelMedium.copy(fontSize = 10.sp), color = Neutral50)
                 }
                 DifficultyBadge(difficulty = masterPlant.difficulty)
             }
@@ -117,43 +101,26 @@ fun PlantDetailScreen(
 
             Row(verticalAlignment = Alignment.CenterVertically) {
                 if (activePlants.firstOrNull()?.userPlantId == userPlantId) {
-                    Box(
-                        modifier = Modifier
-                            .background(Yellow500, RoundedCornerShape(10.dp))
-                            .padding(horizontal = 10.dp, vertical = 4.dp)
-                    ) {
+                    Box(modifier = Modifier.background(Yellow500, RoundedCornerShape(10.dp)).padding(horizontal = 10.dp, vertical = 4.dp)) {
                         Text("Priority", style = Typography.labelMedium.copy(fontSize = 10.sp), color = Neutral50)
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                 }
 
-                Text(
-                    userPlant.plantName,
-                    style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp),
-                    color = Neutral900,
-                    modifier = Modifier.weight(1f)
-                )
-                Icon(
-                    painter = painterResource(id = android.R.drawable.ic_menu_edit),
-                    contentDescription = "Edit",
-                    modifier = Modifier.size(20.dp),
-                    tint = Neutral400
-                )
+                Text(userPlant.plantName, style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp), color = Neutral900, modifier = Modifier.weight(1f))
+                Icon(painter = painterResource(id = android.R.drawable.ic_menu_edit), contentDescription = "Edit", modifier = Modifier.size(20.dp), tint = Neutral400)
             }
 
             Spacer(modifier = Modifier.height(24.dp))
 
+
+
+
             Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(elevation = 30.dp, shape = RoundedCornerShape(20.dp), spotColor = Neutral900.copy(alpha = 0.1f))
-                    .background(Neutral50, RoundedCornerShape(20.dp))
-                    .padding(horizontal = 17.dp, vertical = 30.dp)
+                modifier = Modifier.fillMaxWidth().shadow(elevation = 15.dp, shape = RoundedCornerShape(20.dp), spotColor = Neutral900.copy(alpha = 0.1f)).background(Neutral50, RoundedCornerShape(20.dp)).padding(horizontal = 17.dp, vertical = 30.dp)
             ) {
                 Text("Progress", style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp), color = Yellow800)
-
                 Spacer(modifier = Modifier.height(16.dp))
-
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     Box(modifier = Modifier.weight(1f).height(19.dp).background(Neutral300, RoundedCornerShape(20.dp))) {
                         Box(modifier = Modifier.fillMaxWidth(fraction = progressFraction).height(19.dp).background(Yellow300, RoundedCornerShape(20.dp)))
@@ -167,7 +134,6 @@ fun PlantDetailScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(maxDays) { index ->
                     val dayNum = index + 1
@@ -176,11 +142,7 @@ fun PlantDetailScreen(
                         dayNum == currentDay -> Yellow400 to Neutral900
                         else -> Neutral200 to Neutral600
                     }
-                    Box(
-                        modifier = Modifier
-                            .background(color = bgColor, shape = RoundedCornerShape(20.dp))
-                            .padding(horizontal = 16.dp, vertical = 10.dp)
-                    ) {
+                    Box(modifier = Modifier.background(color = bgColor, shape = RoundedCornerShape(20.dp)).padding(horizontal = 16.dp, vertical = 10.dp)) {
                         Text("Hari $dayNum", style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold, fontSize = 12.sp), color = textColor)
                     }
                 }
@@ -191,10 +153,7 @@ fun PlantDetailScreen(
 
 
             Box(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .shadow(elevation = 30.dp, shape = RoundedCornerShape(20.dp), spotColor = Neutral900.copy(alpha = 0.1f))
-                    .background(Neutral50, RoundedCornerShape(20.dp))
+                modifier = Modifier.fillMaxWidth().shadow(elevation = 15.dp, shape = RoundedCornerShape(20.dp), spotColor = Neutral900.copy(alpha = 0.1f)).background(Neutral50, RoundedCornerShape(20.dp))
             ) {
                 Column(modifier = Modifier.padding(start = 17.dp, top = 31.dp, end = 16.dp, bottom = 40.dp)) {
                     Row(
@@ -205,9 +164,8 @@ fun PlantDetailScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text("Daily Tasks", style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp))
                             Spacer(modifier = Modifier.width(8.dp))
-                            Icon(painter = painterResource(id = R.drawable.pin), contentDescription = null, modifier = Modifier.size(20.dp), tint = Neutral900)
+                            Icon(painter = painterResource(id = android.R.drawable.ic_menu_edit), contentDescription = "Pin", tint = Neutral900)
                         }
-
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Icon(painter = painterResource(id = R.drawable.lit_fire), contentDescription = "Streak", modifier = Modifier.size(24.dp), tint = Yellow500)
                             Spacer(modifier = Modifier.width(4.dp))
@@ -217,41 +175,38 @@ fun PlantDetailScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    val todaysRecurringTasks = masterPlant.tasks_logic?.recurringTask
-                        ?.filter { currentDay % it.frequency_days == 0 } ?: emptyList()
-                    val todaysMilestones = masterPlant.tasks_logic?.milestoneTask
-                        ?.filter { it.day == currentDay } ?: emptyList()
-
-                    val allTodaysTasks: List<TaskItem> = todaysRecurringTasks + todaysMilestones
+                    val todaysRecurringTasks: List<TaskItem> = masterPlant.tasks_logic?.recurringTask?.filter { currentDay % it.frequency_days == 0 } ?: emptyList()
+                    val todaysMilestones: List<TaskItem> = masterPlant.tasks_logic?.milestoneTask?.filter { it.day == currentDay } ?: emptyList()
+                    val allTodaysTasks = todaysRecurringTasks + todaysMilestones
 
                     if (allTodaysTasks.isEmpty()) {
-                        Text("Semua tugas selesai. Bersantailah!", style = Typography.bodyMedium, color = Neutral400)
+                        Text("Tidak ada tugas untuk hari ini. Bersantailah!", style = Typography.bodyMedium, color = Neutral400)
                     } else {
                         allTodaysTasks.forEach { task ->
                             var isChecked by remember { mutableStateOf(false) }
+
                             Row(
-                                modifier = Modifier
-                                    .fillMaxWidth()
-                                    .padding(vertical = 8.dp)
-                                    .clickable { isChecked = !isChecked },
+                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).clickable { isChecked = !isChecked },
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Icon(
-                                    painter = painterResource(id = android.R.drawable.checkbox_on_background),
+                                    painter = painterResource(id = if (isChecked) android.R.drawable.checkbox_on_background else android.R.drawable.checkbox_off_background),
                                     contentDescription = null,
-                                    tint = if (isChecked) Green600 else Neutral200,
+                                    tint = if (isChecked) Green600 else Neutral400,
                                     modifier = Modifier.size(24.dp)
                                 )
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Text(
                                     task.task_name,
                                     style = Typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
-                                    color = Neutral900
+                                    color = if (isChecked) Neutral400 else Neutral900
                                 )
                             }
                         }
                     }
                 }
+
+
 
                 Box(
                     modifier = Modifier
@@ -259,14 +214,13 @@ fun PlantDetailScreen(
                         .padding(bottom = 20.dp, end = 20.dp)
                         .size(62.dp)
                         .background(color = Green600, shape = RoundedCornerShape(100.dp))
-                        .clickable { /* TODO */ },
+                        .clickable { onNavigateToAddPlant() },
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(painter = painterResource(id = android.R.drawable.ic_input_add), contentDescription = "Add", tint = Neutral50, modifier = Modifier.size(32.dp))
                 }
             }
-
-            Spacer(modifier = Modifier.height(100.dp))
         }
+        Spacer(modifier = Modifier.height(100.dp))
     }
 }
