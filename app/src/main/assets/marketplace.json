@@ -7,8 +7,8 @@
       "price": 10000,
       "deskripsi": "Benih kangkung unggulan, tumbuh cepat dalam 21 hari.",
       "stock": 49,
-      "image_url": "img_bibit_kangkung_darat",
-      "seller_name": "Toko Hijau Lembang",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/71befbeef0583d0f5caec8e6e00b650b8d187152.jpg",
+      "seller_name": "Terrace Official",
       "rating": 4.6
     },
     {
@@ -18,8 +18,8 @@
       "price": 8000,
       "deskripsi": "Bayam segar kaya zat besi, sangat mudah dirawat.",
       "stock": 48,
-      "image_url": "img_benih_bayam_hijau",
-      "seller_name": "Urban Garden Store",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/149377cb74a3eaf29e15ec4b98e46de3a4c005ce.jpg",
+      "seller_name": "Terrace Official",
       "rating": 4.7
     },
     {
@@ -29,8 +29,8 @@
       "price": 11000,
       "deskripsi": "Pakcoy renyah, cocok untuk pemula dan sistem hidroponik.",
       "stock": 47,
-      "image_url": "img_benih_sawi_pakcoy",
-      "seller_name": "Tani Jaya Center",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/7e461eb612788e795dfe9774c0a196473cef0409.jpg",
+      "seller_name": "Terrace Official",
       "rating": 4.8
     },
     {
@@ -40,7 +40,7 @@
       "price": 12000,
       "deskripsi": "Cabai rawit super pedas, tahan cuaca panas.",
       "stock": 46,
-      "image_url": "img_bibit_cabai_rawit",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/5c3b2be1a3722e6a764924066b6010775dda4235.jpg",
       "seller_name": "Terrace Official",
       "rating": 4.9
     },
@@ -51,8 +51,8 @@
       "price": 15000,
       "deskripsi": "Tomat mungil yang manis, sangat produktif di pot.",
       "stock": 45,
-      "image_url": "img_benih_tomat_cherry",
-      "seller_name": "Toko Hijau Lembang",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/63a4db68add0297db4d53bd941ff28d84869883a.jpg",
+      "seller_name": "Terrace Official",
       "rating": 4.5
     },
     {
@@ -62,8 +62,8 @@
       "price": 18000,
       "deskripsi": "Bibit strawberry yang cocok untuk dataran tinggi maupun menengah.",
       "stock": 44,
-      "image_url": "img_bibit_strawberry_alpine",
-      "seller_name": "Urban Garden Store",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/cd4eb0b47cb197e93a236fe179c525785c3647fd.jpg",
+      "seller_name": "Terrace Official",
       "rating": 4.6
     },
     {
@@ -73,8 +73,8 @@
       "price": 45000,
       "deskripsi": "Tanaman jeruk nipis dalam pot, cepat berbuah.",
       "stock": 43,
-      "image_url": "img_bibit_jeruk_nipis",
-      "seller_name": "Tani Jaya Center",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/787eece3e48f5c99dbc9d66b47bdae5a653aff4b.jpg",
+      "seller_name": "Terrace Official",
       "rating": 4.7
     },
     {
@@ -84,7 +84,7 @@
       "price": 55000,
       "deskripsi": "Jambu tanpa biji yang renyah dan cepat berbuah.",
       "stock": 42,
-      "image_url": "img_bibit_jambu_kristal",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/61e73075df9fa9d6374db6fbd4e07c96c151af35.jpg",
       "seller_name": "Terrace Official",
       "rating": 4.8
     },
@@ -95,8 +95,8 @@
       "price": 75000,
       "deskripsi": "Mangga ungu eksotis varietas kerdil untuk tabulampot.",
       "stock": 41,
-      "image_url": "img_bibit_mangga_irwin_mini",
-      "seller_name": "Toko Hijau Lembang",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/8c709cfecdb080d1544981be502b934c776e0a61.jpg",
+      "seller_name": "Terrace Official",
       "rating": 4.9
     },
     {
@@ -106,8 +106,8 @@
       "price": 35000,
       "deskripsi": "Pepaya pendek yang produktif, manis dan tahan lama.",
       "stock": 40,
-      "image_url": "img_bibit_pepaya_california",
-      "seller_name": "Urban Garden Store",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/f5a0b74e2d96ba26a644e347f21e1968cf752328.jpg",
+      "seller_name": "Terrace Official",
       "rating": 4.5
     },
     {
@@ -117,8 +117,8 @@
       "price": 35000,
       "deskripsi": "Nutrisi cair lengkap untuk merangsang pertumbuhan daun.",
       "stock": 39,
-      "image_url": "img_pupuk_organik_cair_500ml",
-      "seller_name": "Tani Jaya Center",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/e67ae6e26c02846966cac3e7c59b776117680148.jpg",
+      "seller_name": "Terrace Official",
       "rating": 4.6
     },
     {
@@ -128,7 +128,7 @@
       "price": 25000,
       "deskripsi": "Pupuk butiran seimbang untuk pertumbuhan tanaman.",
       "stock": 38,
-      "image_url": "img_pupuk_npk_mutiara_1kg",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/e0e969a0ba420d3ec6c4e67be0878ba831cde8fa.jpg",
       "seller_name": "Terrace Official",
       "rating": 4.7
     },
@@ -139,8 +139,8 @@
       "price": 20000,
       "deskripsi": "Media tanam kaya unsur hara untuk tanah lebih gembur.",
       "stock": 37,
-      "image_url": "img_kompos_organik_super_5kg",
-      "seller_name": "Toko Hijau Lembang",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/28184c13f1283044bcc340664d0990f7f66ab992.jpg",
+      "seller_name": "Terrace Official",
       "rating": 4.8
     },
     {
@@ -150,8 +150,8 @@
       "price": 40000,
       "deskripsi": "Larutan nutrisi khusus tanaman sistem air/hidroponik.",
       "stock": 36,
-      "image_url": "img_nutrisi_ab_mix_1l",
-      "seller_name": "Urban Garden Store",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/99719ab9ae62952be38848f04aed4499511934bb.jpg",
+      "seller_name": "Terrace Official",
       "rating": 4.9
     },
     {
@@ -161,8 +161,8 @@
       "price": 15000,
       "deskripsi": "Pupuk kandang fermentasi, tidak berbau dan siap pakai.",
       "stock": 35,
-      "image_url": "img_pupuk_kohe_kambing_matang",
-      "seller_name": "Tani Jaya Center",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/28184c13f1283044bcc340664d0990f7f66ab992.jpg",
+      "seller_name": "Terrace Official",
       "rating": 4.5
     },
     {
@@ -172,7 +172,7 @@
       "price": 25000,
       "deskripsi": "Pot terakota klasik, menjaga kelembapan akar.",
       "stock": 34,
-      "image_url": "img_pot_tanah_liat_d20",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/ebd68f452a6f4d68385f2ca7de119bc0de414f1b.jpg",
       "seller_name": "Terrace Official",
       "rating": 4.6
     },
@@ -183,8 +183,8 @@
       "price": 15000,
       "deskripsi": "Set pot plastik ekonomis untuk pembibitan.",
       "stock": 33,
-      "image_url": "img_pot_plastik_hitam_set_5",
-      "seller_name": "Toko Hijau Lembang",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/149377cb74a3eaf29e15ec4b98e46de3a4c005ce.jpg",
+      "seller_name": "Terrace Official",
       "rating": 4.7
     },
     {
@@ -194,8 +194,8 @@
       "price": 22000,
       "deskripsi": "Pot gantung elegan untuk tanaman merambat.",
       "stock": 32,
-      "image_url": "img_pot_gantung_putih",
-      "seller_name": "Urban Garden Store",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/233b3e599323db036661ee6677bfb9a8fa2bcc9d.jpg",
+      "seller_name": "Terrace Official",
       "rating": 4.8
     },
     {
@@ -205,8 +205,8 @@
       "price": 65000,
       "deskripsi": "Pot keramik premium untuk estetika interior.",
       "stock": 31,
-      "image_url": "img_pot_keramik_motif",
-      "seller_name": "Tani Jaya Center",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/e9071f8f3274430ef6ef37eaa581ab6ba9e69126.jpg",
+      "seller_name": "Terrace Official",
       "rating": 4.9
     },
     {
@@ -216,7 +216,7 @@
       "price": 30000,
       "deskripsi": "Pot pintar dengan penampungan air, anti lupa siram.",
       "stock": 50,
-      "image_url": "img_self-watering_pot",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/cc0eb17803b7a98dc4207f676c91639f09d6e57b.jpg",
       "seller_name": "Terrace Official",
       "rating": 4.5
     },
@@ -227,8 +227,8 @@
       "price": 15000,
       "deskripsi": "Sekop tangan kuat untuk memindahkan tanaman.",
       "stock": 49,
-      "image_url": "img_sekop_mini_stainless",
-      "seller_name": "Toko Hijau Lembang",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/ba789a8da5d0bda585ad5598ae26454251a93ff3.jpg",
+      "seller_name": "Terrace Official",
       "rating": 4.6
     },
     {
@@ -238,8 +238,8 @@
       "price": 20000,
       "deskripsi": "Alat siram praktis dengan pancuran halus.",
       "stock": 48,
-      "image_url": "img_gembor_air_2l",
-      "seller_name": "Urban Garden Store",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/71953418fd4e70da79b4e854bc57724a8fe04d1b.jpg",
+      "seller_name": "Terrace Official",
       "rating": 4.7
     },
     {
@@ -249,8 +249,8 @@
       "price": 50000,
       "deskripsi": "Gunting tajam untuk pruning dan stek batang.",
       "stock": 47,
-      "image_url": "img_gunting_stek_ranting",
-      "seller_name": "Tani Jaya Center",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/c98019819b7bc4e0d53e8b448e42f12431c2cbce.jpg",
+      "seller_name": "Terrace Official",
       "rating": 4.8
     },
     {
@@ -260,7 +260,7 @@
       "price": 12000,
       "deskripsi": "Melindungi tangan dari kotoran dan duri.",
       "stock": 46,
-      "image_url": "img_sarung_tangan_karet",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/ba789a8da5d0bda585ad5598ae26454251a93ff3.jpg",
       "seller_name": "Terrace Official",
       "rating": 4.9
     },
@@ -271,8 +271,8 @@
       "price": 28000,
       "deskripsi": "Botol semprot untuk pestisida cair atau air.",
       "stock": 45,
-      "image_url": "img_hand_sprayer_1l",
-      "seller_name": "Toko Hijau Lembang",
+      "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/e67ae6e26c02846966cac3e7c59b776117680148.jpg",
+      "seller_name": "Terrace Official",
       "rating": 4.5
     }
   ]

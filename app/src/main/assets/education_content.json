@@ -1,0 +1,114 @@
+{
+  "academy_content": {
+    "artikel": [
+      {
+        "id": "a1",
+        "title": "5 Tanaman yang Cocok di Lahan 1m2",
+        "category": "Manajemen Lahan",
+        "description": "Rangkuman tanaman dengan perakaran dangkal yang paling produktif untuk area terbatas.",
+        "content": "Menanam di lahan sempit memerlukan pemilihan tanaman yang tidak membutuhkan ruang akar luas. Tanaman seperti Sawi, Kangkung, Bayam, Seledri, dan Daun Bawang adalah pilihan terbaik. Gunakan media tanam yang gembur dan pot dengan drainase baik agar air tidak menggenang di akar.",
+        "is_premium": false,
+        "min_points": 0,
+        "duration_or_time": "3 min read",
+        "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/2134ef98499a21d613c45d7afbf99cc8354fb25c.jpg"
+      },
+      {
+        "id": "a2",
+        "title": "Manfaat Lidah Mertua di Dalam Kamar",
+        "category": "Tanaman Hias",
+        "description": "Kenapa kamu butuh tanaman ini? Simak fakta ilmiah kemampuannya menyaring udara.",
+        "content": "Lidah Mertua (Sansevieria) adalah tanaman indoor terbaik untuk pemula. Tanaman ini mampu menyerap polutan berbahaya seperti CO2 dan formaldehyde, terutama di malam hari. Perawatannya sangat minim; cukup siram sekali seminggu dan letakkan di tempat yang terkena cahaya matahari tidak langsung.",
+        "is_premium": false,
+        "min_points": 0,
+        "duration_or_time": "4 min read",
+        "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/ee102ed484f92dfe0d26305bdfe1b388d531e4f1.jpg"
+      },
+      {
+        "id": "a3",
+        "title": "Pentingnya Menjaga pH Tanah",
+        "category": "Dasar Menanam",
+        "description": "Panduan memahami tingkat keasaman tanah agar tanaman tidak mudah layu.",
+        "content": "Kesehatan tanaman sangat bergantung pada pH tanah. Idealnya, tanaman urban farming tumbuh subur pada pH 6 hingga 7. Jika tanah terlalu asam, tambahkan kapur dolomit untuk menyeimbangkannya. Tanah dengan pH yang tepat memastikan nutrisi terserap sempurna oleh akar tanaman.",
+        "is_premium": false,
+        "min_points": 0,
+        "duration_or_time": "5 min read",
+        "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/7189f996e149067e58d63adade27ce037358e6e4.jpg"
+      },
+      {
+        "id": "a4",
+        "title": "Cara Membuat Pupuk Organik Cair DIY",
+        "category": "Pupuk",
+        "description": "Eksklusif: Ubah sampah dapur menjadi 'emas cair' dengan metode fermentasi sederhana.",
+        "content": "Pupuk Organik Cair (POC) bisa dibuat dari sisa kulit buah dan sayuran. Campurkan limbah organik dengan air cucian beras dan sedikit molase dalam wadah tertutup. Diamkan selama 14 hari dan buang gasnya setiap pagi. Hasilnya adalah nutrisi alami gratis yang sangat ampuh untuk tanamanmu.",
+        "is_premium": true,
+        "min_points": 300,
+        "duration_or_time": "7 min read",
+        "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/608bf3f54a5aa61a447bbd896d08ce646fccd4a2.jpg"
+      },
+      {
+        "id": "a5",
+        "title": "Budidaya Monstera Variegata yang Langka",
+        "category": "Tanaman Hias",
+        "description": "Eksklusif: Tips khusus merawat Monstera corak putih agar tetap tumbuh sehat.",
+        "content": "Monstera Variegata membutuhkan cahaya terang namun t. Karena bagian daun putih tidak memiliki klorofil, ia sangat sensitif terhadap sinar matahari langsung yang bisa menyebabkan daun gosong. Gunakan media tanam yang sangat porous seperti campuran perlite dan kulit pinus.",
+        "is_premium": true,
+        "min_points": 1000,
+        "duration_or_time": "10 min read",
+        "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/421f5717a1edb23adcd3f68dc0f788e6a7ba568f.jpg"
+      }
+    ],
+    "video": [
+      {
+        "id": "v1",
+        "title": "Cara Menyemai Benih Tomat untuk Pemula",
+        "category": "Dasar Menanam",
+        "description": "Panduan langkah-demi-langkah mulai dari pemilihan benih hingga muncul tunas.",
+        "content_url": "https://youtube.com/link_video_1",
+        "is_premium": false,
+        "min_points": 0, "duration_or_time": "05:15",
+        "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/0d43cdb0c35f3770a5f0a01a9296f985ac573b65.jpg"
+      },
+      {
+        "id": "v2",
+          "title": "Teknik Pruning Cabai Agar Berbuah Lebat",
+          "category": "Pemeliharaan",
+          "description": "Pelajari cara memotong tunas air yang tepat untuk memfokuskan nutrisi pada buah.",
+          "content_url": "https://youtube.com/link_video_2",
+          "is_premium": false,
+          "min_points": 0,
+ "duration_or_time": "08:30",
+          "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/40ae27c1b03c37661336a274d509760e4db5a23f.jpg"
+      },
+      {
+        "id": "v3",
+        "title": "Membasmi Hama Kutu Putih Secara Alami",
+        "category": "Hama & Penyakit",
+        "description": "Ramuan pestisida nabati sederhana dari bahan dapur untuk tanaman sehat.",
+        "content_url": "https://youtube.com/link_video_3",
+        "is_premium": false,
+        "min_points": 0, "duration_or_time": "06:45",
+        "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/17cccbae4d0f92d87777d5fe3835658e10918d7c.jpg"
+      },
+      {
+        "id": "v4",
+        "title": "Rahasia Nutrisi AB Mix untuk Hidroponik",
+        "category": "Nutrisi",
+        "description": "Eksklusif: Cara meracik nutrisi agar sayuran tumbuh maksimal di lahan sempit.",
+        "content_url": "https://youtube.com/link_video_4",
+        "is_premium": true,
+        "min_points": 500, "duration_or_time": "12:20",
+        "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/a26adb35525bdb90836b1f626d086bc110637d02.jpg"
+      },
+      {
+        "id": "v5",
+        "title": "Membuat Vertical Garden Estetik di Balkon",
+        "category": "Manajemen Lahan",
+        "description": "Eksklusif: Desain rak tanaman vertikal yang hemat ruang dan mewah.",
+        "content_url": "https://youtube.com/link_video_5",
+        "is_premium": true,
+        "min_points": 750, "duration_or_time": "15:10",
+        "image_url": "https://pplx-res.cloudinary.com/image/upload/pplx_search_images/272cbfc3de6c9b5596567e045c812409b59e39ff.jpg"
+      }
+    ]
+  }
+}
