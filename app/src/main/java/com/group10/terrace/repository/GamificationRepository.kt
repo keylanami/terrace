@@ -77,9 +77,9 @@ class GamificationRepository {
             updatedStreak = calculateStreak(user.lastActiveDays, user.currentStreak)
 
             transaction.update(userRef, "totalPoints", updatedTotalPoints)
-            transaction.update(userRef, "currentPoints", newCurrentPoints)
+            transaction.update(userRef, "currentPoint", newCurrentPoints)
             transaction.update(userRef, "currentStreak", updatedStreak)
-            transaction.update(userRef, "lastActiveDate", System.currentTimeMillis())
+            transaction.update(userRef, "lastActiveDays", System.currentTimeMillis())
 
 
             transaction.update(plantRef, "completedTasksToday", FieldValue.arrayUnion(mission.name))

@@ -138,13 +138,10 @@ class MarketplaceRepository {
 
     fun uploadKatalogKeFirestore(context: Context) {
         try {
-            // 1. Baca JSON dari folder assets
             val jsonString = context.assets.open("marketplace.json").bufferedReader().use { it.readText() }
 
-            // 2. Ubah JSON menjadi Objek Kotlin
             val response = Gson().fromJson(jsonString, ProductResponse::class.java)
 
-            // 3. Tembakkan satu per satu ke Firestore
             response.products.forEach { product ->
                 db.collection("products").document(product.id).set(product)
                     .addOnSuccessListener {
