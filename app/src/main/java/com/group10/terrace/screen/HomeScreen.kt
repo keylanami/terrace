@@ -23,6 +23,7 @@ import com.group10.terrace.R
 import com.group10.terrace.model.Plant
 import com.group10.terrace.ui.components.BottomNavBar
 import com.group10.terrace.ui.components.PlantRecommendationCard
+import com.group10.terrace.ui.components.PriorityPlantCard
 import com.group10.terrace.ui.theme.*
 import com.group10.terrace.viewmodel.HomeViewModel
 
@@ -181,26 +182,33 @@ fun HomeScreen(
                 )
                 Spacer(modifier = Modifier.height(16.dp))
 
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .shadow(elevation = 10.dp, shape = RoundedCornerShape(20.dp), spotColor = Neutral900.copy(alpha = 0.05f))
-                        .background(color = Neutral50, shape = RoundedCornerShape(20.dp))
-                        .clickable { onNavigateToAddPlant() }
-                        .padding(vertical = 40.dp),
-                    horizontalArrangement = Arrangement.Center,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(
+                if (activePlants.isNotEmpty()) {
+                    PriorityPlantCard(
+                        userPlant = activePlants.first(),
+                        onClick = { /* TODO: Navigasi ke Detail Tanaman */ }
+                    )
+                } else {
+                    Row(
                         modifier = Modifier
-                            .size(42.dp)
-                            .background(color = Neutral300, shape = RoundedCornerShape(100.dp)),
-                        contentAlignment = Alignment.Center
+                            .fillMaxWidth()
+                            .shadow(elevation = 10.dp, shape = RoundedCornerShape(20.dp), spotColor = Neutral900.copy(alpha = 0.05f))
+                            .background(color = Neutral50, shape = RoundedCornerShape(20.dp))
+                            .clickable { onNavigateToAddPlant() }
+                            .padding(vertical = 40.dp),
+                        horizontalArrangement = Arrangement.Center,
+                        verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Text("+", fontSize = 24.sp, color = Neutral50) // Ganti icon + beneran kalau ada
+                        Box(
+                            modifier = Modifier
+                                .size(42.dp)
+                                .background(color = Neutral300, shape = RoundedCornerShape(100.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Text("+", fontSize = 24.sp, color = Neutral50)
+                        }
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text(text = "Add Plant", style = Typography.labelLarge, color = Neutral400)
                     }
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text(text = "Add Plant", style = Typography.labelLarge, color = Neutral400)
                 }
             }
 

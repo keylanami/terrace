@@ -20,6 +20,7 @@ import com.group10.terrace.R
 import com.group10.terrace.model.UserPlant
 import com.group10.terrace.ui.theme.*
 
+
 @Composable
 fun PriorityPlantCard(
     userPlant: UserPlant,
@@ -27,7 +28,9 @@ fun PriorityPlantCard(
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth()
+            .fillMaxWidth(
+                fraction = (userPlant.progress.coerceIn(0, 100).toFloat() / 100f)
+            )
             .shadow(
                 elevation = 20.dp,
                 shape = RoundedCornerShape(20.dp),
@@ -35,25 +38,23 @@ fun PriorityPlantCard(
             )
             .background(color = Neutral50, shape = RoundedCornerShape(20.dp))
             .clickable { onClick() }
-            .padding(start = 14.dp, top = 15.dp, end = 24.dp, bottom = 15.dp),
+            .padding(start = 14.dp, top = 15.dp, end = 24.dp, bottom = 15.dp), // Sedikit penyesuaian padding end
         horizontalArrangement = Arrangement.spacedBy(17.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-
         Image(
-            painter = painterResource(id = R.drawable.fototanaman),
+            painter = painterResource(id = R.drawable.fototanaman), // TODO: Ganti pakai ImageLoader/Coil nanti
             contentDescription = userPlant.plantName,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .size(width = 106.dp, height = 94.dp)
-                .clip(RoundedCornerShape(12.dp))
+                .clip(RoundedCornerShape(12.dp)) // Beri sedikit radius agar tidak kaku
         )
 
         Column(
             modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(8.dp)
+            verticalArrangement = Arrangement.spacedBy(8.dp) // Jarak antar elemen teks
         ) {
-
             Text(
                 text = userPlant.plantName,
                 style = Typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold, fontSize = 14.sp),
@@ -61,11 +62,11 @@ fun PriorityPlantCard(
                 maxLines = 1
             )
 
-
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
+
                 Box(
                     modifier = Modifier
                         .weight(1f)
