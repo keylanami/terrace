@@ -91,7 +91,7 @@ class AuthRepository {
     fun getLeaderboard(onResult: (List<User>) -> Unit) {
         db.collection("users")
             .orderBy("totalPoints", com.google.firebase.firestore.Query.Direction.DESCENDING)
-            .limit(10) // Ambil Top 10 saja biar efisien
+            .limit(5)
             .addSnapshotListener { snapshot, error ->
                 if (error != null) {
                     onResult(emptyList())

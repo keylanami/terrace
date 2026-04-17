@@ -25,6 +25,11 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val _recommendations = MutableStateFlow<List<Plant>>(emptyList())
     val recommendations: StateFlow<List<Plant>> = _recommendations
 
+
+    private val _masterPlants = MutableStateFlow<List<Plant>>(emptyList())
+    val masterPlants: StateFlow<List<Plant>> = _masterPlants
+
+
     init {
         loadDashboardData()
     }
@@ -36,6 +41,7 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
             _userData.value = user
             user?.let {
                 _recommendations.value = plantRepo.getRecommendedPlants(it.landSize)
+                _masterPlants.value = plantRepo.getMasterPlants()
 
                 plantRepo.getActivePlants(it.uid) { plants ->
                     _activePlants.value = plants
