@@ -113,6 +113,7 @@ fun TerracNavGraph(
 
         composable(Routes.PERSONALIZATION) {
             PersonalizationScreen(
+                marketplaceViewModel = marketplaceViewModel,
                 onFinishPersonalization = { landSize, location, experience ->
                     val uid = userData?.uid ?: return@PersonalizationScreen
                     authViewModel.updatePersonalizationData(uid, landSize, location, experience) { success ->
