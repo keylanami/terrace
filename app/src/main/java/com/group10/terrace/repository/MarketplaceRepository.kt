@@ -45,7 +45,6 @@ class MarketplaceRepository {
             .addOnFailureListener { onResult(false) }
     }
 
-
     fun removeFromCart(userId: String, cartItemId: String, onResult: (Boolean) -> Unit) {
         db.collection("users").document(userId).collection("cart").document(cartItemId)
             .delete()
@@ -80,16 +79,16 @@ class MarketplaceRepository {
 
             val batch = db.batch()
 
-
             val userSnapshot = userRef.get().await()
-            val user = userSnapshot.toObject(User::class.java) ?: throw Exception("User tidak ditemukan")
+            val user = userSnapshot.toObject(User::class.java)
+                ?: throw Exception("User tidak ditemukan")
 
             if (user.currentPoint < totalPrice) {
                 throw Exception("Saldo poin tidak mencukupi! Poin: ${user.currentPoint}, Tagihan: $totalPrice")
             }
 
             val newPoints = user.currentPoint - totalPrice.toInt()
-            batch.update(userRef, "currentPoints", newPoints)
+            batch.update(userRef, "currentPoint", newPoints) // 🔴 FIX: "currentPoint" (bukan "currentPoints")
 
             cartItems.forEach { item ->
                 val productRef = db.collection("products").document(item.productId)
@@ -135,26 +134,17 @@ class MarketplaceRepository {
             }
     }
 
-
     fun uploadKatalogKeFirestore(context: Context) {
         try {
             val jsonString = context.assets.open("marketplace.json").bufferedReader().use { it.readText() }
-
             val response = Gson().fromJson(jsonString, ProductResponse::class.java)
-
             response.products.forEach { product ->
                 db.collection("products").document(product.id).set(product)
-                    .addOnSuccessListener {
-                        Log.d("TERRACE_SEEDER", "Berhasil upload: ${product.name}")
-                    }
-                    .addOnFailureListener { e ->
-                        Log.e("TERRACE_SEEDER", "Gagal upload ${product.name}: ${e.message}")
-                    }
+                    .addOnSuccessListener { Log.d("TERRACE_SEEDER", "Upload: ${product.name}") }
+                    .addOnFailureListener { e -> Log.e("TERRACE_SEEDER", "Gagal: ${e.message}") }
             }
         } catch (e: Exception) {
-            Log.e("TERRACE_SEEDER", "Error baca JSON: ${e.message}")
+            Log.e("TERRACE_SEEDER", "Error: ${e.message}")
         }
     }
-
-
 }
