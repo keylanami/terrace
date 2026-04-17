@@ -3,6 +3,7 @@ package com.group10.terrace.viewmodel
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.group10.terrace.model.CartItem
+import com.group10.terrace.model.Order
 import com.group10.terrace.model.Product
 import com.group10.terrace.repository.MarketplaceRepository
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -21,6 +22,10 @@ class MarketplaceViewModel : ViewModel() {
 
     private val _checkoutState = MutableStateFlow<CheckoutState>(CheckoutState.Idle)
     val checkoutState: StateFlow<CheckoutState> = _checkoutState
+
+    // ── TAMBAHAN: Order History ───────────────────────────────────────────
+    private val _orderHistory = MutableStateFlow<List<Order>>(emptyList())
+    val orderHistory: StateFlow<List<Order>> = _orderHistory
 
     val totalCartPrice: Double
         get() = _cartItems.value.sumOf { it.price * it.quantity }
@@ -41,9 +46,15 @@ class MarketplaceViewModel : ViewModel() {
         }
     }
 
-    fun addToCart(userId: String, product: Product, quantity: Int) {
-        repository.addOrUpdateCart(userId, product, quantity) { success ->
+    // ── TAMBAHAN ─────────────────────────────────────────────────────────
+    fun loadOrderHistory(userId: String) {
+        repository.getOrderHistory(userId) { orders ->
+            _orderHistory.value = orders
         }
+    }
+
+    fun addToCart(userId: String, product: Product, quantity: Int) {
+        repository.addOrUpdateCart(userId, product, quantity) { }
     }
 
     fun removeFromCart(userId: String, cartItemId: String) {
