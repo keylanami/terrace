@@ -21,17 +21,11 @@ fun BottomNavBar(
     modifier: Modifier = Modifier
 ) {
     Row(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .height(79.dp)
-            .shadow(
-                elevation = 20.dp,
-                shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
-            )
-            .background(
-                color = Neutral50,
-                shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
-            )
+            .shadow(elevation = 20.dp, shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
+            .background(color = Neutral50, shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
             .padding(horizontal = 32.dp, vertical = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically

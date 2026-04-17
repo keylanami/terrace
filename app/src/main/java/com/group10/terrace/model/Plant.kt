@@ -1,7 +1,5 @@
 package com.group10.terrace.model
 
-import android.R
-
 data class Plant(
     val id: String = "",
     val name: String = "",
