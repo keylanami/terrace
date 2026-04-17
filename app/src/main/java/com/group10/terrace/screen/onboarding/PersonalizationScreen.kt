@@ -2,11 +2,12 @@ package com.group10.terrace.screen.onboarding
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.*
-
+import com.group10.terrace.viewmodel.MarketplaceViewModel
 
 @Composable
 fun PersonalizationScreen(
-    onFinishPersonalization: (landSize: Double, location: String, experience: String) -> Unit
+    onFinishPersonalization: (landSize: Double, location: String, experience: String) -> Unit,
+    marketplaceViewModel: MarketplaceViewModel  // tambah parameter ini
 ) {
     var currentStep by remember { mutableIntStateOf(0) }
 
@@ -16,7 +17,10 @@ fun PersonalizationScreen(
 
     Crossfade(targetState = currentStep, label = "Personalization Step") { step ->
         when (step) {
-            0 -> IntroScreen(onNext = { currentStep = 1 })
+            0 -> IntroScreen(
+                onNext = { currentStep = 1 },
+                marketplaceViewModel = marketplaceViewModel  // pass ke IntroScreen
+            )
             1 -> StepOneScreen(
                 landSize = landSize,
                 onLandSizeChange = { landSize = it },

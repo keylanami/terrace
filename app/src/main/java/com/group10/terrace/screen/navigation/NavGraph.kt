@@ -3,7 +3,6 @@ package com.group10.terrace.screen.navigation
 import androidx.compose.runtime.*
 import androidx.navigation.*
 import androidx.navigation.compose.*
-import kotlinx.serialization.Serializable
 import com.group10.terrace.screen.HomeScreen
 import com.group10.terrace.screen.SplashScreen
 import com.group10.terrace.screen.auth.LoginScreen
@@ -26,26 +25,31 @@ import com.group10.terrace.ui.screen.addplant.PlantDetailScreen
 import com.group10.terrace.ui.screen.catalog.CatalogScreen
 import com.group10.terrace.viewmodel.*
 
-@Serializable object Splash
-@Serializable object Login
-@Serializable object SignUp
-@Serializable object Personalization
-@Serializable object Home
-@Serializable object PlantProgress
-@Serializable object Catalog
-@Serializable object Marketplace
-@Serializable object Cart
-@Serializable object Checkout
-@Serializable object PilihAlamat
-@Serializable object Academy
-@Serializable object VideoDetail
-@Serializable object ArticleDetail
-@Serializable object Profile
-@Serializable object Settings
-@Serializable object Pesanan
-@Serializable object AlamatPenerima
-@Serializable data class PlantDetail(val userPlantId: String)
-@Serializable data class ProductDetail(val productId: String)
+object Routes {
+    const val SPLASH             = "splash"
+    const val LOGIN              = "login"
+    const val SIGNUP             = "signup"
+    const val PERSONALIZATION    = "personalization"
+    const val HOME               = "home"
+    const val PLANT_PROGRESS     = "plant_progress"
+    const val PLANT_DETAIL       = "plant_detail/{userPlantId}"
+    const val CATALOG            = "catalog"
+    const val MARKETPLACE        = "marketplace"
+    const val PRODUCT_DETAIL     = "product_detail/{productId}"
+    const val CART               = "cart"
+    const val CHECKOUT           = "checkout"
+    const val PILIH_ALAMAT       = "pilih_alamat"
+    const val ACADEMY            = "academy"
+    const val VIDEO_DETAIL       = "video_detail"
+    const val ARTICLE_DETAIL     = "article_detail"
+    const val PROFILE            = "profile"
+    const val SETTINGS           = "settings"
+    const val PESANAN            = "pesanan"
+    const val ALAMAT_PENERIMA    = "alamat_penerima"
+
+    fun plantDetail(userPlantId: String) = "plant_detail/$userPlantId"
+    fun productDetail(productId: String) = "product_detail/$productId"
+}
 
 @Composable
 fun TerracNavGraph(
@@ -59,107 +63,119 @@ fun TerracNavGraph(
     val userData by authViewModel.userData.collectAsState()
 
     fun NavOptionsBuilder.bottomNav() {
-        popUpTo<Home> { saveState = true }
+        popUpTo(Routes.HOME) { saveState = true }
         launchSingleTop = true
         restoreState = true
     }
 
-    // Helper: map string route dari BottomNavBar ke typed route
     fun navigateBottomNav(route: String) {
         when (route) {
-            "home"    -> navController.navigate(Home) { bottomNav() }
-            "plant"   -> navController.navigate(PlantProgress) { bottomNav() }
-            "market"  -> navController.navigate(Marketplace) { bottomNav() }
-            "academy" -> navController.navigate(Academy) { bottomNav() }
-            "profile" -> navController.navigate(Profile) { bottomNav() }
+            "home"    -> navController.navigate(Routes.HOME) { bottomNav() }
+            "plant"   -> navController.navigate(Routes.PLANT_PROGRESS) { bottomNav() }
+            "market"  -> navController.navigate(Routes.MARKETPLACE) { bottomNav() }
+            "academy" -> navController.navigate(Routes.ACADEMY) { bottomNav() }
+            "profile" -> navController.navigate(Routes.PROFILE) { bottomNav() }
         }
     }
 
-    NavHost(navController = navController, startDestination = Splash) {
+    NavHost(navController = navController, startDestination = Routes.SPLASH) {
 
-        composable<Splash> {
+        composable(Routes.SPLASH) {
             SplashScreen(
-                onNavigateToLogin = { navController.navigate(Login) { popUpTo<Splash> { inclusive = true } } },
-                onNavigateToHome = { navController.navigate(Home) { popUpTo<Splash> { inclusive = true } } }
+                onNavigateToLogin = {
+                    navController.navigate(Routes.LOGIN) { popUpTo(Routes.SPLASH) { inclusive = true } }
+                },
+                onNavigateToHome = {
+                    navController.navigate(Routes.HOME) { popUpTo(Routes.SPLASH) { inclusive = true } }
+                }
             )
         }
 
-        composable<Login> {
+        composable(Routes.LOGIN) {
             LoginScreen(
                 viewModel = authViewModel,
-                onNavigateToSignUp = { navController.navigate(SignUp) },
-                onLoginSuccess = { navController.navigate(Home) { popUpTo<Login> { inclusive = true } } }
+                onNavigateToSignUp = { navController.navigate(Routes.SIGNUP) },
+                onLoginSuccess = {
+                    navController.navigate(Routes.HOME) { popUpTo(Routes.LOGIN) { inclusive = true } }
+                }
             )
         }
 
-        composable<SignUp> {
+        composable(Routes.SIGNUP) {
             SignUpScreen(
                 viewModel = authViewModel,
                 onNavigateToLogin = { navController.popBackStack() },
-                onSignUpSuccess = { navController.navigate(Personalization) { popUpTo<SignUp> { inclusive = true } } }
+                onSignUpSuccess = {
+                    navController.navigate(Routes.PERSONALIZATION) { popUpTo(Routes.SIGNUP) { inclusive = true } }
+                }
             )
         }
 
-        composable<Personalization> {
+        composable(Routes.PERSONALIZATION) {
             PersonalizationScreen(
                 onFinishPersonalization = { landSize, location, experience ->
                     val uid = userData?.uid ?: return@PersonalizationScreen
                     authViewModel.updatePersonalizationData(uid, landSize, location, experience) { success ->
                         if (success) {
                             homeViewModel.loadDashboardData()
-                            navController.navigate(Home) { popUpTo<Personalization> { inclusive = true } }
+                            navController.navigate(Routes.HOME) {
+                                popUpTo(Routes.PERSONALIZATION) { inclusive = true }
+                            }
                         }
                     }
                 }
             )
         }
 
-        composable<Home> {
+        composable(Routes.HOME) {
             HomeScreen(
                 viewModel = homeViewModel,
-                onNavigateToAddPlant = { navController.navigate(Catalog) },
-                // FIX: wire kedua parameter baru
-                onNavigateToPlantDetail = { userPlantId -> navController.navigate(PlantDetail(userPlantId)) },
-                onNavigateToProfile = { navController.navigate(Profile) },
+                onNavigateToAddPlant = { navController.navigate(Routes.CATALOG) },
+                onNavigateToPlantDetail = { userPlantId -> navController.navigate(Routes.plantDetail(userPlantId)) },
+                onNavigateToProfile = { navController.navigate(Routes.PROFILE) },
                 onNavigateToNav = { route -> navigateBottomNav(route) }
             )
         }
 
-        composable<PlantProgress> {
+        composable(Routes.PLANT_PROGRESS) {
             PlantProgressScreen(
                 viewModel = homeViewModel,
                 onNavigate = { route -> navigateBottomNav(route) },
-                onPlantClick = { userPlantId -> navController.navigate(PlantDetail(userPlantId)) },
-                onAddPlant = { navController.navigate(Catalog) }
+                onPlantClick = { userPlantId -> navController.navigate(Routes.plantDetail(userPlantId)) },
+                onAddPlant = { navController.navigate(Routes.CATALOG) }
             )
         }
 
-        composable<PlantDetail> { backStack ->
-            val route = backStack.toRoute<PlantDetail>()
-            // FIX: pass missionViewModel
+        composable(
+            route = Routes.PLANT_DETAIL,
+            arguments = listOf(navArgument("userPlantId") { type = NavType.StringType })
+        ) { backStack ->
+            val userPlantId = backStack.arguments?.getString("userPlantId") ?: return@composable
             PlantDetailScreen(
                 viewModel = homeViewModel,
                 missionViewModel = missionViewModel,
-                userPlantId = route.userPlantId,
+                userPlantId = userPlantId,
                 onBack = { navController.popBackStack() }
             )
         }
 
-        composable<Catalog> {
+        composable(Routes.CATALOG) {
             CatalogScreen(
                 viewModel = homeViewModel,
                 onNavigateToDetail = { plantId ->
                     val plant = homeViewModel.masterPlants.value.find { it.id == plantId }
                     if (plant != null) {
                         homeViewModel.addNewPlant(plant)
-                        navController.navigate(PlantProgress) { popUpTo<Catalog> { inclusive = true } }
+                        navController.navigate(Routes.PLANT_PROGRESS) {
+                            popUpTo(Routes.CATALOG) { inclusive = true }
+                        }
                     }
                 },
                 onNavigateToNav = { route -> navigateBottomNav(route) }
             )
         }
 
-        composable<Marketplace> {
+        composable(Routes.MARKETPLACE) {
             val userId = userData?.uid ?: ""
             LaunchedEffect(userId) {
                 if (userId.isNotBlank()) {
@@ -170,23 +186,26 @@ fun TerracNavGraph(
             MarketplaceScreen(
                 marketplaceViewModel = marketplaceViewModel,
                 authViewModel = authViewModel,
-                onNavigateToDetail = { productId -> navController.navigate(ProductDetail(productId)) },
-                onNavigateToCart = { navController.navigate(Cart) },
+                onNavigateToDetail = { productId -> navController.navigate(Routes.productDetail(productId)) },
+                onNavigateToCart = { navController.navigate(Routes.CART) },
                 onNavigateToNav = { route -> navigateBottomNav(route) }
             )
         }
 
-        composable<ProductDetail> { backStack ->
-            val route = backStack.toRoute<ProductDetail>()
+        composable(
+            route = Routes.PRODUCT_DETAIL,
+            arguments = listOf(navArgument("productId") { type = NavType.StringType })
+        ) { backStack ->
+            val productId = backStack.arguments?.getString("productId") ?: return@composable
             ProductDetailScreen(
                 viewModel = marketplaceViewModel,
-                productId = route.productId,
+                productId = productId,
                 userId = userData?.uid ?: "",
                 onBack = { navController.popBackStack() }
             )
         }
 
-        composable<Cart> {
+        composable(Routes.CART) {
             val userId = userData?.uid ?: ""
             CartScreen(
                 viewModel = marketplaceViewModel,
@@ -195,12 +214,12 @@ fun TerracNavGraph(
                 onNavigateToCheckout = {
                     marketplaceViewModel.loadUserAddresses(userId)
                     marketplaceViewModel.loadUserPoints(userId)
-                    navController.navigate(Checkout)
+                    navController.navigate(Routes.CHECKOUT)
                 }
             )
         }
 
-        composable<Checkout> {
+        composable(Routes.CHECKOUT) {
             val userId = userData?.uid ?: ""
             LaunchedEffect(userId) {
                 if (userId.isNotBlank()) {
@@ -213,12 +232,14 @@ fun TerracNavGraph(
                 userId = userId,
                 onBack = { navController.popBackStack() },
                 onNavigate = { route -> navigateBottomNav(route) },
-                onPilihAlamat = { navController.navigate(PilihAlamat) },
-                onCheckoutSuccess = { navController.navigate(Home) { popUpTo<Checkout> { inclusive = true } } }
+                onPilihAlamat = { navController.navigate(Routes.PILIH_ALAMAT) },
+                onCheckoutSuccess = {
+                    navController.navigate(Routes.HOME) { popUpTo(Routes.CHECKOUT) { inclusive = true } }
+                }
             )
         }
 
-        composable<PilihAlamat> {
+        composable(Routes.PILIH_ALAMAT) {
             val userId = userData?.uid ?: ""
             PilihAlamatScreen(
                 viewModel = marketplaceViewModel,
@@ -228,18 +249,18 @@ fun TerracNavGraph(
             )
         }
 
-        composable<Academy> {
+        composable(Routes.ACADEMY) {
             EducationScreen(
                 viewModel = academyViewModel,
                 onItemClick = { item, type ->
                     academyViewModel.setSelectedItem(item, type)
-                    if (type == "Video") navController.navigate(VideoDetail)
-                    else navController.navigate(ArticleDetail)
+                    if (type == "Video") navController.navigate(Routes.VIDEO_DETAIL)
+                    else navController.navigate(Routes.ARTICLE_DETAIL)
                 }
             )
         }
 
-        composable<VideoDetail> {
+        composable(Routes.VIDEO_DETAIL) {
             val selectedVideo by academyViewModel.selectedVideo.collectAsState()
             selectedVideo?.let { video ->
                 VideoDetailScreen(
@@ -248,43 +269,46 @@ fun TerracNavGraph(
                     onBack = { navController.popBackStack() },
                     onRecommendationClick = { item, type ->
                         academyViewModel.setSelectedItem(item, type)
-                        if (type == "Video") navController.navigate(VideoDetail) { launchSingleTop = true }
-                        else navController.navigate(ArticleDetail)
+                        if (type == "Video") navController.navigate(Routes.VIDEO_DETAIL) { launchSingleTop = true }
+                        else navController.navigate(Routes.ARTICLE_DETAIL)
                     }
                 )
             }
         }
 
-        composable<ArticleDetail> {
+        composable(Routes.ARTICLE_DETAIL) {
             val selectedArticle by academyViewModel.selectedArticle.collectAsState()
             selectedArticle?.let { article ->
-                ArticleDetailScreen(article = article, onBack = { navController.popBackStack() })
+                ArticleDetailScreen(
+                    article = article,
+                    onBack = { navController.popBackStack() }
+                )
             }
         }
 
-        composable<Profile> {
+        composable(Routes.PROFILE) {
             ProfileScreen(
                 viewModel = homeViewModel,
                 onNavigate = { route -> navigateBottomNav(route) },
-                onSettingsClick = { navController.navigate(Settings) }
+                onSettingsClick = { navController.navigate(Routes.SETTINGS) }
             )
         }
 
-        composable<Settings> {
+        composable(Routes.SETTINGS) {
             SettingsScreen(
                 viewModel = homeViewModel,
                 onBack = { navController.popBackStack() },
-                onEditProfile = { /* TODO */ },
-                onPesananSaya = { navController.navigate(Pesanan) },
-                onAlamatPenerima = { navController.navigate(AlamatPenerima) },
+                onEditProfile = { },
+                onPesananSaya = { navController.navigate(Routes.PESANAN) },
+                onAlamatPenerima = { navController.navigate(Routes.ALAMAT_PENERIMA) },
                 onLogoutConfirmed = {
                     authViewModel.logout()
-                    navController.navigate(Login) { popUpTo(0) { inclusive = true } }
+                    navController.navigate(Routes.LOGIN) { popUpTo(0) { inclusive = true } }
                 }
             )
         }
 
-        composable<Pesanan> {
+        composable(Routes.PESANAN) {
             PesananScreen(
                 viewModel = marketplaceViewModel,
                 userId = userData?.uid ?: "",
@@ -292,7 +316,7 @@ fun TerracNavGraph(
             )
         }
 
-        composable<AlamatPenerima> {
+        composable(Routes.ALAMAT_PENERIMA) {
             AlamatPenerimaScreen(
                 viewModel = marketplaceViewModel,
                 homeViewModel = homeViewModel,
