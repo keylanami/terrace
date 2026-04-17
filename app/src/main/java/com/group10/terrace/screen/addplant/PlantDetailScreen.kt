@@ -1,10 +1,10 @@
-package com.group10.terrace.ui.screen.plant
+package com.group10.terrace.ui.screen.addplant
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -21,6 +21,7 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.group10.terrace.R
 import com.group10.terrace.model.TaskItem
 import com.group10.terrace.ui.components.DifficultyBadge
@@ -28,17 +29,14 @@ import com.group10.terrace.ui.components.calculateDaysPassed
 import com.group10.terrace.ui.theme.*
 import com.group10.terrace.viewmodel.HomeViewModel
 
-
 @Composable
 fun PlantDetailScreen(
     viewModel: HomeViewModel,
     userPlantId: String,
-    onBack: () -> Unit,
-    onNavigateToAddPlant: () -> Unit
+    onBack: () -> Unit
 ) {
     val activePlants by viewModel.activePlants.collectAsState()
     val masterPlants by viewModel.masterPlants.collectAsState()
-    val user by viewModel.userData.collectAsState()
 
     val userPlant = activePlants.find { it.userPlantId == userPlantId }
     val masterPlant = masterPlants.find { it.id == userPlant?.plantId }
@@ -52,8 +50,6 @@ fun PlantDetailScreen(
 
     val currentDay = calculateDaysPassed(userPlant.startDate).toInt()
     val maxDays = extractMaxDays(masterPlant.harvest_duration)
-    val progressFraction = (currentDay.toFloat() / maxDays.toFloat()).coerceIn(0f, 1f)
-    val progressPercentage = (progressFraction * 100).toInt()
 
     Column(
         modifier = Modifier
@@ -81,18 +77,28 @@ fun PlantDetailScreen(
             Spacer(modifier = Modifier.size(24.dp))
         }
 
-        Image(
-            painter = painterResource(id = R.drawable.fototanaman),
-            contentDescription = "Foto Tanaman",
+        AsyncImage(
+            model = masterPlant.imageUrl.ifBlank { null },
+            contentDescription = masterPlant.name,
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxWidth().height(198.dp)
+            modifier = Modifier.fillMaxWidth().height(198.dp),
+            error = painterResource(id = R.drawable.fototanaman),
+            placeholder = painterResource(id = R.drawable.fototanaman)
         )
 
         Column(modifier = Modifier.padding(24.dp)) {
-
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                Box(modifier = Modifier.background(Green700, RoundedCornerShape(10.dp)).padding(horizontal = 10.dp, vertical = 4.dp)) {
-                    Text(masterPlant.type.ifEmpty { "Sayuran" }, style = Typography.labelMedium.copy(fontSize = 10.sp), color = Neutral50)
+            Row(
+                horizontalArrangement = Arrangement.spacedBy(8.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Box(
+                    modifier = Modifier
+                        .background(Green700, RoundedCornerShape(10.dp))
+                        .padding(horizontal = 10.dp, vertical = 4.dp)
+                ) {
+                    // FIX: category (bukan type — type tidak ada di plants.json)
+                    Text(masterPlant.category.ifEmpty { "Sayuran & Buah" },
+                        style = Typography.labelMedium.copy(fontSize = 10.sp), color = Neutral50)
                 }
                 DifficultyBadge(difficulty = masterPlant.difficulty)
             }
@@ -106,30 +112,11 @@ fun PlantDetailScreen(
                     }
                     Spacer(modifier = Modifier.width(8.dp))
                 }
-
-                Text(userPlant.plantName, style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp), color = Neutral900, modifier = Modifier.weight(1f))
-                Icon(painter = painterResource(id = android.R.drawable.ic_menu_edit), contentDescription = "Edit", modifier = Modifier.size(20.dp), tint = Neutral400)
-            }
-
-            Spacer(modifier = Modifier.height(24.dp))
-
-
-
-
-            Column(
-                modifier = Modifier.fillMaxWidth().shadow(elevation = 15.dp, shape = RoundedCornerShape(20.dp), spotColor = Neutral900.copy(alpha = 0.1f)).background(Neutral50, RoundedCornerShape(20.dp)).padding(horizontal = 17.dp, vertical = 30.dp)
-            ) {
-                Text("Progress", style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp), color = Yellow800)
-                Spacer(modifier = Modifier.height(16.dp))
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Box(modifier = Modifier.weight(1f).height(19.dp).background(Neutral300, RoundedCornerShape(20.dp))) {
-                        Box(modifier = Modifier.fillMaxWidth(fraction = progressFraction).height(19.dp).background(Yellow300, RoundedCornerShape(20.dp)))
-                    }
-                    Spacer(modifier = Modifier.width(12.dp))
-                    Text("$progressPercentage%", style = Typography.labelMedium.copy(fontWeight = FontWeight.Medium, fontSize = 10.sp), color = Neutral900)
-                }
-                Spacer(modifier = Modifier.height(8.dp))
-                Text("$currentDay/$maxDays Hari Tumbuh", style = Typography.labelMedium.copy(fontWeight = FontWeight.SemiBold, fontSize = 10.sp), color = Yellow800)
+                Text(userPlant.plantName,
+                    style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp),
+                    color = Neutral900, modifier = Modifier.weight(1f))
+                Icon(painter = painterResource(id = android.R.drawable.ic_menu_edit),
+                    contentDescription = "Edit", modifier = Modifier.size(20.dp), tint = Neutral400)
             }
 
             Spacer(modifier = Modifier.height(24.dp))
@@ -137,90 +124,73 @@ fun PlantDetailScreen(
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(maxDays) { index ->
                     val dayNum = index + 1
-                    val (bgColor, textColor) = when {
-                        dayNum < currentDay -> Green600 to Neutral50
-                        dayNum == currentDay -> Yellow400 to Neutral900
-                        else -> Neutral200 to Neutral600
-                    }
-                    Box(modifier = Modifier.background(color = bgColor, shape = RoundedCornerShape(20.dp)).padding(horizontal = 16.dp, vertical = 10.dp)) {
-                        Text("Hari $dayNum", style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold, fontSize = 12.sp), color = textColor)
+                    val isActive = dayNum <= currentDay
+                    Box(
+                        modifier = Modifier
+                            .background(if (isActive) Green600 else Green100, RoundedCornerShape(20.dp))
+                            .padding(horizontal = 12.dp, vertical = 8.dp)
+                    ) {
+                        Text("Hari $dayNum",
+                            style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                            color = if (isActive) Neutral50 else Green700)
                     }
                 }
             }
 
             Spacer(modifier = Modifier.height(32.dp))
 
-
-
-            Box(
-                modifier = Modifier.fillMaxWidth().shadow(elevation = 15.dp, shape = RoundedCornerShape(20.dp), spotColor = Neutral900.copy(alpha = 0.1f)).background(Neutral50, RoundedCornerShape(20.dp))
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .shadow(elevation = 15.dp, shape = RoundedCornerShape(20.dp), spotColor = Neutral900.copy(alpha = 0.1f))
+                    .background(Neutral50, RoundedCornerShape(20.dp))
+                    .padding(24.dp)
             ) {
-                Column(modifier = Modifier.padding(start = 17.dp, top = 31.dp, end = 16.dp, bottom = 40.dp)) {
-                    Row(
-                        modifier = Modifier.fillMaxWidth(),
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Text("Daily Tasks", style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp))
-                            Spacer(modifier = Modifier.width(8.dp))
-                            Icon(painter = painterResource(id = android.R.drawable.ic_menu_edit), contentDescription = "Pin", tint = Neutral900)
-                        }
-                        Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(painter = painterResource(id = R.drawable.lit_fire), contentDescription = "Streak", modifier = Modifier.size(24.dp), tint = Yellow500)
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text("${user?.currentStreak ?: 0}", style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp), color = Yellow500)
-                        }
-                    }
-
-                    Spacer(modifier = Modifier.height(16.dp))
-
-                    val todaysRecurringTasks: List<TaskItem> = masterPlant.tasks_logic?.recurringTask?.filter { currentDay % it.frequency_days == 0 } ?: emptyList()
-                    val todaysMilestones: List<TaskItem> = masterPlant.tasks_logic?.milestoneTask?.filter { it.day == currentDay } ?: emptyList()
-                    val allTodaysTasks = todaysRecurringTasks + todaysMilestones
-
-                    if (allTodaysTasks.isEmpty()) {
-                        Text("Tidak ada tugas untuk hari ini. Bersantailah!", style = Typography.bodyMedium, color = Neutral400)
-                    } else {
-                        allTodaysTasks.forEach { task ->
-                            var isChecked by remember { mutableStateOf(false) }
-
-                            Row(
-                                modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).clickable { isChecked = !isChecked },
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
-                                Icon(
-                                    painter = painterResource(id = if (isChecked) android.R.drawable.checkbox_on_background else android.R.drawable.checkbox_off_background),
-                                    contentDescription = null,
-                                    tint = if (isChecked) Green600 else Neutral400,
-                                    modifier = Modifier.size(24.dp)
-                                )
-                                Spacer(modifier = Modifier.width(12.dp))
-                                Text(
-                                    task.task_name,
-                                    style = Typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
-                                    color = if (isChecked) Neutral400 else Neutral900
-                                )
-                            }
-                        }
-                    }
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    Text("Daily Tasks", style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Icon(painter = painterResource(R.drawable.pin), contentDescription = "Pin")
                 }
 
+                Spacer(modifier = Modifier.height(16.dp))
 
+                val todaysRecurring: List<TaskItem> = masterPlant.tasks_logic
+                    ?.recurringTask?.filter { currentDay % it.frequency_days == 0 } ?: emptyList()
+                val todaysMilestones: List<TaskItem> = masterPlant.tasks_logic
+                    ?.milestoneTask?.filter { it.day == currentDay } ?: emptyList()
+                val allTodaysTasks: List<TaskItem> = todaysRecurring + todaysMilestones
 
-                Box(
-                    modifier = Modifier
-                        .align(Alignment.BottomEnd)
-                        .padding(bottom = 20.dp, end = 20.dp)
-                        .size(62.dp)
-                        .background(color = Green600, shape = RoundedCornerShape(100.dp))
-                        .clickable { onNavigateToAddPlant() },
-                    contentAlignment = Alignment.Center
-                ) {
-                    Icon(painter = painterResource(id = android.R.drawable.ic_input_add), contentDescription = "Add", tint = Neutral50, modifier = Modifier.size(32.dp))
+                if (allTodaysTasks.isEmpty()) {
+                    Text("Tidak ada tugas untuk hari ini. Bersantailah!", style = Typography.bodyMedium, color = Neutral400)
+                } else {
+                    allTodaysTasks.forEach { task ->
+                        var isChecked by remember { mutableStateOf(false) }
+                        Row(
+                            modifier = Modifier.fillMaxWidth().padding(vertical = 8.dp).clickable { isChecked = !isChecked },
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            Icon(
+                                painter = painterResource(id = R.drawable.checklist),
+                                contentDescription = null,
+                                tint = if (isChecked) Green600 else Neutral400,
+                                modifier = Modifier.size(24.dp)
+                            )
+                            Spacer(modifier = Modifier.width(12.dp))
+                            Text(task.task_name,
+                                style = Typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+                                color = if (isChecked) Neutral400 else Neutral900)
+                        }
+                    }
                 }
             }
         }
-        Spacer(modifier = Modifier.height(100.dp))
     }
+}
+
+fun extractMaxDays(harvestDuration: String): Int {
+    return try {
+        val numbers = harvestDuration.replace("+", "").split("-", " ")
+            .mapNotNull { it.trim().toIntOrNull() }
+        numbers.maxOrNull() ?: 30
+    } catch (e: Exception) { 30 }
 }

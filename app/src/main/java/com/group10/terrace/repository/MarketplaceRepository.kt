@@ -88,7 +88,7 @@ class MarketplaceRepository {
             }
 
             val newPoints = user.currentPoint - totalPrice.toInt()
-            batch.update(userRef, "currentPoint", newPoints) // 🔴 FIX: "currentPoint" (bukan "currentPoints")
+            batch.update(userRef, "currentPoint", newPoints)
 
             cartItems.forEach { item ->
                 val productRef = db.collection("products").document(item.productId)
