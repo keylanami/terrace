@@ -1,27 +1,41 @@
 package com.group10.terrace.viewmodel
 
-import androidx.lifecycle.ViewModel
-import com.group10.terrace.model.EducationContent
+import android.app.Application
+import androidx.lifecycle.AndroidViewModel
+import com.group10.terrace.model.EducationItem
+import com.group10.terrace.model.User
+import com.group10.terrace.repository.AcademyRepository
+import com.group10.terrace.repository.AuthRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 
-class AcademyViewmodel: ViewModel(){
+class AcademyViewModel(application: Application) : AndroidViewModel(application) {
 
-    private val _contents = MutableStateFlow<List<EducationContent>>(emptyList())
+    private val academyRepo = AcademyRepository(application.applicationContext)
+    private val authRepo = AuthRepository()
 
-    val contents: StateFlow<List<EducationContent>> = _contents
+    private val _articles = MutableStateFlow<List<EducationItem>>(emptyList())
+    val articles: StateFlow<List<EducationItem>> = _articles
+
+    private val _videos = MutableStateFlow<List<EducationItem>>(emptyList())
+    val videos: StateFlow<List<EducationItem>> = _videos
+
+    private val _currentUser = MutableStateFlow<User?>(null)
+    val currentUser: StateFlow<User?> = _currentUser
 
     init {
-        _contents.value = listOf(
-            EducationContent("E01", "Cara Menyemai Benih Tomat", "Video", false),
-            EducationContent("E02", "5 Tanaman Cocok di 1m2", "Article", false),
-            EducationContent("E03", "Rahasia Pupuk Organik Cair", "Video", true, 500),
-            EducationContent("E04", "Merawat Monstera Variegata", "Article", true, 1000)
-        )
+        loadAcademyData()
     }
 
-    fun isContentUnlocked(userTotalPoints: Int, content: EducationContent): Boolean {
-        if (!content.isPremium) return true
-        return userTotalPoints >= content.requiredPoints
+    private fun loadAcademyData() {
+        authRepo.getCurrentUser { user ->
+            _currentUser.value = user
+        }
+
+        val response = academyRepo.getAcademyData()
+        if (response != null && response.academyContent != null) {
+            _articles.value = response.academyContent.articles
+            _videos.value = response.academyContent.videos
+        }
     }
 }
