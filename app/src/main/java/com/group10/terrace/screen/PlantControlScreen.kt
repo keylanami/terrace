@@ -1,6 +1,5 @@
 package com.group10.terrace.ui.screen.plant
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -19,7 +18,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.group10.terrace.R
 import com.group10.terrace.ui.components.ActivePlantCard
 import com.group10.terrace.ui.components.BottomNavBar
 import com.group10.terrace.ui.components.ExpandableLeaderboard
@@ -42,7 +40,7 @@ fun PlantControlScreen(
     val masterPlants by viewModel.masterPlants.collectAsState()
 
     Scaffold(
-        bottomBar = { BottomNavBar(currentRoute = "plant", onNavigate = onNavigateToNav) },
+        bottomBar = { BottomNavBar(currentRoute = "plant", onNavigate = onNavigateToNav,) },
 
         floatingActionButton = {
             Box(

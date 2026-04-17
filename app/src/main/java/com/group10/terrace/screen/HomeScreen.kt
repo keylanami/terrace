@@ -42,7 +42,7 @@ fun HomeScreen(
 
     Scaffold(
         bottomBar = {
-            BottomNavBar(currentRoute = "home", onNavigate = onNavigateToNav)
+            BottomNavBar(onNavigate = onNavigateToNav,)
         }
     ) { paddingValues ->
         Column(

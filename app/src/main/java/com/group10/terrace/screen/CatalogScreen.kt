@@ -1,6 +1,5 @@
 package com.group10.terrace.ui.screen.catalog
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -53,7 +52,7 @@ fun CatalogScreen(
     }
 
     Scaffold(
-        bottomBar = { BottomNavBar(currentRoute = "plant", onNavigate = onNavigateToNav) }
+        bottomBar = { BottomNavBar(currentRoute = "plant", onNavigate = onNavigateToNav,) }
     ) { paddingValues ->
         Column(
             modifier = Modifier

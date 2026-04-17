@@ -15,13 +15,11 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.group10.terrace.R
 import com.group10.terrace.ui.components.BottomNavBar
-import com.group10.terrace.ui.components.CustomTextField // Jika ingin dipakai untuk search
 import com.group10.terrace.ui.components.MarketProductCard
 import com.group10.terrace.ui.theme.*
 import com.group10.terrace.viewmodel.AuthViewModel
@@ -53,7 +51,7 @@ fun MarketplaceScreen(
     }
 
     Scaffold(
-        bottomBar = { BottomNavBar(currentRoute = "market", onNavigate = onNavigateToNav) },
+        bottomBar = { BottomNavBar(currentRoute = "market", onNavigate = onNavigateToNav,) },
         floatingActionButton = {
             Box(
                 modifier = Modifier
@@ -133,7 +131,6 @@ fun MarketplaceScreen(
                 modifier = Modifier.weight(1f)
             ) {
                 items(filteredProducts) { product ->
-                    // Memanggil komponen yang sudah kita pisahkan
                     MarketProductCard(product = product, onClick = { onNavigateToDetail(product.id) })
                 }
             }
