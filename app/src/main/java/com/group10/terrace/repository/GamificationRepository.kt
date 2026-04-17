@@ -12,7 +12,6 @@ class GamificationRepository {
 
     private val db: FirebaseFirestore = Firebase.firestore
 
-
     fun getTodayMissions(userPlant: UserPlant, plantMaster: Plant): List<Mission> {
         val todayMissions = mutableListOf<Mission>()
         val todayMillis = System.currentTimeMillis()
@@ -81,20 +80,17 @@ class GamificationRepository {
             transaction.update(userRef, "currentStreak", updatedStreak)
             transaction.update(userRef, "lastActiveDays", System.currentTimeMillis())
 
-
-            transaction.update(plantRef, "completedTasksToday", FieldValue.arrayUnion(mission.name))
+            transaction.update(plantRef, "completedTaskToday", FieldValue.arrayUnion(mission.name))
             transaction.update(plantRef, "lastTaskCompletionDate", System.currentTimeMillis())
 
         }.addOnSuccessListener {
-            Log.d("TERRACE_GAME", "Misi Selesai! +${mission.points} Poin. Streak Baru: $updatedStreak")
+            Log.d("TERRACE_GAME", "Misi Selesai! +${mission.points} Poin. Streak: $updatedStreak")
             onResult(true, updatedTotalPoints, updatedStreak)
-
         }.addOnFailureListener { e ->
             Log.e("TERRACE_GAME", "Gagal menyimpan misi: ${e.message}")
             onResult(false, 0, 0)
         }
     }
-
 
     private fun calculateDaysBetween(startDateMillis: Long, endDateMillis: Long): Long {
         val diffMillis = endDateMillis - startDateMillis
@@ -119,7 +115,6 @@ class GamificationRepository {
         }
     }
 
-
     private fun calculateStreak(lastActiveMillis: Long, currentStreak: Int): Int {
         if (lastActiveMillis == 0L) return 1
 
@@ -130,15 +125,9 @@ class GamificationRepository {
         val diffDays = (diffMillis / (1000 * 60 * 60 * 24)).toInt()
 
         return when {
-            diffDays == 0 -> {
-                if (currentStreak == 0) 1 else currentStreak
-            }
-            diffDays == 1 -> {
-                currentStreak + 1
-            }
-            else -> {
-                1
-            }
+            diffDays == 0 -> if (currentStreak == 0) 1 else currentStreak
+            diffDays == 1 -> currentStreak + 1
+            else -> 1
         }
     }
 }
