@@ -115,7 +115,7 @@ fun SignUpScreen(
 
                 Button(
                     onClick = {
-                        viewModel.registerUser(email, password, name, landSize)
+                        viewModel.registerUser(email, password, name)
                     },
                     modifier = Modifier
                         .fillMaxWidth()
