@@ -1,4 +1,4 @@
-package com.group10.terrace.screen
+package com.group10.terrace.screen.onboarding
 
 import androidx.compose.animation.Crossfade
 import androidx.compose.runtime.*

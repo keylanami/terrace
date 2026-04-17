@@ -1,4 +1,4 @@
-package com.group10.terrace.screen
+package com.group10.terrace.screen.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

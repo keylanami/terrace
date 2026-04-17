@@ -19,5 +19,7 @@ data class User(
     val totalHarvested: Int = 0,
 
     val address: String = "",
-    val phoneNumber: String = ""
+    val phoneNumber: String = "",
+
+    val addresses: List<UserAddress> = emptyList()
 )

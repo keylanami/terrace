@@ -18,7 +18,7 @@ import com.group10.terrace.ui.theme.Neutral50
 fun BottomNavBar(
     currentRoute: String = "home",
     onNavigate: (String) -> Unit,
-    modifier: Modifier
+    modifier: Modifier = Modifier
 ) {
     Row(
         modifier = Modifier

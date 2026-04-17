@@ -1,5 +1,6 @@
-package com.group10.terrace.screen
+package com.group10.terrace.screen.onboarding
 
+import android.R
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -99,7 +100,7 @@ fun StepOneScreen(
                         .padding(horizontal = 20.dp),
                     verticalAlignment = Alignment.CenterVertically
                 ) {
-                    Icon(painter = painterResource(id = android.R.drawable.ic_dialog_map), contentDescription = "Lokasi", tint = Color(0xFF717A6E), modifier = Modifier.size(20.dp))
+                    Icon(painter = painterResource(id = R.drawable.ic_dialog_map), contentDescription = "Lokasi", tint = Color(0xFF717A6E), modifier = Modifier.size(20.dp))
                     Spacer(modifier = Modifier.width(12.dp))
                     BasicTextField(
                         value = location,

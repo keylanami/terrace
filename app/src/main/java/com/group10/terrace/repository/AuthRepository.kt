@@ -3,9 +3,12 @@ package com.group10.terrace.repository
 import com.google.firebase.Firebase
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.auth
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.group10.terrace.model.User
+import com.group10.terrace.model.UserAddress
+import java.util.UUID
 
 class AuthRepository {
 
@@ -34,9 +37,9 @@ class AuthRepository {
             currentStreak = 0,
             landSize = 0.0,
             location = "",
-            experience = ""
+            experience = "",
+            addresses = emptyList()
         )
-
         db.collection("users").document(uid).set(newUser)
             .addOnSuccessListener { onResult(true, null) }
             .addOnFailureListener { e -> onResult(false, e.message) }
@@ -91,17 +94,46 @@ class AuthRepository {
             .addOnFailureListener { onResult(false) }
     }
 
-
-
     fun updatePersonalizationData(userId: String, landSize: Double, location: String, experience: String, onResult: (Boolean) -> Unit) {
         val updates = mapOf(
             "landSize" to landSize,
             "location" to location,
             "experience" to experience
         )
-
         db.collection("users").document(userId).update(updates)
             .addOnSuccessListener { onResult(true) }
             .addOnFailureListener { onResult(false) }
+    }
+
+    fun addAddress(userId: String, address: UserAddress, onResult: (Boolean) -> Unit) {
+        val newAddress = address.copy(addressId = UUID.randomUUID().toString())
+        db.collection("users").document(userId)
+            .update("addresses", FieldValue.arrayUnion(newAddress))
+            .addOnSuccessListener { onResult(true) }
+            .addOnFailureListener {
+                db.collection("users").document(userId)
+                    .update("addresses", listOf(newAddress))
+                    .addOnSuccessListener { onResult(true) }
+                    .addOnFailureListener { onResult(false) }
+            }
+    }
+
+   fun removeAddress(userId: String, address: UserAddress, onResult: (Boolean) -> Unit) {
+        db.collection("users").document(userId)
+            .update("addresses", FieldValue.arrayRemove(address))
+            .addOnSuccessListener { onResult(true) }
+            .addOnFailureListener { onResult(false) }
+    }
+
+    fun listenToAddresses(userId: String, onResult: (List<UserAddress>) -> Unit) {
+        db.collection("users").document(userId)
+            .addSnapshotListener { snapshot, error ->
+                if (error != null) {
+                    onResult(emptyList())
+                    return@addSnapshotListener
+                }
+                val user = snapshot?.toObject(User::class.java)
+                onResult(user?.addresses ?: emptyList())
+            }
     }
 }
