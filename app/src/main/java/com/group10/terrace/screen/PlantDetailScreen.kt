@@ -15,7 +15,6 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -23,6 +22,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.group10.terrace.R
+import com.group10.terrace.model.TaskItem
 import com.group10.terrace.ui.components.DifficultyBadge
 import com.group10.terrace.ui.components.calculateDaysPassed
 import com.group10.terrace.ui.theme.*
@@ -143,7 +143,6 @@ fun PlantDetailScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // --- PROGRESS CARD ---
             Column(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -168,7 +167,7 @@ fun PlantDetailScreen(
 
             Spacer(modifier = Modifier.height(24.dp))
 
-            // --- SCROLLABLE DAYS BADGE ---
+
             LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                 items(maxDays) { index ->
                     val dayNum = index + 1
@@ -189,7 +188,8 @@ fun PlantDetailScreen(
 
             Spacer(modifier = Modifier.height(32.dp))
 
-            // --- DAILY TASKS CARD ---
+
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -205,13 +205,11 @@ fun PlantDetailScreen(
                         Row(verticalAlignment = Alignment.CenterVertically) {
                             Text("Daily Tasks", style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp))
                             Spacer(modifier = Modifier.width(8.dp))
-                            // Ganti dengan pin dari resource kamu jika ada
-                            Icon(painter = painterResource(id = android.R.drawable.ic_menu_add), contentDescription = null, modifier = Modifier.size(20.dp), tint = Neutral900)
+                            Icon(painter = painterResource(id = R.drawable.pin), contentDescription = null, modifier = Modifier.size(20.dp), tint = Neutral900)
                         }
 
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            // Ganti dengan streak icon kamu
-                            Icon(painter = painterResource(id = android.R.drawable.star_on), contentDescription = "Streak", modifier = Modifier.size(24.dp), tint = Yellow500)
+                            Icon(painter = painterResource(id = R.drawable.lit_fire), contentDescription = "Streak", modifier = Modifier.size(24.dp), tint = Yellow500)
                             Spacer(modifier = Modifier.width(4.dp))
                             Text("${user?.currentStreak ?: 0}", style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp), color = Yellow500)
                         }
@@ -219,9 +217,8 @@ fun PlantDetailScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Mengambil data menggunakan interface TaskItem
                     val todaysRecurringTasks = masterPlant.tasks_logic?.recurringTask
-                        ?.filter { currentDay % it.frequency_days == 0 } ?: emptyList() // Perhatikan camelCase
+                        ?.filter { currentDay % it.frequency_days == 0 } ?: emptyList()
                     val todaysMilestones = masterPlant.tasks_logic?.milestoneTask
                         ?.filter { it.day == currentDay } ?: emptyList()
 
@@ -239,7 +236,6 @@ fun PlantDetailScreen(
                                     .clickable { isChecked = !isChecked },
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-                                // Ganti R.drawable.checklist dengan asset aslimu
                                 Icon(
                                     painter = painterResource(id = android.R.drawable.checkbox_on_background),
                                     contentDescription = null,
@@ -248,7 +244,7 @@ fun PlantDetailScreen(
                                 )
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Text(
-                                    task.taskName, // Sekarang aman dipanggil!
+                                    task.task_name,
                                     style = Typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
                                     color = Neutral900
                                 )
@@ -257,7 +253,6 @@ fun PlantDetailScreen(
                     }
                 }
 
-                // Tombol Plus (+)
                 Box(
                     modifier = Modifier
                         .align(Alignment.BottomEnd)

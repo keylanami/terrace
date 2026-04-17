@@ -11,7 +11,7 @@ interface TaskItem {
 
 data class RecurringTask(
     override val task_name: String = "",
-    val frequencyDays: Int = 1,
+    val frequency_days: Int = 1,
     val points: Int = 0
 ) : TaskItem
 
