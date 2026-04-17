@@ -23,8 +23,15 @@ class PlantRepository(private val context: Context) {
         }
     }
 
-    fun getRecommendedPlants(landSize: Double): List<Plant> {
+    fun getRecommendedPlants(landSize: Double, experience: String): List<Plant> {
         val allPlants = getMasterPlants()
+
+        val filteredBySkill = when (experience) {
+            "Pemula (Newbie)" -> allPlants.filter { it.difficulty == "Easy" || it.difficulty == "Mudah" }
+            "Menengah (Amateur)" -> allPlants.filter { it.difficulty == "Medium" || it.difficulty == "Sedang" || it.difficulty == "Easy" }
+            else -> allPlants
+        }
+
         return if (landSize < 2.0) {
             allPlants.filter { it.difficulty == "Mudah" || it.type == "Sayur" }
         } else {
@@ -69,4 +76,6 @@ class PlantRepository(private val context: Context) {
                 onResult(plants)
             }
     }
+
+
 }

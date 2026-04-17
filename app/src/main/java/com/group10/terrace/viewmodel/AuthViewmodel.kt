@@ -8,12 +8,11 @@ class AuthViewModel : ViewModel() {
 
     private val repository = AuthRepository()
 
-    fun registerUser(email: String, pass: String, name: String, landSize: String) {
+    // Parameter landSize dihapus, karena sudah pindah ke layar Personalisasi
+    fun registerUser(email: String, pass: String, name: String) {
         Log.d("TERRACE_AUTH", "Memulai proses register...")
 
-        val size = landSize.toDoubleOrNull() ?: 0.0
-
-        repository.register(email, pass, name, size) { isSuccess, errorMessage ->
+        repository.register(email, pass, name) { isSuccess, errorMessage ->
             if (isSuccess) {
                 Log.d("TERRACE_AUTH", "Register dan Save Firestore SUKSES!")
             } else {
@@ -42,8 +41,19 @@ class AuthViewModel : ViewModel() {
                 Log.d("TERRACE_AUTH", "Halo, ${user.name}! Poin kamu: ${user.totalPoints}")
             } else {
                 Log.d("TERRACE_AUTH", "Tidak ada user yang login / Sesi habis.")
-
             }
+        }
+    }
+
+    // Fungsi Submit Personalisasi
+    fun updatePersonalizationData(userId: String, landSize: Double, location: String, experience: String, onComplete: (Boolean) -> Unit) {
+        repository.updatePersonalizationData(userId, landSize, location, experience) { success ->
+            if (success) {
+                Log.d("TERRACE_AUTH", "Personalisasi SUKSES!")
+            } else {
+                Log.e("TERRACE_AUTH", "Personalisasi GAGAL!")
+            }
+            onComplete(success) // Lempar status ke UI untuk pindah ke Dashboard
         }
     }
 }

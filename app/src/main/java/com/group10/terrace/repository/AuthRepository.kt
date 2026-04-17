@@ -12,54 +12,42 @@ class AuthRepository {
     private val auth: FirebaseAuth = Firebase.auth
     private val db: FirebaseFirestore = Firebase.firestore
 
-
-    fun register(email: String, pass: String, name: String, landSize: Double, onResult: (Boolean, String?) -> Unit) {
+    fun register(email: String, pass: String, name: String, onResult: (Boolean, String?) -> Unit) {
         auth.createUserWithEmailAndPassword(email, pass)
             .addOnCompleteListener { task ->
                 if (task.isSuccessful) {
                     val uid = task.result?.user?.uid ?: return@addOnCompleteListener
-                    saveUserToFirestore(uid, email, name, landSize, onResult)
+                    saveUserToFirestore(uid, email, name, onResult)
                 } else {
                     onResult(false, task.exception?.message)
                 }
             }
     }
 
-
-    private fun saveUserToFirestore(uid: String, email: String, name: String, landSize: Double, onResult: (Boolean, String?) -> Unit) {
+    private fun saveUserToFirestore(uid: String, email: String, name: String, onResult: (Boolean, String?) -> Unit) {
         val newUser = User(
             uid = uid,
             name = name,
             email = email,
-            landSize = landSize,
             totalPoints = 0,
             currentPoint = 0,
-            currentStreak = 0
+            currentStreak = 0,
+            landSize = 0.0,
+            location = "",
+            experience = ""
         )
 
         db.collection("users").document(uid).set(newUser)
-            .addOnSuccessListener {
-                onResult(true, null)
-            }
-            .addOnFailureListener { e ->
-                onResult(false, e.message)
-            }
+            .addOnSuccessListener { onResult(true, null) }
+            .addOnFailureListener { e -> onResult(false, e.message) }
     }
-
-
 
     fun login(email: String, pass: String, onResult: (Boolean, String?) -> Unit) {
         auth.signInWithEmailAndPassword(email, pass)
             .addOnCompleteListener { task ->
-                if (task.isSuccessful) {
-                    onResult(true, null)
-                } else {
-                    onResult(false, task.exception?.message)
-                }
+                if (task.isSuccessful) onResult(true, null) else onResult(false, task.exception?.message)
             }
     }
-
-
 
     fun getCurrentUser(onResult: (User?) -> Unit) {
         val currentUserUid = auth.currentUser?.uid
@@ -73,9 +61,7 @@ class AuthRepository {
                         onResult(null)
                     }
                 }
-                .addOnFailureListener {
-                    onResult(null)
-                }
+                .addOnFailureListener { onResult(null) }
         } else {
             onResult(null)
         }
@@ -84,9 +70,6 @@ class AuthRepository {
     fun logout() {
         auth.signOut()
     }
-
-
-
 
     fun getLeaderboard(onResult: (List<User>) -> Unit) {
         db.collection("users")
@@ -102,12 +85,23 @@ class AuthRepository {
             }
     }
 
-
     fun updateLandSize(userId: String, newSize: Double, onResult: (Boolean) -> Unit) {
-        db.collection("users").document(userId)
-            .update("landSize", newSize)
+        db.collection("users").document(userId).update("landSize", newSize)
             .addOnSuccessListener { onResult(true) }
             .addOnFailureListener { onResult(false) }
     }
 
+
+
+    fun updatePersonalizationData(userId: String, landSize: Double, location: String, experience: String, onResult: (Boolean) -> Unit) {
+        val updates = mapOf(
+            "landSize" to landSize,
+            "location" to location,
+            "experience" to experience
+        )
+
+        db.collection("users").document(userId).update(updates)
+            .addOnSuccessListener { onResult(true) }
+            .addOnFailureListener { onResult(false) }
+    }
 }

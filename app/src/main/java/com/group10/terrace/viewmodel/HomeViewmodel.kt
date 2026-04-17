@@ -9,7 +9,6 @@ import com.group10.terrace.repository.AuthRepository
 import com.group10.terrace.repository.PlantRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -25,22 +24,19 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
     private val _recommendations = MutableStateFlow<List<Plant>>(emptyList())
     val recommendations: StateFlow<List<Plant>> = _recommendations
 
-
     private val _masterPlants = MutableStateFlow<List<Plant>>(emptyList())
     val masterPlants: StateFlow<List<Plant>> = _masterPlants
-
 
     init {
         loadDashboardData()
     }
 
-
-
     fun loadDashboardData() {
         authRepo.getCurrentUser { user ->
             _userData.value = user
             user?.let {
-                _recommendations.value = plantRepo.getRecommendedPlants(it.landSize)
+                // UPDATE: Lempar juga 'experience' ke repo agar filter sesuai keahlian
+                _recommendations.value = plantRepo.getRecommendedPlants(it.landSize, it.experience)
                 _masterPlants.value = plantRepo.getMasterPlants()
 
                 plantRepo.getActivePlants(it.uid) { plants ->
