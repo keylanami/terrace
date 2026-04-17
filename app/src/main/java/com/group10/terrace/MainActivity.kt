@@ -16,6 +16,7 @@ import com.group10.terrace.viewmodel.AcademyViewModel
 import com.group10.terrace.viewmodel.AuthViewModel
 import com.group10.terrace.viewmodel.HomeViewModel
 import com.group10.terrace.viewmodel.MarketplaceViewModel
+import com.group10.terrace.viewmodel.MissionViewModel
 
 class MainActivity : ComponentActivity() {
 
@@ -23,23 +24,21 @@ class MainActivity : ComponentActivity() {
     private val homeViewModel: HomeViewModel by viewModels()
     private val marketplaceViewModel: MarketplaceViewModel by viewModels()
     private val academyViewModel: AcademyViewModel by viewModels()
+    private val missionViewModel: MissionViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             TerraceTheme {
-                Surface(
-                    modifier = Modifier.fillMaxSize(),
-                    color = Neutral50
-                ) {
-                    val navController = rememberNavController()
+                Surface(modifier = Modifier.fillMaxSize(), color = Neutral50) {
                     TerracNavGraph(
-                        navController = navController,
+                        navController = rememberNavController(),
                         authViewModel = authViewModel,
                         homeViewModel = homeViewModel,
                         marketplaceViewModel = marketplaceViewModel,
-                        academyViewModel = academyViewModel
+                        academyViewModel = academyViewModel,
+                        missionViewModel = missionViewModel
                     )
                 }
             }

@@ -4,8 +4,8 @@ import android.content.Context
 import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
-import com.google.gson.reflect.TypeToken
 import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import com.group10.terrace.model.Plant
 import com.group10.terrace.model.UserPlant
 import java.io.IOException
@@ -27,22 +27,26 @@ class PlantRepository(private val context: Context) {
         val allPlants = getMasterPlants()
 
         val filteredBySkill = when (experience) {
-            "Pemula (Newbie)" -> allPlants.filter { it.difficulty == "Easy" || it.difficulty == "Mudah" }
-            "Menengah (Amateur)" -> allPlants.filter { it.difficulty == "Medium" || it.difficulty == "Sedang" || it.difficulty == "Easy" }
+            "Pemula (Newbie)" -> allPlants.filter {
+                it.difficulty.lowercase() in listOf("easy", "mudah")
+            }
+            "Menengah (Amateur)" -> allPlants.filter {
+                it.difficulty.lowercase() in listOf("easy", "mudah", "medium", "sedang")
+            }
             else -> allPlants
         }
 
+
         return if (landSize < 2.0) {
-            allPlants.filter { it.difficulty == "Mudah" || it.type == "Sayur" }
+            filteredBySkill.filter { it.area_per_pot_m2 <= landSize || it.area_per_pot_m2 <= 0.3 }
         } else {
-            allPlants
+            filteredBySkill
         }
     }
 
-
-
     fun startPlanting(userId: String, plant: Plant, onResult: (Boolean) -> Unit) {
-        val userPlantId = db.collection("users").document(userId).collection("active_plants").document().id
+        val userPlantId = db.collection("users").document(userId)
+            .collection("active_plants").document().id
 
         val newActivePlant = UserPlant(
             userPlantId = userPlantId,
@@ -61,8 +65,6 @@ class PlantRepository(private val context: Context) {
             .addOnFailureListener { onResult(false) }
     }
 
-
-
     fun getActivePlants(userId: String, onResult: (List<UserPlant>) -> Unit) {
         db.collection("users").document(userId)
             .collection("active_plants")
@@ -76,6 +78,4 @@ class PlantRepository(private val context: Context) {
                 onResult(plants)
             }
     }
-
-
 }
