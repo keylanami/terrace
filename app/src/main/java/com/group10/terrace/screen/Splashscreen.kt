@@ -8,50 +8,44 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
-import androidx.compose.material3.Button
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.alpha
 import androidx.compose.ui.draw.scale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import com.google.api.Context
+import com.google.firebase.Firebase
+import com.google.firebase.auth.auth
 import com.group10.terrace.R
 import com.group10.terrace.ui.theme.Neutral50
 import com.group10.terrace.ui.theme.PrimaryGradient
-import com.group10.terrace.viewmodel.MarketplaceViewModel
 import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(
-    viewModel: MarketplaceViewModel,
-    context: Context
+    onNavigateToLogin: () -> Unit,
+    onNavigateToHome: () -> Unit
 ) {
     var isGrowing by remember { mutableStateOf(false) }
     var isShrinking by remember { mutableStateOf(false) }
-
     var isFinalStage by remember { mutableStateOf(false) }
 
-    val scale = animateFloatAsState(
+    val scale by animateFloatAsState(
         targetValue = when {
-            isFinalStage -> 1f
-            isShrinking -> 1f
             isGrowing -> 2f
+            isShrinking -> 1f
+            isFinalStage -> 1f
             else -> 1f
         },
-        animationSpec = tween(durationMillis = 600, easing = FastOutSlowInEasing)
+        animationSpec = tween(durationMillis = 600, easing = FastOutSlowInEasing),
+        label = "scale"
     )
 
-    val backgroundAlpha = animateFloatAsState(
+    val backgroundAlpha by animateFloatAsState(
         targetValue = if (isFinalStage) 1f else 0f,
-        animationSpec = tween(durationMillis = 500)
+        animationSpec = tween(durationMillis = 500),
+        label = "bgAlpha"
     )
 
     LaunchedEffect(Unit) {
@@ -67,24 +61,30 @@ fun SplashScreen(
         isFinalStage = true
 
         delay(1200)
+
+        val currentUser = Firebase.auth.currentUser
+        if (currentUser != null) {
+            onNavigateToHome()
+        } else {
+            onNavigateToLogin()
+        }
     }
 
     Box(
         modifier = Modifier.fillMaxSize(),
         contentAlignment = Alignment.Center
     ) {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Neutral50)
+        )
         if (isFinalStage) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .alpha(backgroundAlpha.value)
+                    .alpha(backgroundAlpha)
                     .background(brush = PrimaryGradient)
-            )
-        } else {
-            Box(
-                modifier = Modifier
-                    .fillMaxSize()
-                    .background(Neutral50)
             )
         }
 
@@ -92,14 +92,10 @@ fun SplashScreen(
             painter = painterResource(
                 id = if (isFinalStage) R.drawable.putih_full else R.drawable.hijau
             ),
-            contentDescription = "Logo",
+            contentDescription = "Logo Terrace",
             modifier = Modifier
                 .size(100.dp)
-                .scale(scale.value)
+                .scale(scale)
         )
-
-        Button(onClick = { viewModel.seedDatabase(context) }) {
-            Text("UPLOAD DATA KE FIREBASE")
-        }
     }
 }

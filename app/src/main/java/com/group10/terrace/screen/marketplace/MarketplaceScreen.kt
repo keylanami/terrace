@@ -1,4 +1,4 @@
-package com.group10.terrace.ui.screen.marketplace
+package com.group10.terrace.screen.marketplace
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

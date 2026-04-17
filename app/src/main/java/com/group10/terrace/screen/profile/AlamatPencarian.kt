@@ -1,4 +1,4 @@
-package com.group10.terrace.ui.screen.profile
+package com.group10.terrace.screen.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable

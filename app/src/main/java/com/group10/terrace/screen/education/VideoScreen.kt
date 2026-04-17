@@ -1,4 +1,4 @@
-package com.group10.terrace.ui.screen.education
+package com.group10.terrace.screen.education
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -32,12 +32,10 @@ import com.group10.terrace.viewmodel.AcademyViewModel
 @Composable
 fun VideoDetailScreen(
     viewModel: AcademyViewModel,
-    // Item video yang dipilih dari EducationScreen, dikirim via NavArg / parameter
     video: EducationItem,
     onBack: () -> Unit,
     onRecommendationClick: (item: EducationItem, type: String) -> Unit
 ) {
-    // Rekomendasi = semua video lain (exclude video ini) + semua artikel
     val allVideos  by viewModel.videos.collectAsState()
     val allArticles by viewModel.articles.collectAsState()
     val currentUser by viewModel.currentUser.collectAsState()
@@ -88,8 +86,7 @@ fun VideoDetailScreen(
             Spacer(modifier = Modifier.size(24.dp))
         }
 
-        // ── Video Thumbnail (placeholder — render WebView/ExoPlayer di sini) ──
-        // Gunakan contentUrl dari video.contentUrl untuk player sesungguhnya
+
         AsyncImage(
             model = video.imageUrl,
             contentDescription = video.title,
@@ -123,7 +120,7 @@ fun VideoDetailScreen(
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_save),
+                    painter = painterResource(id = R.drawable.download),
                     contentDescription = "Simpan",
                     modifier = Modifier.size(19.dp),
                     tint = Neutral400
@@ -171,7 +168,7 @@ fun VideoDetailScreen(
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 VideoActionButton(
-                    iconRes = R.drawable.ic_like,
+                    iconRes = R.drawable.like,
                     label = likeCount.toString(),
                     tint = if (isLiked) Green500 else Neutral400,
                     onClick = {
@@ -180,19 +177,19 @@ fun VideoDetailScreen(
                     }
                 )
                 VideoActionButton(
-                    iconRes = R.drawable.ic_dislike,
+                    iconRes = R.drawable.dislike,
                     label = "0",
                     tint = Neutral400,
                     onClick = {}
                 )
                 VideoActionButton(
-                    iconRes = R.drawable.ic_share,
+                    iconRes = R.drawable.share,
                     label = "Bagikan",
                     tint = Neutral400,
                     onClick = {}
                 )
                 VideoActionButton(
-                    iconRes = R.drawable.ic_download,
+                    iconRes = R.drawable.download,
                     label = "Unduh",
                     tint = Neutral400,
                     onClick = {}
@@ -229,7 +226,7 @@ fun VideoDetailScreen(
                     )
                 )
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_verified),
+                    painter = painterResource(id = R.drawable.badge_check),
                     contentDescription = "Verified",
                     tint = Green500,
                     modifier = Modifier.size(16.dp)
@@ -254,7 +251,8 @@ fun VideoDetailScreen(
                 Spacer(modifier = Modifier.height(16.dp))
             }
 
-            // ── Komentar Section (statis — tidak ada endpoint komentar di backend) ──
+
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

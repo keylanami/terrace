@@ -1,4 +1,4 @@
-package com.group10.terrace.ui.screen.education
+package com.group10.terrace.screen.education
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -109,7 +109,7 @@ fun EducationScreen(
                 }
             )
             Icon(
-                painter = painterResource(id = R.drawable.ic_search),
+                painter = painterResource(id = R.drawable.search),
                 contentDescription = "Search",
                 modifier = Modifier.size(24.dp),
                 tint = Neutral400

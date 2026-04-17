@@ -1,4 +1,4 @@
-package com.group10.terrace.ui.screen.education
+package com.group10.terrace.screen.education
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -30,7 +30,6 @@ import com.group10.terrace.ui.theme.*
 
 @Composable
 fun ArticleDetailScreen(
-    // Artikel dikirim via NavArg / parameter dari EducationScreen
     article: EducationItem,
     onBack: () -> Unit
 ) {
@@ -153,9 +152,6 @@ fun ArticleDetailScreen(
 
             Spacer(modifier = Modifier.height(20.dp))
 
-            // ── Article Body ──────────────────────────────────────────────
-            // Render content dari field article.content
-            // Kata pertama dari setiap paragraf di-bold sesuai desain Figma
             if (!article.content.isNullOrBlank()) {
                 ArticleBodyText(content = article.content)
             } else {
@@ -177,9 +173,8 @@ fun ArticleDetailScreen(
     }
 }
 
-// ---------------------------------------------------------------------------
-// Render content string — kata pertama tiap paragraf di-bold (sesuai desain)
-// ---------------------------------------------------------------------------
+
+
 @Composable
 private fun ArticleBodyText(content: String) {
     val bodyStyle = TextStyle(
@@ -191,7 +186,6 @@ private fun ArticleBodyText(content: String) {
         lineHeight = 22.sp
     )
 
-    // Pisah per paragraf berdasarkan "\n\n" atau "\n"
     val paragraphs = content
         .split("\n\n")
         .map { it.trim() }
@@ -199,7 +193,6 @@ private fun ArticleBodyText(content: String) {
 
     Column(verticalArrangement = Arrangement.spacedBy(16.dp)) {
         paragraphs.forEach { paragraph ->
-            // Deteksi section header: dimulai dengan angka + titik (contoh: "1.", "2.")
             val isSectionHeader = paragraph.matches(Regex("^\\d+\\..*"))
 
             if (isSectionHeader) {
@@ -208,7 +201,6 @@ private fun ArticleBodyText(content: String) {
                     style = bodyStyle.copy(fontWeight = FontWeight.Bold)
                 )
             } else {
-                // Bold kata pertama dari paragraf biasa
                 val firstSpaceIndex = paragraph.indexOf(' ')
                 val annotated = buildAnnotatedString {
                     if (firstSpaceIndex != -1) {

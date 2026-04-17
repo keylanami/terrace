@@ -1,4 +1,4 @@
-package com.group10.terrace.ui.screen.auth
+package com.group10.terrace.screen.auth
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -21,11 +21,9 @@ import androidx.compose.ui.unit.sp
 import com.group10.terrace.R
 import com.group10.terrace.ui.components.CustomTextField
 import com.group10.terrace.ui.theme.*
+import com.group10.terrace.viewmodel.AuthState
 import com.group10.terrace.viewmodel.AuthViewModel
 
-
-
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun LoginScreen(
     viewModel: AuthViewModel,
@@ -34,6 +32,15 @@ fun LoginScreen(
 ) {
     var email by remember { mutableStateOf("") }
     var password by remember { mutableStateOf("") }
+
+    val authState by viewModel.authState.collectAsState()
+
+    LaunchedEffect(authState) {
+        if (authState is AuthState.Success) {
+            viewModel.resetAuthState()
+            onLoginSuccess()
+        }
+    }
 
     Box(
         modifier = Modifier
@@ -73,7 +80,7 @@ fun LoginScreen(
                 Text(
                     text = "Login",
                     style = Typography.displayLarge.copy(fontSize = 36.sp),
-                    color = Green600, // #007A2B
+                    color = Green600,
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(bottom = 24.dp),
@@ -104,30 +111,41 @@ fun LoginScreen(
                     modifier = Modifier
                         .fillMaxWidth()
                         .padding(top = 8.dp, bottom = 24.dp)
-                        .clickable { /* TODO */ },
+                        .clickable { /* TODO: forgot password */ },
                     textAlign = TextAlign.End
                 )
 
                 Button(
-                    onClick = {
-                        viewModel.loginUser(email, password)
-                         onLoginSuccess()
-                    },
+                    onClick = { viewModel.loginUser(email, password) },
                     modifier = Modifier
                         .fillMaxWidth()
                         .height(48.dp)
                         .shadow(4.dp, RoundedCornerShape(100.dp)),
-                    colors = ButtonDefaults.buttonColors(containerColor = Green600)
+                    colors = ButtonDefaults.buttonColors(containerColor = Green600),
+                    enabled = authState !is AuthState.Loading
                 ) {
-                    Text("Login", style = Typography.labelLarge, color = Neutral50)
+                    if (authState is AuthState.Loading) {
+                        CircularProgressIndicator(
+                            color = Neutral50,
+                            strokeWidth = 2.dp,
+                            modifier = Modifier.size(20.dp)
+                        )
+                    } else {
+                        Text("Login", style = Typography.labelLarge, color = Neutral50)
+                    }
+                }
+
+                // Error message
+                if (authState is AuthState.Error) {
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text(
+                        text = (authState as AuthState.Error).message,
+                        style = Typography.labelMedium,
+                        color = Red500
+                    )
                 }
 
                 Spacer(modifier = Modifier.weight(1f))
-
-
-
-
-
 
                 Text(
                     text = buildAnnotatedString {
@@ -145,4 +163,3 @@ fun LoginScreen(
         }
     }
 }
-

@@ -23,6 +23,12 @@ class AcademyViewModel(application: Application) : AndroidViewModel(application)
     private val _currentUser = MutableStateFlow<User?>(null)
     val currentUser: StateFlow<User?> = _currentUser
 
+    private val _selectedVideo = MutableStateFlow<EducationItem?>(null)
+    val selectedVideo: StateFlow<EducationItem?> = _selectedVideo
+
+    private val _selectedArticle = MutableStateFlow<EducationItem?>(null)
+    val selectedArticle: StateFlow<EducationItem?> = _selectedArticle
+
     init {
         loadAcademyData()
     }
@@ -33,9 +39,22 @@ class AcademyViewModel(application: Application) : AndroidViewModel(application)
         }
 
         val response = academyRepo.getAcademyData()
-        if (response != null && response.academyContent != null) {
+        if (response?.academyContent != null) {
             _articles.value = response.academyContent.articles
             _videos.value = response.academyContent.videos
+        }
+    }
+
+    fun setSelectedItem(item: EducationItem, type: String) {
+        when (type) {
+            "Video" -> _selectedVideo.value = item
+            "Article" -> _selectedArticle.value = item
+        }
+    }
+
+    fun refreshUser() {
+        authRepo.getCurrentUser { user ->
+            _currentUser.value = user
         }
     }
 }

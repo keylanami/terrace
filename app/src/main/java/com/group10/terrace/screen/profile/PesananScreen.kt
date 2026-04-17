@@ -1,4 +1,4 @@
-package com.group10.terrace.ui.screen.profile
+package com.group10.terrace.screen.profile
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -8,7 +8,6 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
-import androidx.compose.material.icons.outlined.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -23,10 +22,10 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.group10.terrace.R
 import com.group10.terrace.model.CartItem
-import com.group10.terrace.model.Order
 import com.group10.terrace.ui.theme.*
 import com.group10.terrace.viewmodel.MarketplaceViewModel
 import androidx.compose.runtime.collectAsState
+import androidx.compose.ui.graphics.Color
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -36,7 +35,6 @@ fun PesananScreen(
     userId: String,
     onBack: () -> Unit
 ) {
-    // Panggil loadOrderHistory saat screen pertama kali muncul
     LaunchedEffect(userId) {
         viewModel.loadOrderHistory(userId)
     }
@@ -91,7 +89,7 @@ fun PesananScreen(
                 contentPadding = PaddingValues(vertical = 16.dp)
             ) {
                 items(orders) { order ->
-                    // Tampilkan satu baris per item dalam order
+
                     order.items.forEach { cartItem ->
                         OrderItemRow(cartItem = cartItem, status = order.status)
                     }
@@ -113,7 +111,7 @@ private fun OrderItemRow(cartItem: CartItem, status: String) {
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        // Product image
+
         AsyncImage(
             model = cartItem.imageUrl,
             contentDescription = cartItem.productName,
@@ -179,5 +177,3 @@ private fun OrderItemRow(cartItem: CartItem, status: String) {
     }
 }
 
-// Extension untuk status badge color — perlu import androidx.compose.ui.graphics.Color
-private val Color = androidx.compose.ui.graphics.Color

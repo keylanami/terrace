@@ -1,4 +1,4 @@
-package com.group10.terrace.ui.screen.plant
+package com.group10.terrace.screen.plant
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.*

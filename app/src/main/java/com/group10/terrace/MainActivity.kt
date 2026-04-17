@@ -4,27 +4,44 @@ import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
-import androidx.compose.foundation.layout.Spacer
+import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.height
-import androidx.compose.foundation.layout.padding
-import androidx.compose.material3.Scaffold
-import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
+import androidx.compose.material3.Surface
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
-import com.group10.terrace.screen.LoginScreen
+import androidx.navigation.compose.rememberNavController
+import com.group10.terrace.screen.navigation.TerracNavGraph
+import com.group10.terrace.ui.theme.Neutral50
 import com.group10.terrace.ui.theme.TerraceTheme
+import com.group10.terrace.viewmodel.AcademyViewModel
+import com.group10.terrace.viewmodel.AuthViewModel
+import com.group10.terrace.viewmodel.HomeViewModel
+import com.group10.terrace.viewmodel.MarketplaceViewModel
 
 class MainActivity : ComponentActivity() {
+
+    private val authViewModel: AuthViewModel by viewModels()
+    private val homeViewModel: HomeViewModel by viewModels()
+    private val marketplaceViewModel: MarketplaceViewModel by viewModels()
+    private val academyViewModel: AcademyViewModel by viewModels()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContent {
             TerraceTheme {
-                Spacer(modifier = Modifier.height(64.dp))
-                LoginScreen()
+                Surface(
+                    modifier = Modifier.fillMaxSize(),
+                    color = Neutral50
+                ) {
+                    val navController = rememberNavController()
+                    TerracNavGraph(
+                        navController = navController,
+                        authViewModel = authViewModel,
+                        homeViewModel = homeViewModel,
+                        marketplaceViewModel = marketplaceViewModel,
+                        academyViewModel = academyViewModel
+                    )
+                }
             }
         }
     }

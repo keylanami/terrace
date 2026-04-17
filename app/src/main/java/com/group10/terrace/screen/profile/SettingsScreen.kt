@@ -1,11 +1,12 @@
-package com.group10.terrace.ui.screen.profile
+package com.group10.terrace.screen.profile
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -17,7 +18,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.compose.ui.window.Dialog
 import coil.compose.AsyncImage
 import com.group10.terrace.R
@@ -32,7 +32,7 @@ fun SettingsScreen(
     onEditProfile: () -> Unit,
     onPesananSaya: () -> Unit,
     onAlamatPenerima: () -> Unit,
-    onLogoutConfirmed: () -> Unit  // panggil authViewModel.logout() + navigate ke Login
+    onLogoutConfirmed: () -> Unit
 ) {
     val userData by viewModel.userData.collectAsState()
 
@@ -56,7 +56,7 @@ fun SettingsScreen(
             // ── Top Bar ───────────────────────────────────────────────────
             Box(modifier = Modifier.fillMaxWidth()) {
                 Icon(
-                    painter = painterResource(id = R.drawable.ic_arrow_back),
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
                     contentDescription = "Back",
                     modifier = Modifier
                         .align(Alignment.CenterStart)
@@ -94,7 +94,7 @@ fun SettingsScreen(
                     contentAlignment = Alignment.Center
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.ic_add),
+                        painter = painterResource(id = R.drawable.plus),
                         contentDescription = "Edit photo",
                         tint = Neutral50,
                         modifier = Modifier.size(16.dp)
@@ -112,12 +112,12 @@ fun SettingsScreen(
                     onClick = onEditProfile
                 )
                 SettingsMenuButton(
-                    iconRes = R.drawable.ic_order,
+                    iconRes = R.drawable.order,
                     label = "Pesana Saya",
                     onClick = onPesananSaya
                 )
                 SettingsMenuButton(
-                    iconRes = R.drawable.ic_address,
+                    iconRes = R.drawable.map,
                     label = "Alamat Penerima",
                     onClick = onAlamatPenerima
                 )
@@ -136,7 +136,7 @@ fun SettingsScreen(
                         horizontalArrangement = Arrangement.spacedBy(12.dp)
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_notification),
+                            painter = painterResource(id = R.drawable.notif),
                             contentDescription = null,
                             tint = Neutral50,
                             modifier = Modifier.size(20.dp)
@@ -196,7 +196,7 @@ fun SettingsScreen(
                         verticalArrangement = Arrangement.spacedBy(16.dp)
                     ) {
                         Icon(
-                            painter = painterResource(id = R.drawable.ic_logout),
+                            painter = painterResource(id = R.drawable.logout),
                             contentDescription = null,
                             tint = Green600,
                             modifier = Modifier.size(40.dp)
