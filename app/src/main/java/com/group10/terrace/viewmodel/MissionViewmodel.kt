@@ -19,19 +19,18 @@ class MissionViewModel : ViewModel() {
     private val _gamificationEvent = MutableStateFlow<GamificationEvent?>(null)
     val gamificationEvent: StateFlow<GamificationEvent?> = _gamificationEvent
 
-
     fun loadTodayMissions(userPlant: UserPlant, plantMaster: Plant) {
         _todayMissions.value = gamificationRepo.getTodayMissions(userPlant, plantMaster)
     }
 
-    fun onTaskChecked(userId: String, userPlantId: String, mission: Mission) {
+    fun onTaskChecked(userId: String, userPlantId: String, mission: Mission, plantMaster: Plant) {
 
         val updatedMissions = _todayMissions.value.map {
             if (it.name == mission.name) it.copy(isCompleted = true) else it
         }
         _todayMissions.value = updatedMissions
 
-        gamificationRepo.completeMissionAndUpdateStats(userId, userPlantId, mission) { success, points, streak ->
+        gamificationRepo.completeMissionAndUpdateStats(userId, userPlantId, mission, plantMaster) { success, points, streak ->
             if (success) {
                 Log.d("TERRACE_VM", "Berhasil! Total Poin: $points, Streak: $streak")
                 _gamificationEvent.value = GamificationEvent.Success(mission.points, streak)
@@ -44,11 +43,10 @@ class MissionViewModel : ViewModel() {
         }
     }
 
-     fun clearEvent() {
+    fun clearEvent() {
         _gamificationEvent.value = null
     }
 }
-
 
 
 sealed class GamificationEvent {

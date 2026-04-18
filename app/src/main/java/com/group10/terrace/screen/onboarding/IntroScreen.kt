@@ -10,7 +10,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -19,26 +18,9 @@ import androidx.compose.ui.unit.sp
 import com.group10.terrace.R
 import com.group10.terrace.ui.components.ColorButtonGreen
 import com.group10.terrace.ui.theme.*
-import com.group10.terrace.viewmodel.MarketplaceViewModel
 
 @Composable
-fun IntroScreen(
-    onNext: () -> Unit,
-    marketplaceViewModel: MarketplaceViewModel  // tambah parameter ini
-) {
-    val context = LocalContext.current
-
-    // One-time seed: jalankan sekali saat IntroScreen pertama muncul
-    // SharedPreferences untuk pastikan tidak jalan dua kali
-    LaunchedEffect(Unit) {
-        val prefs = context.getSharedPreferences("terrace_prefs", android.content.Context.MODE_PRIVATE)
-        val isSeeded = prefs.getBoolean("is_seeded", false)
-        if (!isSeeded) {
-            marketplaceViewModel.seedDatabase(context)
-            prefs.edit().putBoolean("is_seeded", true).apply()
-        }
-    }
-
+fun IntroScreen(onNext: () -> Unit) {
     Column(
         modifier = Modifier
             .fillMaxSize()

@@ -1,5 +1,8 @@
 package com.group10.terrace.screen
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.slideInVertically
+import androidx.compose.animation.slideOutVertically
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -41,28 +44,53 @@ fun HomeScreen(
 
     val priorityPlant = activePlants.firstOrNull()
     val masterPlant = masterPlants.find { it.id == priorityPlant?.plantId }
-    val todayTasks: List<String> = remember(priorityPlant, masterPlant) {
-        if (priorityPlant == null || masterPlant == null) return@remember emptyList()
-        val currentDay = ((System.currentTimeMillis() - priorityPlant.startDate) /
-                (1000L * 60 * 60 * 24)).toInt().coerceAtLeast(1)
-        val recurring = masterPlant.tasks_logic?.recurringTask
-            ?.filter { currentDay % it.frequency_days == 0 }
-            ?.map { it.task_name } ?: emptyList()
-        val milestones = masterPlant.tasks_logic?.milestoneTask
-            ?.filter { it.day == currentDay }
-            ?.map { it.task_name } ?: emptyList()
-        (recurring + milestones).take(3)
+
+    val todayTasks = remember(priorityPlant, masterPlant) {
+        if (priorityPlant == null || masterPlant == null) emptyList<String>()
+        else {
+            val currentDay = ((System.currentTimeMillis() - priorityPlant.startDate) / (1000L * 60 * 60 * 24)).toInt().coerceAtLeast(1)
+            val recurring = masterPlant.tasks_logic?.recurringTask
+                ?.filter { currentDay % it.frequency_days == 0 }
+                ?.map { it.task_name } ?: emptyList()
+            val milestones = masterPlant.tasks_logic?.milestoneTask
+                ?.filter { it.day == currentDay }
+                ?.map { it.task_name } ?: emptyList()
+            (recurring + milestones).take(3)
+        }
     }
 
+    var showQuickNav by remember { mutableStateOf(true) }
+
     Scaffold(
-        bottomBar = { BottomNavBar(currentRoute = "home", onNavigate = onNavigateToNav) }
+        bottomBar = { BottomNavBar(currentRoute = "home", onNavigate = onNavigateToNav) },
+        floatingActionButton = {
+            AnimatedVisibility(
+                visible = showQuickNav && activePlants.isNotEmpty(),
+                enter = slideInVertically(initialOffsetY = { it }),
+                exit = slideOutVertically(targetOffsetY = { it })
+            ) {
+                Row(
+                    modifier = Modifier
+                        .padding(bottom = 16.dp, end = 16.dp)
+                        .shadow(10.dp, RoundedCornerShape(12.dp))
+                        .background(Green700, RoundedCornerShape(12.dp))
+                        .clickable { onNavigateToNav("plant_control") }
+                        .padding(horizontal = 16.dp, vertical = 12.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Icon(painter = painterResource(id = R.drawable.plant_on), contentDescription = null, tint = Neutral50, modifier = Modifier.size(20.dp))
+                    Spacer(modifier = Modifier.width(8.dp))
+                    Text("Pantau Tanaman", style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold), color = Neutral50)
+                }
+            }
+        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Neutral50)
-                .padding(paddingValues)
                 .verticalScroll(rememberScrollState())
+                .padding(paddingValues)
         ) {
             // ── Header ────────────────────────────────────────────────────
             Box(
@@ -94,9 +122,7 @@ fun HomeScreen(
                                 painter = painterResource(id = R.drawable.ic_person),
                                 contentDescription = "Profile",
                                 tint = Neutral50,
-                                modifier = Modifier
-                                    .size(24.dp)
-                                    .clickable { onNavigateToProfile() }
+                                modifier = Modifier.size(24.dp).clickable { onNavigateToProfile() }
                             )
                         }
                     }
@@ -114,21 +140,12 @@ fun HomeScreen(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(
-                                painter = painterResource(id = R.drawable.fire),
-                                contentDescription = "EXP",
-                                tint = Neutral50,
-                                modifier = Modifier.size(16.dp)
-                            )
+                            Icon(painter = painterResource(id = R.drawable.fire), contentDescription = "EXP", tint = Neutral50, modifier = Modifier.size(16.dp))
                             Spacer(modifier = Modifier.width(4.dp))
                             Text("${user?.totalPoints ?: 0} EXP", style = Typography.labelMedium, color = Neutral50)
                         }
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text(
-                                "${activePlants.size} Active Plants",
-                                style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold),
-                                color = Neutral50
-                            )
+                            Text("${activePlants.size} Active Plants", style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold), color = Neutral50)
                             Text("${user?.totalHarvested ?: 0} Plants Done", style = Typography.labelMedium, color = Neutral50)
                         }
                     }
@@ -178,10 +195,7 @@ fun HomeScreen(
                         )
                     } else {
                         todayTasks.forEach { taskName ->
-                            Row(
-                                modifier = Modifier.padding(vertical = 4.dp),
-                                verticalAlignment = Alignment.CenterVertically
-                            ) {
+                            Row(modifier = Modifier.padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
                                 Icon(painter = painterResource(id = R.drawable.checklist), contentDescription = null, tint = Neutral50, modifier = Modifier.size(20.dp))
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(taskName, style = Typography.bodyMedium, color = Neutral50)
@@ -193,17 +207,14 @@ fun HomeScreen(
 
             // ── Priority Plant ────────────────────────────────────────────
             Column(modifier = Modifier.padding(horizontal = 24.dp)) {
-                Text(
-                    text = "Priority Plant",
-                    style = Typography.titleLarge.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold),
-                    color = Neutral900
-                )
+                Text("Priority Plant", style = Typography.titleLarge.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold), color = Neutral900)
                 Spacer(modifier = Modifier.height(16.dp))
 
-                if (activePlants.isNotEmpty()) {
+                if (priorityPlant != null && masterPlant != null) {
                     PriorityPlantCard(
-                        userPlant = activePlants.first(),
-                        onClick = { onNavigateToPlantDetail(activePlants.first().userPlantId) }
+                        userPlant = priorityPlant,
+                        masterPlant = masterPlant,
+                        onClick = { onNavigateToPlantDetail(masterPlant.id) }
                     )
                 } else {
                     Row(
@@ -216,10 +227,7 @@ fun HomeScreen(
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Box(
-                            modifier = Modifier.size(42.dp).background(color = Neutral300, shape = RoundedCornerShape(100.dp)),
-                            contentAlignment = Alignment.Center
-                        ) {
+                        Box(modifier = Modifier.size(42.dp).background(color = Neutral300, shape = RoundedCornerShape(100.dp)), contentAlignment = Alignment.Center) {
                             Text("+", fontSize = 24.sp, color = Neutral50)
                         }
                         Spacer(modifier = Modifier.width(12.dp))
@@ -232,35 +240,22 @@ fun HomeScreen(
 
             // ── Recommendations ───────────────────────────────────────────
             Column(modifier = Modifier.padding(start = 24.dp)) {
-                Text(
-                    text = "Recommendations",
-                    style = Typography.titleLarge.copy(fontSize = 20.sp, fontWeight = FontWeight.SemiBold),
-                    color = Neutral900
-                )
+                Text("Recommendations", style = Typography.titleLarge.copy(fontSize = 20.sp, fontWeight = FontWeight.SemiBold), color = Neutral900)
                 Spacer(modifier = Modifier.height(16.dp))
 
-                LazyRow(
-                    horizontalArrangement = Arrangement.spacedBy(16.dp),
-                    contentPadding = PaddingValues(end = 24.dp)
-                ) {
+                LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp), contentPadding = PaddingValues(end = 24.dp)) {
                     items(recommendations) { plant ->
                         PlantRecommendationCard(
                             plant = plant,
-                            onClick = { onNavigateToAddPlant() }
+                            onClick = { onNavigateToPlantDetail(plant.id) }
                         )
                     }
                 }
 
                 if (recommendations.isEmpty()) {
-                    Text(
-                        "Lengkapi personalisasi untuk rekomendasi tanaman.",
-                        style = Typography.bodyMedium,
-                        color = Neutral400,
-                        modifier = Modifier.padding(end = 24.dp)
-                    )
+                    Text("Lengkapi personalisasi untuk rekomendasi tanaman.", style = Typography.bodyMedium, color = Neutral400, modifier = Modifier.padding(end = 24.dp))
                 }
             }
-
             Spacer(modifier = Modifier.height(40.dp))
         }
     }

@@ -23,11 +23,17 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.group10.terrace.R
+import com.group10.terrace.model.Plant
 import com.group10.terrace.ui.components.ActivePlantCard
 import com.group10.terrace.ui.components.BottomNavBar
 import com.group10.terrace.ui.theme.*
 import com.group10.terrace.viewmodel.HomeViewModel
-import androidx.compose.runtime.collectAsState
+
+// Tambahkan fungsi ekstrak untuk jaga-jaga
+fun extractMaxDaysProfile(duration: String): Int {
+    val numbers = Regex("\\d+").findAll(duration).map { it.value.toInt() }.toList()
+    return numbers.maxOrNull() ?: 30
+}
 
 @Composable
 fun ProfileScreen(
@@ -49,16 +55,23 @@ fun ProfileScreen(
             ) {
                 Column {
                     Row(
-                        modifier = Modifier.fillMaxWidth(),
+                        modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                            Image(painter = painterResource(id = R.drawable.putih_full), contentDescription = "Logo", modifier = Modifier.size(24.dp))
-                            Text("errace", style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold), color = Neutral50)
+                            Image(
+                                painter = painterResource(id = R.drawable.putih_full), // Gunakan full image atau icon jika putih_full tidak ada
+                                contentDescription = "Logo",
+                                modifier = Modifier.height(24.dp)
+                            )
                         }
-                        Icon(painter = painterResource(id = R.drawable.settings), contentDescription = "Settings", tint = Neutral50,
-                            modifier = Modifier.size(24.dp).clickable { onSettingsClick() })
+                        Icon(
+                            painter = painterResource(id = R.drawable.settings),
+                            contentDescription = "Settings",
+                            tint = Neutral50,
+                            modifier = Modifier.size(24.dp).clickable { onSettingsClick() }
+                        )
                     }
 
                     Spacer(modifier = Modifier.height(20.dp))
@@ -72,6 +85,8 @@ fun ProfileScreen(
                                 error = painterResource(id = R.drawable.fototanaman),
                                 placeholder = painterResource(id = R.drawable.fototanaman)
                             )
+
+
                             Box(modifier = Modifier.size(24.dp).background(Neutral900, CircleShape), contentAlignment = Alignment.Center) {
                                 Text("2", style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold, fontSize = 10.sp), color = Neutral50)
                             }
@@ -90,13 +105,13 @@ fun ProfileScreen(
 
                     if (!userData?.location.isNullOrBlank()) {
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                            Icon(painter = painterResource(id = R.drawable.map), contentDescription = null, tint = Neutral50.copy(alpha = 0.8f), modifier = Modifier.size(14.dp))
+                            Icon(painter = painterResource(id = android.R.drawable.ic_dialog_map), contentDescription = null, tint = Neutral50.copy(alpha = 0.8f), modifier = Modifier.size(14.dp))
                             Text(userData?.location ?: "", style = Typography.bodyMedium.copy(fontSize = 12.sp), color = Neutral50.copy(alpha = 0.8f))
                         }
                         Spacer(modifier = Modifier.height(16.dp))
                     }
 
-                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.spacedBy(24.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
                         StatItem("#2", "Rank")
                         StatDivider()
                         StatItem("${activePlants.size}", "Plants")
@@ -107,22 +122,31 @@ fun ProfileScreen(
                     Spacer(modifier = Modifier.height(20.dp))
 
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
-                        listOf(R.drawable.badge_plant, R.drawable.badge_timer, R.drawable.badge_lightning, R.drawable.badge_sun)
-                            .forEach { iconRes ->
-                                Box(
-                                    modifier = Modifier.size(48.dp).background(Neutral50.copy(alpha = 0.15f), RoundedCornerShape(8.dp)),
-                                    contentAlignment = Alignment.Center
-                                ) {
-                                    Image(painter = painterResource(id = iconRes), contentDescription = null, modifier = Modifier.size(28.dp))
-                                }
+                        listOf(
+                            R.drawable.badge_plant,
+                            R.drawable.badge_timer,
+                            R.drawable.badge_sun,
+                            R.drawable.badge_lightning
+                        ).forEach { iconRes ->
+                            Box(
+                                modifier = Modifier.size(48.dp).background(Neutral50.copy(alpha = 0.15f), RoundedCornerShape(8.dp)),
+                                contentAlignment = Alignment.Center
+                            ) {
+                                Image(painter = painterResource(id = iconRes), contentDescription = null, modifier = Modifier.size(28.dp))
                             }
+                        }
                     }
                 }
             }
 
+            // Progress Card
             Box(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp).offset(y = (-20).dp)
-                    .shadow(10.dp, RoundedCornerShape(20.dp)).background(Neutral50, RoundedCornerShape(20.dp))
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp)
+                    .offset(y = (-20).dp)
+                    .shadow(10.dp, RoundedCornerShape(20.dp))
+                    .background(Neutral50, RoundedCornerShape(20.dp))
                     .padding(horizontal = 20.dp, vertical = 16.dp)
             ) {
                 Column {
@@ -132,7 +156,7 @@ fun ProfileScreen(
                         modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    val plantsToShow = activePlants.take(2)
+                    val plantsToShow = activePlants.take(2) // Batasi hanya 2 tanaman di profil
                     if (plantsToShow.isEmpty()) {
                         Text("Belum ada tanaman aktif.", style = Typography.bodyMedium, color = Neutral400,
                             modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
@@ -140,11 +164,24 @@ fun ProfileScreen(
                         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                             plantsToShow.forEachIndexed { index, userPlant ->
                                 val master = masterPlants.find { it.id == userPlant.plantId }
+
+                                // FIX 1: Pembuatan Safe Master Plant
+                                val safeMasterPlant = master ?: Plant(
+                                    id = userPlant.plantId,
+                                    name = userPlant.plantName,
+                                    difficulty = "Mudah",
+                                    harvest_duration = "30 hari"
+                                )
+
+                                // FIX 2: Perbaikan kalkulasi hari
+                                val dynamicEstimationDays = extractMaxDaysProfile(safeMasterPlant.harvest_duration)
+
                                 ActivePlantCard(
                                     userPlant = userPlant,
-                                    estimationDays = master?.estimationDays ?: 0,
-                                    difficulty = master?.difficulty ?: "Easy",
+                                    estimationDays = dynamicEstimationDays, // Sudah menggunakan data yang benar
+                                    difficulty = safeMasterPlant.difficulty, // Sudah menggunakan data yang benar
                                     isPriority = index == 0,
+                                    masterPlant = safeMasterPlant, // FIX 3: Tambahkan ini agar tidak error
                                     onClick = {}
                                 )
                             }
@@ -156,8 +193,13 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(80.dp))
         }
 
-        // FIX: "academy" → "profile"
-        BottomNavBar(currentRoute = "profile", onNavigate = onNavigate, modifier = Modifier.align(Alignment.BottomCenter))
+        // FIX 4: Bungkus BottomNavBar dalam Box yang memiliki align BottomCenter
+        Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+            BottomNavBar(
+                currentRoute = "profile",
+                onNavigate = onNavigate
+            )
+        }
     }
 }
 

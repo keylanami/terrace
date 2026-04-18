@@ -9,6 +9,7 @@ import com.group10.terrace.repository.AuthRepository
 import com.group10.terrace.repository.PlantRepository
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import java.util.concurrent.TimeUnit
 
 class HomeViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -35,12 +36,23 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         authRepo.getCurrentUser { user ->
             _userData.value = user
             user?.let {
-                // UPDATE: Lempar juga 'experience' ke repo agar filter sesuai keahlian
+                val masterList = plantRepo.getMasterPlants()
+                _masterPlants.value = masterList
                 _recommendations.value = plantRepo.getRecommendedPlants(it.landSize, it.experience)
-                _masterPlants.value = plantRepo.getMasterPlants()
 
                 plantRepo.getActivePlants(it.uid) { plants ->
-                    _activePlants.value = plants
+                    val updatedPlants = plants.map { userPlant ->
+                        val master = masterList.find { m -> m.id == userPlant.plantId }
+                        val maxDays = extractMaxDaysVM(master?.harvest_duration ?: "30 hari")
+                        val currentDay = calculateDaysPassedVM(userPlant.startDate).toInt().coerceAtMost(maxDays)
+
+                        val rawProgress = if (maxDays > 0) currentDay.toFloat() / maxDays.toFloat() else 0f
+                        val progressPercentage = (rawProgress.coerceIn(0f, 1f) * 100).toInt()
+
+                        userPlant.copy(progress = progressPercentage)
+                    }
+
+                    _activePlants.value = updatedPlants
                 }
             }
         }
@@ -51,5 +63,15 @@ class HomeViewModel(application: Application) : AndroidViewModel(application) {
         plantRepo.startPlanting(userId, plant) { success ->
             if (success) loadDashboardData()
         }
+    }
+
+    private fun extractMaxDaysVM(duration: String): Int {
+        val numbers = Regex("\\d+").findAll(duration).map { it.value.toInt() }.toList()
+        return numbers.maxOrNull() ?: 30
+    }
+
+    private fun calculateDaysPassedVM(startDateMillis: Long): Long {
+        val diff = System.currentTimeMillis() - startDateMillis
+        return TimeUnit.MILLISECONDS.toDays(diff).coerceAtLeast(1L)
     }
 }

@@ -1,5 +1,7 @@
 package com.group10.terrace.model
 
+import com.google.gson.annotations.SerializedName
+
 data class Plant(
     val id: String = "",
     val name: String = "",
@@ -14,5 +16,7 @@ data class Plant(
     val startingSteps: List<String> = emptyList(),
     val isPremium: Boolean = false,
     val tasks_logic: TasksLogic? = null,
+
+    @SerializedName("image_url")
     val imageUrl: String = ""
 )

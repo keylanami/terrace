@@ -57,6 +57,7 @@ class GamificationRepository {
         userId: String,
         userPlantId: String,
         mission: Mission,
+        plantMaster: Plant, // TAMBAHAN PARAMETER: Kita butuh data master untuk hitung total hari
         onResult: (Boolean, Int, Int) -> Unit
     ) {
         val userRef = db.collection("users").document(userId)
@@ -66,11 +67,14 @@ class GamificationRepository {
         var updatedStreak = 0
 
         db.runTransaction { transaction ->
-            val snapshot = transaction.get(userRef)
-            val user = snapshot.toObject(User::class.java) ?: return@runTransaction
+            val userSnapshot = transaction.get(userRef)
+            val user = userSnapshot.toObject(User::class.java) ?: return@runTransaction
+
+            val plantSnapshot = transaction.get(plantRef)
+            val userPlant = plantSnapshot.toObject(UserPlant::class.java) ?: return@runTransaction
+
 
             val pointsEarned = mission.points
-
             updatedTotalPoints = user.totalPoints + pointsEarned
             val newCurrentPoints = user.currentPoint + pointsEarned
             updatedStreak = calculateStreak(user.lastActiveDays, user.currentStreak)
@@ -80,6 +84,14 @@ class GamificationRepository {
             transaction.update(userRef, "currentStreak", updatedStreak)
             transaction.update(userRef, "lastActiveDays", System.currentTimeMillis())
 
+
+            val currentDay = calculateDaysBetween(userPlant.startDate, System.currentTimeMillis()).toInt().coerceAtLeast(1)
+            val maxDays = extractMaxDaysRepo(plantMaster.harvest_duration)
+
+            val rawProgressFraction = if (maxDays > 0) currentDay.toFloat() / maxDays.toFloat() else 0f
+            val progressPercentage = (rawProgressFraction.coerceIn(0f, 1f) * 100).toInt()
+
+            transaction.update(plantRef, "progress", progressPercentage)
             transaction.update(plantRef, "completedTaskToday", FieldValue.arrayUnion(mission.name))
             transaction.update(plantRef, "lastTaskCompletionDate", System.currentTimeMillis())
 
@@ -90,6 +102,13 @@ class GamificationRepository {
             Log.e("TERRACE_GAME", "Gagal menyimpan misi: ${e.message}")
             onResult(false, 0, 0)
         }
+    }
+
+    private fun extractMaxDaysRepo(duration: String): Int {
+        return try {
+            val numbers = duration.replace("+", "").split("-", " ").mapNotNull { it.trim().toIntOrNull() }
+            (numbers.maxOrNull() ?: 30).coerceAtMost(30)
+        } catch (e: Exception) { 30 }
     }
 
     private fun calculateDaysBetween(startDateMillis: Long, endDateMillis: Long): Long {

@@ -1,6 +1,7 @@
 package com.group10.terrace.screen.plant
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.itemsIndexed
@@ -11,16 +12,17 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import com.group10.terrace.R
+import com.group10.terrace.model.Plant
 import com.group10.terrace.ui.components.ActivePlantCard
 import com.group10.terrace.ui.components.BottomNavBar
 import com.group10.terrace.ui.theme.*
 import com.group10.terrace.viewmodel.HomeViewModel
-import androidx.compose.runtime.collectAsState
 
 @Composable
 fun PlantProgressScreen(
@@ -43,7 +45,7 @@ fun PlantProgressScreen(
                     .padding(horizontal = 20.dp, vertical = 20.dp)
             ) {
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier.fillMaxWidth().padding(top = 16.dp),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
@@ -51,16 +53,12 @@ fun PlantProgressScreen(
                         verticalAlignment = Alignment.CenterVertically,
                         horizontalArrangement = Arrangement.spacedBy(4.dp)
                     ) {
+
                         Icon(
-                            painter = painterResource(id = R.drawable.putih),
+                            painter = painterResource(id = R.drawable.putih_full),
                             contentDescription = "Logo",
-                            tint = Neutral50,
-                            modifier = Modifier.size(24.dp)
-                        )
-                        Text(
-                            text = "errace",
-                            style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold),
-                            color = Neutral50
+                            tint = Color.Unspecified,
+                            modifier = Modifier.height(24.dp)
                         )
                     }
                     Icon(
@@ -127,15 +125,28 @@ fun PlantProgressScreen(
                                 .weight(1f)
                                 .padding(horizontal = 16.dp),
                             verticalArrangement = Arrangement.spacedBy(12.dp),
-                            contentPadding = PaddingValues(bottom = 80.dp)
+                            contentPadding = PaddingValues(bottom = 100.dp) // Beri ruang agar tidak tertutup FAB
                         ) {
                             itemsIndexed(activePlants) { index, userPlant ->
                                 val master = masterPlants.find { it.id == userPlant.plantId }
+
+                                // FIX 1: Pembuatan Safe Master Plant
+                                val safeMasterPlant = master ?: Plant(
+                                    id = userPlant.plantId,
+                                    name = userPlant.plantName,
+                                    difficulty = "Mudah",
+                                    harvest_duration = "30 hari"
+                                )
+
+                                // FIX 2: Perbaikan kalkulasi hari
+                                val dynamicEstimationDays = extractMaxDays(safeMasterPlant.harvest_duration)
+
                                 ActivePlantCard(
                                     userPlant = userPlant,
-                                    estimationDays = master?.estimationDays ?: 0,
-                                    difficulty = master?.difficulty ?: "Easy",
+                                    estimationDays = dynamicEstimationDays,
+                                    difficulty = safeMasterPlant.difficulty,
                                     isPriority = index == 0,
+                                    masterPlant = safeMasterPlant, // Sekarang error merahnya hilang
                                     onClick = { onPlantClick(userPlant.userPlantId) }
                                 )
                             }
@@ -147,14 +158,14 @@ fun PlantProgressScreen(
                 FloatingActionButton(
                     onClick = onAddPlant,
                     modifier = Modifier
-                        .align(Alignment.BottomCenter)
-                        .padding(bottom = 80.dp),
+                        .align(Alignment.BottomEnd) // Letakkan di kanan bawah agar tidak nabrak list
+                        .padding(bottom = 24.dp, end = 24.dp),
                     containerColor = Green600,
                     shape = CircleShape,
                     elevation = FloatingActionButtonDefaults.elevation(6.dp)
                 ) {
                     Icon(
-                        painter = painterResource(id = R.drawable.plus),
+                        painter = painterResource(id = android.R.drawable.ic_input_add), // Gunakan icon bawaan jika R.drawable.plus tidak ada
                         contentDescription = "Tambah Tanaman",
                         tint = Neutral50,
                         modifier = Modifier.size(24.dp)
@@ -164,10 +175,18 @@ fun PlantProgressScreen(
         }
 
         // ── Bottom Nav ────────────────────────────────────────────────────
-        BottomNavBar(
-            currentRoute = "plant",
-            onNavigate = onNavigate,
-            modifier = Modifier.align(Alignment.BottomCenter)
-        )
+        // FIX 3: BottomNavBar ditaruh di dalam Box yang memiliki alignment
+        Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+            BottomNavBar(
+                currentRoute = "plant",
+                onNavigate = onNavigate
+            )
+        }
     }
+}
+
+// FIX 2 Lanjutan: Fungsi ekstrak hari wajib ada di file ini
+fun extractMaxDays(duration: String): Int {
+    val numbers = Regex("\\d+").findAll(duration).map { it.value.toInt() }.toList()
+    return numbers.maxOrNull() ?: 30
 }

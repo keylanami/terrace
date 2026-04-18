@@ -1,7 +1,7 @@
 package com.group10.terrace.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -19,6 +19,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import coil.compose.AsyncImage
 import com.group10.terrace.R
 import com.group10.terrace.model.Plant
 import com.group10.terrace.ui.theme.Neutral50
@@ -30,31 +31,36 @@ fun PlantRecommendationCard(plant: Plant, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .width(160.dp)
-            .shadow(elevation = 10.dp, shape = RoundedCornerShape(15.dp), spotColor = Neutral900.copy(alpha = 0.1f))
-            .background(color = Neutral50, shape = RoundedCornerShape(15.dp))
+            .shadow(elevation = 12.dp, shape = RoundedCornerShape(16.dp), spotColor = Neutral900.copy(alpha = 0.08f))
+            .clip(RoundedCornerShape(16.dp))
+            .background(color = Neutral50)
+            .clickable { onClick() }
             .padding(12.dp)
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.fototanaman),
+
+        AsyncImage(
+            model = plant.imageUrl,
             contentDescription = plant.name,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(94.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .height(96.dp)
+                .clip(RoundedCornerShape(10.dp)),
+            placeholder = painterResource(id = R.drawable.fototanaman),
+            error = painterResource(id = R.drawable.fototanaman)
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
         Text(
             text = plant.name,
-            style = Typography.labelLarge.copy(fontWeight = FontWeight.SemiBold),
+            style = Typography.labelLarge.copy(fontWeight = FontWeight.Bold),
             color = Neutral900,
             maxLines = 1,
             overflow = TextOverflow.Ellipsis
         )
 
-        Spacer(modifier = Modifier.height(6.dp))
+        Spacer(modifier = Modifier.height(8.dp))
 
         DifficultyBadge(difficulty = plant.difficulty)
     }

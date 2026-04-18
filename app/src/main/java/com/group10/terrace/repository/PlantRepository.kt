@@ -5,10 +5,17 @@ import com.google.firebase.Firebase
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.firestore
 import com.google.gson.Gson
+import com.google.gson.annotations.SerializedName
 import com.google.gson.reflect.TypeToken
 import com.group10.terrace.model.Plant
 import com.group10.terrace.model.UserPlant
 import java.io.IOException
+
+// FIX: plants.json punya wrapper object { "plants": [...] }
+// bukan langsung array [...], jadi perlu wrapper class ini
+private data class PlantsWrapper(
+    @SerializedName("plants") val plants: List<Plant> = emptyList()
+)
 
 class PlantRepository(private val context: Context) {
     private val db: FirebaseFirestore = Firebase.firestore
@@ -16,8 +23,9 @@ class PlantRepository(private val context: Context) {
     fun getMasterPlants(): List<Plant> {
         return try {
             val jsonString = context.assets.open("plants.json").bufferedReader().use { it.readText() }
-            val listType = object : TypeToken<List<Plant>>() {}.type
-            Gson().fromJson(jsonString, listType)
+            // FIX: parse sebagai PlantsWrapper, bukan List<Plant> langsung
+            val wrapper = Gson().fromJson(jsonString, PlantsWrapper::class.java)
+            wrapper.plants
         } catch (e: IOException) {
             emptyList()
         }
@@ -35,7 +43,6 @@ class PlantRepository(private val context: Context) {
             }
             else -> allPlants
         }
-
 
         return if (landSize < 2.0) {
             filteredBySkill.filter { it.area_per_pot_m2 <= landSize || it.area_per_pot_m2 <= 0.3 }

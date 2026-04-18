@@ -1,6 +1,5 @@
 package com.group10.terrace.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,77 +15,51 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.group10.terrace.R
+import com.group10.terrace.model.Plant
 import com.group10.terrace.model.UserPlant
 import com.group10.terrace.ui.theme.*
-
 
 @Composable
 fun PriorityPlantCard(
     userPlant: UserPlant,
+    masterPlant: Plant,
     onClick: () -> Unit
 ) {
     Row(
         modifier = Modifier
-            .fillMaxWidth(
-                fraction = (userPlant.progress.coerceIn(0, 100).toFloat() / 100f)
-            )
-            .shadow(
-                elevation = 20.dp,
-                shape = RoundedCornerShape(20.dp),
-                spotColor = Neutral900.copy(alpha = 0.05f)
-            )
-            .background(color = Neutral50, shape = RoundedCornerShape(20.dp))
+            .fillMaxWidth()
+            .shadow(elevation = 12.dp, shape = RoundedCornerShape(16.dp), spotColor = Neutral900.copy(alpha = 0.08f))
+            .clip(RoundedCornerShape(16.dp))
+            .background(color = Neutral50)
             .clickable { onClick() }
-            .padding(start = 14.dp, top = 15.dp, end = 24.dp, bottom = 15.dp), // Sedikit penyesuaian padding end
-        horizontalArrangement = Arrangement.spacedBy(17.dp),
+            .padding(14.dp),
+        horizontalArrangement = Arrangement.spacedBy(16.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
-        Image(
-            painter = painterResource(id = R.drawable.fototanaman), // TODO: Ganti pakai ImageLoader/Coil nanti
+        AsyncImage(
+            model = masterPlant.imageUrl,
             contentDescription = userPlant.plantName,
             contentScale = ContentScale.Crop,
-            modifier = Modifier
-                .size(width = 106.dp, height = 94.dp)
-                .clip(RoundedCornerShape(12.dp)) // Beri sedikit radius agar tidak kaku
+            modifier = Modifier.size(width = 96.dp, height = 96.dp).clip(RoundedCornerShape(12.dp)),
+            placeholder = painterResource(id = R.drawable.fototanaman),
+            error = painterResource(id = R.drawable.fototanaman)
         )
 
-        Column(
-            modifier = Modifier.weight(1f),
-            verticalArrangement = Arrangement.spacedBy(8.dp) // Jarak antar elemen teks
-        ) {
-            Text(
-                text = userPlant.plantName,
-                style = Typography.bodyLarge.copy(fontWeight = FontWeight.SemiBold, fontSize = 14.sp),
-                color = Neutral900,
-                maxLines = 1
-            )
+        Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+            Text(text = userPlant.plantName, style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold, fontSize = 16.sp), color = Neutral900, maxLines = 1)
 
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                horizontalArrangement = Arrangement.spacedBy(8.dp)
-            ) {
-
-                Box(
-                    modifier = Modifier
-                        .weight(1f)
-                        .height(10.dp)
-                        .background(color = Neutral200, shape = RoundedCornerShape(20.dp))
-                ) {
-
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
+                Box(modifier = Modifier.weight(1f).height(8.dp).background(color = Neutral200, shape = RoundedCornerShape(100.dp))) {
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth(fraction = userPlant.progress / 100f)
-                            .height(10.dp)
-                            .background(color = Green600, shape = RoundedCornerShape(20.dp))
+                            .fillMaxWidth(fraction = (userPlant.progress / 100f).coerceIn(0f, 1f)) // LANGSUNG DR VIEWMODEL
+                            .height(8.dp)
+                            .background(color = Green600, shape = RoundedCornerShape(100.dp))
                     )
                 }
-
-                Text(
-                    text = "${userPlant.progress}%",
-                    style = Typography.labelMedium.copy(fontWeight = FontWeight.Medium, fontSize = 10.sp),
-                    color = Neutral900
-                )
+                Text(text = "${userPlant.progress}%", style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold, fontSize = 11.sp), color = Green700)
             }
         }
     }

@@ -1,6 +1,5 @@
 package com.group10.terrace.ui.components
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -16,6 +15,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.group10.terrace.R
 import com.group10.terrace.model.Product
 import com.group10.terrace.ui.theme.*
@@ -29,15 +29,16 @@ fun MarketProductCard(product: Product, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .width(176.dp)
-            .shadow(elevation = 15.dp, shape = RoundedCornerShape(10.dp), spotColor = Neutral900.copy(alpha = 0.4f))
-            .background(Neutral50, RoundedCornerShape(10.dp))
+            .shadow(elevation = 12.dp, shape = RoundedCornerShape(12.dp), spotColor = Neutral900.copy(alpha = 0.08f))
+            .clip(RoundedCornerShape(12.dp))
+            .background(Neutral50)
             .clickable { onClick() }
-            .padding(15.dp)
+            .padding(12.dp)
     ) {
         // Badge Kategori
         Box(
             modifier = Modifier
-                .background(Green600, RoundedCornerShape(10.dp))
+                .background(Green600, RoundedCornerShape(8.dp))
                 .padding(horizontal = 8.dp, vertical = 4.dp)
         ) {
             Text(
@@ -47,48 +48,47 @@ fun MarketProductCard(product: Product, onClick: () -> Unit) {
             )
         }
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
-        // Gambar
-        Image(
-            painter = painterResource(id = R.drawable.fototanaman), // Sesuaikan dengan placeholder/Coil
+        // UI Fix: Gabungkan Image & AsyncImage jadi satu
+        AsyncImage(
+            model = product.imageUrl,
             contentDescription = product.name,
             contentScale = ContentScale.Crop,
             modifier = Modifier
                 .fillMaxWidth()
-                .height(94.dp)
-                .clip(RoundedCornerShape(8.dp))
+                .height(96.dp)
+                .clip(RoundedCornerShape(8.dp)),
+            placeholder = painterResource(id = R.drawable.fototanaman),
+            error = painterResource(id = R.drawable.fototanaman)
         )
 
-        Spacer(modifier = Modifier.height(8.dp))
+        Spacer(modifier = Modifier.height(10.dp))
 
-        // Judul
         Text(
             text = product.name,
-            style = Typography.labelLarge.copy(fontWeight = FontWeight.SemiBold, fontSize = 12.sp),
+            style = Typography.labelLarge.copy(fontWeight = FontWeight.Bold, fontSize = 13.sp),
             color = Neutral900,
             maxLines = 1
         )
 
         Spacer(modifier = Modifier.height(8.dp))
 
-        // Baris Bawah: Difficulty & Harga
         Row(
             modifier = Modifier.fillMaxWidth(),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Difficulty Badge (Muncul kalau ada hubungannya dengan tanaman/bibit)
             if (product.category.contains("Bibit") || product.category.contains("Sayuran")) {
-                DifficultyBadge(difficulty = "mudah") // Bisa dihubungkan ke data master tanaman jika ada relasinya nanti
+                DifficultyBadge(difficulty = "mudah")
             } else {
                 Spacer(modifier = Modifier.width(1.dp))
             }
 
             Text(
                 text = "Rp${formatRupiah.format(product.price)}",
-                style = Typography.labelMedium.copy(fontSize = 10.sp, fontWeight = FontWeight.Medium),
-                color = Neutral900
+                style = Typography.labelMedium.copy(fontSize = 11.sp, fontWeight = FontWeight.ExtraBold),
+                color = Green700
             )
         }
     }

@@ -1,4 +1,4 @@
-package com.group10.terrace.screen.market
+package com.group10.terrace.screen.marketplace
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border

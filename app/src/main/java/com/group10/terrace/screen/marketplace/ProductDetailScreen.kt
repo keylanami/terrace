@@ -1,6 +1,5 @@
 package com.group10.terrace.screen.marketplace
 
-import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
@@ -22,6 +21,7 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import coil.compose.AsyncImage
 import com.group10.terrace.R
 import com.group10.terrace.ui.theme.*
 import com.group10.terrace.viewmodel.MarketplaceViewModel
@@ -33,7 +33,8 @@ fun ProductDetailScreen(
     viewModel: MarketplaceViewModel,
     productId: String,
     userId: String,
-    onBack: () -> Unit
+    onBack: () -> Unit,
+    onNavigate: (String) -> Unit
 ) {
     val products by viewModel.products.collectAsState()
     val product = products.find { it.id == productId }
@@ -49,11 +50,14 @@ fun ProductDetailScreen(
 
     Box(modifier = Modifier.fillMaxSize().background(Neutral50)) {
 
-        Image(
-            painter = painterResource(id = R.drawable.tomat), // TODO: Coil
+        // PERUBAHAN HANYA DI SINI: Image diganti menjadi AsyncImage untuk menarik gambar dari URL
+        AsyncImage(
+            model = product.imageUrl,
             contentDescription = product.name,
             contentScale = ContentScale.Crop,
-            modifier = Modifier.fillMaxWidth().height(453.dp)
+            modifier = Modifier.fillMaxWidth().height(453.dp),
+            placeholder = painterResource(id = R.drawable.fototanaman),
+            error = painterResource(id = R.drawable.fototanaman)
         )
 
         Icon(

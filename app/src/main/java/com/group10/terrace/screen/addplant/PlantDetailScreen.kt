@@ -4,7 +4,6 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyRow
-import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -14,6 +13,7 @@ import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
@@ -24,7 +24,6 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.group10.terrace.R
 import com.group10.terrace.model.Mission
-import com.group10.terrace.model.TaskItem
 import com.group10.terrace.ui.components.DifficultyBadge
 import com.group10.terrace.ui.components.calculateDaysPassed
 import com.group10.terrace.ui.theme.*
@@ -32,12 +31,20 @@ import com.group10.terrace.viewmodel.GamificationEvent
 import com.group10.terrace.viewmodel.HomeViewModel
 import com.group10.terrace.viewmodel.MissionViewModel
 
+fun extractMaxDays(harvestDuration: String): Int {
+    return try {
+        val numbers = harvestDuration.replace("+", "").split("-", " ").mapNotNull { it.trim().toIntOrNull() }
+        (numbers.maxOrNull() ?: 30).coerceAtMost(30)
+    } catch (e: Exception) { 30 }
+}
+
 @Composable
 fun PlantDetailScreen(
     viewModel: HomeViewModel,
-    missionViewModel: MissionViewModel,  // FIX: tambah parameter
-    userPlantId: String,
-    onBack: () -> Unit
+    missionViewModel: MissionViewModel,
+    plantId: String,
+    onBack: () -> Unit,
+    onAddPlant: () -> Unit
 ) {
     val activePlants by viewModel.activePlants.collectAsState()
     val masterPlants by viewModel.masterPlants.collectAsState()
@@ -45,17 +52,39 @@ fun PlantDetailScreen(
     val todayMissions by missionViewModel.todayMissions.collectAsState()
     val gamificationEvent by missionViewModel.gamificationEvent.collectAsState()
 
-    val userPlant = activePlants.find { it.userPlantId == userPlantId }
-    val masterPlant = masterPlants.find { it.id == userPlant?.plantId }
+    val masterPlant = masterPlants.find { it.id == plantId }
+    val userPlant = activePlants.find { it.plantId == plantId }
+    val isActive = userPlant != null
 
-    // Load missions saat masuk screen
-    LaunchedEffect(userPlantId) {
-        if (userPlant != null && masterPlant != null) {
-            missionViewModel.loadTodayMissions(userPlant, masterPlant)
-        }
+    if (masterPlant == null) {
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = Green600) }
+        return
     }
 
-    // Snackbar feedback poin
+    val realCurrentDay = if (isActive) calculateDaysPassed(userPlant!!.startDate).toInt() else 0
+    val maxDays = extractMaxDays(masterPlant.harvest_duration)
+
+    var selectedPreviewDay by remember { mutableIntStateOf(if (isActive) realCurrentDay.coerceAtMost(maxDays) else 1) }
+
+    val previewTasks = remember(selectedPreviewDay) {
+        val recurring = masterPlant.tasks_logic?.recurringTask
+            ?.filter { selectedPreviewDay % it.frequency_days == 0 } // Fix parameter name based on updated logic
+            ?.map { Mission(name = it.task_name, points = it.points, isMilestone = false) } ?: emptyList() // Fix parameter name
+
+        val milestones = masterPlant.tasks_logic?.milestoneTask
+            ?.filter { it.day == selectedPreviewDay }
+            ?.map { Mission(name = it.task_name, points = it.points, isMilestone = true) } ?: emptyList() // Fix parameter name
+
+        recurring + milestones
+    }
+
+    LaunchedEffect(plantId, isActive, realCurrentDay) {
+        if (isActive) missionViewModel.loadTodayMissions(userPlant!!, masterPlant)
+    }
+
+    val finalProgress = userPlant?.progress ?: 0
+    val progressFraction = (finalProgress / 100f).coerceIn(0f, 1f)
+
     var snackbarMessage by remember { mutableStateOf<String?>(null) }
     LaunchedEffect(gamificationEvent) {
         when (val event = gamificationEvent) {
@@ -72,41 +101,17 @@ fun PlantDetailScreen(
         }
     }
 
-    if (userPlant == null || masterPlant == null) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
-            CircularProgressIndicator(color = Green600)
-        }
-        return
-    }
-
-    val currentDay = calculateDaysPassed(userPlant.startDate).toInt()
-    val maxDays = extractMaxDays(masterPlant.harvest_duration)
-
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Neutral50)
-                .verticalScroll(rememberScrollState())
+            modifier = Modifier.fillMaxSize().background(Neutral50).verticalScroll(rememberScrollState())
         ) {
             // ── Top Bar ───────────────────────────────────────────────────
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(horizontal = 20.dp, vertical = 16.dp),
+                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    Icons.AutoMirrored.Outlined.ArrowBack,
-                    contentDescription = "Back",
-                    modifier = Modifier.size(24.dp).clickable { onBack() }
-                )
-                Text(
-                    "Tanaman Mu",
-                    style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold),
-                    modifier = Modifier.weight(1f),
-                    textAlign = TextAlign.Center
-                )
+                Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back", modifier = Modifier.size(24.dp).clickable { onBack() })
+                Text("Tanaman Mu", style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold), modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
                 Spacer(modifier = Modifier.size(24.dp))
             }
 
@@ -122,118 +127,101 @@ fun PlantDetailScreen(
 
             Column(modifier = Modifier.padding(24.dp)) {
                 // ── Category + Difficulty ─────────────────────────────────
-                Row(
-                    horizontalArrangement = Arrangement.spacedBy(8.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Box(
-                        modifier = Modifier
-                            .background(Green700, RoundedCornerShape(10.dp))
-                            .padding(horizontal = 10.dp, vertical = 4.dp)
-                    ) {
-                        Text(
-                            masterPlant.category.ifEmpty { "Sayuran & Buah" },
-                            style = Typography.labelMedium.copy(fontSize = 10.sp),
-                            color = Neutral50
-                        )
+                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
+                    Box(modifier = Modifier.background(Green700, RoundedCornerShape(10.dp)).padding(horizontal = 10.dp, vertical = 4.dp)) {
+                        Text(masterPlant.category.ifEmpty { "Sayuran & Buah" }, style = Typography.labelMedium.copy(fontSize = 10.sp), color = Neutral50)
                     }
                     DifficultyBadge(difficulty = masterPlant.difficulty)
                 }
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // ── Name + Priority ───────────────────────────────────────
+                // ── Name + Priority badge (only if active) ────────────────
                 Row(verticalAlignment = Alignment.CenterVertically) {
-                    if (activePlants.firstOrNull()?.userPlantId == userPlantId) {
-                        Box(
-                            modifier = Modifier
-                                .background(Yellow500, RoundedCornerShape(10.dp))
-                                .padding(horizontal = 10.dp, vertical = 4.dp)
-                        ) {
+                    if (isActive && activePlants.firstOrNull()?.plantId == plantId) {
+                        Box(modifier = Modifier.background(Yellow500, RoundedCornerShape(10.dp)).padding(horizontal = 10.dp, vertical = 4.dp)) {
                             Text("Priority", style = Typography.labelMedium.copy(fontSize = 10.sp), color = Neutral50)
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                     }
-                    Text(
-                        userPlant.plantName,
-                        style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp),
-                        color = Neutral900,
-                        modifier = Modifier.weight(1f)
-                    )
-                    Icon(
-                        painter = painterResource(id = android.R.drawable.ic_menu_edit),
-                        contentDescription = "Edit",
-                        modifier = Modifier.size(20.dp),
-                        tint = Neutral400
-                    )
+                    Text(masterPlant.name, style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp), color = Neutral900, modifier = Modifier.weight(1f))
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // ── Day Progress Row ──────────────────────────────────────
+                // ── PROGRESS CARD (NEW) ────────────────────────────────────
+                Column(
+                    modifier = Modifier.fillMaxWidth().shadow(elevation = 30.dp, shape = RoundedCornerShape(20.dp), spotColor = Neutral900.copy(alpha = 0.1f)).background(Neutral50, RoundedCornerShape(20.dp)).padding(horizontal = 17.dp, vertical = 30.dp)
+                ) {
+                    Text("Progress", style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp), color = Yellow800)
+                    Spacer(modifier = Modifier.height(16.dp))
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Box(modifier = Modifier.weight(1f).height(19.dp).background(Neutral300, RoundedCornerShape(20.dp))) {
+                            Box(modifier = Modifier.fillMaxWidth(fraction = progressFraction).height(19.dp).background(Yellow300, RoundedCornerShape(20.dp)))
+                        }
+                        Spacer(modifier = Modifier.width(12.dp))
+                        Text("$finalProgress%", style = Typography.labelMedium.copy(fontWeight = FontWeight.Medium, fontSize = 10.sp), color = Neutral900)
+                    }
+                    Spacer(modifier = Modifier.height(8.dp))
+                    Text("$realCurrentDay/$maxDays Hari Tumbuh", style = Typography.labelMedium.copy(fontWeight = FontWeight.SemiBold, fontSize = 10.sp), color = Yellow800)
+                }
+
+                Spacer(modifier = Modifier.height(24.dp))
+
+                // ── INTERACTIVE DAYS ROW ───────────────────────────────────
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(maxDays) { index ->
                         val dayNum = index + 1
-                        val isActive = dayNum <= currentDay
+                        val isSelected = dayNum == selectedPreviewDay
+                        val (bgColor, textColor) = when {
+                            isSelected -> Yellow400 to Neutral900
+                            isActive && dayNum <= realCurrentDay -> Green600 to Neutral50
+                            else -> Neutral200 to Neutral600
+                        }
+
                         Box(
                             modifier = Modifier
-                                .background(
-                                    if (isActive) Green600 else Green100,
-                                    RoundedCornerShape(20.dp)
-                                )
-                                .padding(horizontal = 12.dp, vertical = 8.dp)
+                                .clip(RoundedCornerShape(20.dp))
+                                .background(color = bgColor)
+                                .clickable { selectedPreviewDay = dayNum } // Ubah preview hari
+                                .padding(horizontal = 16.dp, vertical = 10.dp)
                         ) {
-                            Text(
-                                "Hari $dayNum",
-                                style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold),
-                                color = if (isActive) Neutral50 else Green700
-                            )
+                            Text("Hari $dayNum", style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold, fontSize = 12.sp), color = textColor)
                         }
                     }
                 }
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // ── Daily Tasks Card ──────────────────────────────────────
+                // ── DAILY TASKS / PREVIEW CARD ────────────────────────────
                 Column(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .shadow(
-                            elevation = 15.dp,
-                            shape = RoundedCornerShape(20.dp),
-                            spotColor = Neutral900.copy(alpha = 0.1f)
-                        )
-                        .background(Neutral50, RoundedCornerShape(20.dp))
-                        .padding(24.dp)
+                    modifier = Modifier.fillMaxWidth().shadow(elevation = 15.dp, shape = RoundedCornerShape(20.dp), spotColor = Neutral900.copy(alpha = 0.1f)).background(Neutral50, RoundedCornerShape(20.dp)).padding(24.dp)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(
-                            "Daily Tasks",
-                            style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp)
-                        )
+                        Text(if (selectedPreviewDay == realCurrentDay) "Daily Tasks" else "Preview Hari $selectedPreviewDay", style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp))
                         Spacer(modifier = Modifier.width(8.dp))
                         Icon(painter = painterResource(R.drawable.pin), contentDescription = "Pin")
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    if (todayMissions.isEmpty()) {
-                        Text(
-                            "Tidak ada tugas untuk hari ini. Bersantailah!",
-                            style = Typography.bodyMedium,
-                            color = Neutral400
-                        )
+                    // Gunakan data dari Database JIKA user melihat hari ini, JIKA BUKAN pakai data preview kalkulasi
+                    val tasksToDisplay = if (isActive && selectedPreviewDay == realCurrentDay) todayMissions else previewTasks
+
+                    if (tasksToDisplay.isEmpty()) {
+                        Text("Tidak ada tugas untuk hari ini. Bersantailah!", style = Typography.bodyMedium, color = Neutral400)
                     } else {
-                        // FIX: pakai Mission dari MissionViewModel, bukan TaskItem langsung
-                        todayMissions.forEach { mission ->
+                        tasksToDisplay.forEach { mission ->
+                            // Tombol aktif JIKA: Tanaman sudah di-add AND melihat hari ini AND tugas belum selesai
+                            val canComplete = isActive && selectedPreviewDay == realCurrentDay && !mission.isCompleted
+
                             Row(
                                 modifier = Modifier
                                     .fillMaxWidth()
                                     .padding(vertical = 8.dp)
-                                    // FIX: panggil onTaskChecked saat centang
-                                    .clickable(enabled = !mission.isCompleted) {
+                                    .clickable(enabled = canComplete) {
                                         val userId = userData?.uid ?: return@clickable
-                                        missionViewModel.onTaskChecked(userId, userPlantId, mission)
+                                        missionViewModel.onTaskChecked(userId, userPlant!!.userPlantId, mission, masterPlant)
                                     },
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
@@ -245,28 +233,12 @@ fun PlantDetailScreen(
                                 )
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Column(modifier = Modifier.weight(1f)) {
-                                    Text(
-                                        mission.name,
-                                        style = Typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
-                                        color = if (mission.isCompleted) Neutral400 else Neutral900
-                                    )
-                                    Text(
-                                        "+${mission.points} poin",
-                                        style = Typography.labelMedium.copy(fontSize = 10.sp),
-                                        color = if (mission.isCompleted) Neutral400 else Green500
-                                    )
+                                    Text(mission.name, style = Typography.bodyMedium.copy(fontWeight = FontWeight.Medium), color = if (mission.isCompleted) Neutral400 else Neutral900)
+                                    Text("+${mission.points} poin", style = Typography.labelMedium.copy(fontSize = 10.sp), color = if (mission.isCompleted) Neutral400 else Green500)
                                 }
                                 if (mission.isMilestone) {
-                                    Box(
-                                        modifier = Modifier
-                                            .background(Yellow200, RoundedCornerShape(4.dp))
-                                            .padding(horizontal = 6.dp, vertical = 2.dp)
-                                    ) {
-                                        Text(
-                                            "Milestone",
-                                            style = Typography.labelMedium.copy(fontSize = 9.sp),
-                                            color = Yellow800
-                                        )
+                                    Box(modifier = Modifier.background(Yellow200, RoundedCornerShape(4.dp)).padding(horizontal = 6.dp, vertical = 2.dp)) {
+                                        Text("Milestone", style = Typography.labelMedium.copy(fontSize = 9.sp), color = Yellow800)
                                     }
                                 }
                             }
@@ -274,33 +246,28 @@ fun PlantDetailScreen(
                     }
                 }
 
+                Spacer(modifier = Modifier.height(24.dp))
+
+                if (!isActive) {
+                    Button(
+                        onClick = onAddPlant,
+                        modifier = Modifier.fillMaxWidth().height(52.dp),
+                        colors = ButtonDefaults.buttonColors(containerColor = Green700),
+                        shape = RoundedCornerShape(12.dp)
+                    ) {
+                        Text("Tambahkan Tanaman", style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold, fontSize = 16.sp), color = Neutral50)
+                    }
+                }
+
                 Spacer(modifier = Modifier.height(40.dp))
             }
         }
 
-        // ── Snackbar poin feedback ────────────────────────────────────────
         snackbarMessage?.let { msg ->
-            Box(
-                modifier = Modifier
-                    .align(Alignment.BottomCenter)
-                    .padding(24.dp)
-                    .background(Green700, RoundedCornerShape(12.dp))
-                    .padding(horizontal = 20.dp, vertical = 12.dp)
-            ) {
+            Box(modifier = Modifier.align(Alignment.BottomCenter).padding(24.dp).background(Green700, RoundedCornerShape(12.dp)).padding(horizontal = 20.dp, vertical = 12.dp)) {
                 Text(msg, style = Typography.bodyMedium, color = Neutral50)
             }
-            LaunchedEffect(msg) {
-                kotlinx.coroutines.delay(3000)
-                snackbarMessage = null
-            }
+            LaunchedEffect(msg) { kotlinx.coroutines.delay(3000); snackbarMessage = null }
         }
     }
-}
-
-fun extractMaxDays(harvestDuration: String): Int {
-    return try {
-        val numbers = harvestDuration.replace("+", "").split("-", " ")
-            .mapNotNull { it.trim().toIntOrNull() }
-        numbers.maxOrNull() ?: 30
-    } catch (e: Exception) { 30 }
 }

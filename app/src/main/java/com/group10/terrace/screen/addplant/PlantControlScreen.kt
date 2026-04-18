@@ -16,8 +16,10 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.group10.terrace.model.Plant
 import com.group10.terrace.ui.components.ActivePlantCard
 import com.group10.terrace.ui.components.BottomNavBar
 import com.group10.terrace.ui.components.ExpandableLeaderboard
@@ -40,8 +42,7 @@ fun PlantControlScreen(
     val masterPlants by viewModel.masterPlants.collectAsState()
 
     Scaffold(
-        bottomBar = { BottomNavBar(currentRoute = "plant", onNavigate = onNavigateToNav,) },
-
+        bottomBar = { BottomNavBar(currentRoute = "plant", onNavigate = onNavigateToNav) },
         floatingActionButton = {
             Box(
                 modifier = Modifier
@@ -51,7 +52,6 @@ fun PlantControlScreen(
                     .clickable { onNavigateToAddPlant() },
                 contentAlignment = Alignment.Center
             ) {
-
                 Icon(
                     painter = painterResource(id = android.R.drawable.ic_input_add),
                     contentDescription = "Add Plant",
@@ -80,11 +80,11 @@ fun PlantControlScreen(
                     tint = Neutral900
                 )
                 Text(
-                    text = "Plant Control",
+                    text = "Pantau Tanaman",
                     style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp),
                     color = Neutral900,
                     modifier = Modifier.weight(1f),
-                    textAlign = androidx.compose.ui.text.style.TextAlign.Center
+                    textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.size(24.dp))
             }
@@ -99,27 +99,70 @@ fun PlantControlScreen(
                 }
 
                 item {
-                    Spacer(modifier = Modifier.height(8.dp))
                     Text(
-                        text = "Active Plants",
+                        text = "Tanaman Aktif",
                         style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp),
                         color = Neutral900
                     )
                 }
 
-                items(activePlants) { plant ->
-                    val masterPlantData = masterPlants.find { it.id == plant.plantId }
-                    val dynamicDifficulty = masterPlantData?.difficulty ?: "Mudah"
-                    val durationText = masterPlantData?.harvest_duration ?: "30 hari"
-                    val dynamicEstimationDays = extractMaxDays(durationText)
+                if (activePlants.isEmpty()) {
+                    item {
+                        Box(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(vertical = 32.dp),
+                            contentAlignment = Alignment.Center
+                        ) {
+                            Column(
+                                horizontalAlignment = Alignment.CenterHorizontally,
+                                verticalArrangement = Arrangement.spacedBy(12.dp)
+                            ) {
+                                Text(
+                                    text = "🌱",
+                                    fontSize = 48.sp
+                                )
+                                Text(
+                                    text = "Belum ada tanaman aktif.\nAyo menanam di terasmu sekarang!",
+                                    style = Typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
+                                    color = Neutral600,
+                                    textAlign = TextAlign.Center
+                                )
+                                Button(
+                                    onClick = onNavigateToAddPlant,
+                                    colors = ButtonDefaults.buttonColors(containerColor = Green600),
+                                    shape = RoundedCornerShape(10.dp)
+                                ) {
+                                    Text("Tambah Tanaman", color = Neutral50)
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    items(activePlants) { plant ->
+                        val masterPlantData = masterPlants.find { it.id == plant.plantId }
 
-                    ActivePlantCard(
-                        userPlant = plant,
-                        estimationDays = dynamicEstimationDays,
-                        difficulty = dynamicDifficulty,
-                        isPriority = plant == activePlants.first(),
-                        onClick = { onNavigateToDetail(plant.userPlantId) }
-                    )
+
+                        val safeMasterPlant = masterPlantData ?: Plant(
+                            id = plant.plantId,
+                            name = plant.plantName,
+                            difficulty = "Mudah",
+                            harvest_duration = "30 hari"
+                        )
+
+                        val dynamicDifficulty = safeMasterPlant.difficulty
+                        val durationText = safeMasterPlant.harvest_duration
+                        val dynamicEstimationDays = extractMaxDays(durationText)
+
+                        ActivePlantCard(
+                            userPlant = plant,
+                            estimationDays = dynamicEstimationDays,
+                            difficulty = dynamicDifficulty,
+                            isPriority = plant == activePlants.first(),
+                            masterPlant = safeMasterPlant,
+                            onClick = { onNavigateToDetail(plant.userPlantId) }
+                        )
+                    }
                 }
             }
         }
