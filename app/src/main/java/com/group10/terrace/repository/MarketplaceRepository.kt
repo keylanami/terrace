@@ -27,8 +27,14 @@ class MarketplaceRepository {
             .addOnFailureListener { onResult(emptyList()) }
     }
 
-    fun addOrUpdateCart(userId: String, product: Product, quantity: Int, onResult: (Boolean) -> Unit) {
-        val cartRef = db.collection("users").document(userId).collection("cart").document(product.id)
+    fun addOrUpdateCart(
+        userId: String,
+        product: Product,
+        quantity: Int,
+        onResult: (Boolean) -> Unit
+    ) {
+        val cartRef =
+            db.collection("users").document(userId).collection("cart").document(product.id)
 
         val cartItem = CartItem(
             cartItemId = product.id,
@@ -66,57 +72,37 @@ class MarketplaceRepository {
 
     suspend fun processCheckoutSimulator(
         userId: String,
-        cartItems: List<CartItem>,
-        totalPrice: Double
+        items: List<CartItem>,
+        total: Double
     ): Result<String> {
         return try {
-            val userRef = db.collection("users").document(userId)
-            val cartCollection = userRef.collection("cart")
-            val ordersCollection = userRef.collection("orders")
+            kotlinx.coroutines.delay(2000)
 
-            Log.d("TERRACE_MARKET", "Memproses pembayaran...")
-            delay(3000)
+            val newOrderRef = db.collection("users").document(userId)
+                .collection("orders").document()
+
+            val newOrder = Order(
+                orderId = newOrderRef.id,
+                items = items,
+                totalAmount = total,
+                status = "Dikirim",
+                orderDate = System.currentTimeMillis()
+            )
 
             val batch = db.batch()
 
-            val userSnapshot = userRef.get().await()
-            val user = userSnapshot.toObject(User::class.java)
-                ?: throw Exception("User tidak ditemukan")
+            batch.set(newOrderRef, newOrder)
 
-            if (user.currentPoint < totalPrice) {
-                throw Exception("Saldo poin tidak mencukupi! Poin: ${user.currentPoint}, Tagihan: $totalPrice")
+            val cartRef = db.collection("users").document(userId).collection("cart")
+            items.forEach { item ->
+                val itemRef = cartRef.document(item.cartItemId)
+                batch.delete(itemRef)
             }
-
-            val newPoints = user.currentPoint - totalPrice.toInt()
-            batch.update(userRef, "currentPoint", newPoints)
-
-            cartItems.forEach { item ->
-                val productRef = db.collection("products").document(item.productId)
-                val currentStockSnapshot = productRef.get().await()
-                val currentStock = currentStockSnapshot.getLong("stock") ?: 0L
-                batch.update(productRef, "stock", currentStock - item.quantity)
-
-                val cartItemRef = cartCollection.document(item.cartItemId)
-                batch.delete(cartItemRef)
-            }
-
-            val newOrderId = ordersCollection.document().id
-            val newOrder = Order(
-                orderId = newOrderId,
-                items = cartItems,
-                totalAmount = totalPrice,
-                status = "Dikemas",
-                orderDate = System.currentTimeMillis()
-            )
-            batch.set(ordersCollection.document(newOrderId), newOrder)
 
             batch.commit().await()
 
-            Log.d("TERRACE_MARKET", "Checkout Berhasil! Order ID: $newOrderId")
-            Result.success("Transaksi Berhasil! Pesanan sedang dikemas.")
-
+            Result.success("Pesanan berhasil dibuat!")
         } catch (e: Exception) {
-            Log.e("TERRACE_MARKET", "Checkout Gagal: ${e.message}")
             Result.failure(e)
         }
     }
@@ -124,19 +110,27 @@ class MarketplaceRepository {
     fun getOrderHistory(userId: String, onResult: (List<Order>) -> Unit) {
         db.collection("users").document(userId).collection("orders")
             .orderBy("orderDate", com.google.firebase.firestore.Query.Direction.DESCENDING)
-            .addSnapshotListener { value, error ->
-                if (error != null) {
+            .addSnapshotListener { snapshot, e ->
+                if (e != null || snapshot == null) {
                     onResult(emptyList())
                     return@addSnapshotListener
                 }
-                val orders = value?.toObjects(Order::class.java) ?: emptyList()
+                val orders = snapshot.toObjects(Order::class.java)
                 onResult(orders)
             }
     }
 
+    fun completeOrder(userId: String, orderId: String, onResult: (Boolean) -> Unit) {
+        db.collection("users").document(userId).collection("orders").document(orderId)
+            .update("status", "Selesai")
+            .addOnSuccessListener { onResult(true) }
+            .addOnFailureListener { onResult(false) }
+    }
+
     fun uploadKatalogKeFirestore(context: Context) {
         try {
-            val jsonString = context.assets.open("marketplace.json").bufferedReader().use { it.readText() }
+            val jsonString =
+                context.assets.open("marketplace.json").bufferedReader().use { it.readText() }
             val response = Gson().fromJson(jsonString, ProductResponse::class.java)
             response.products.forEach { product ->
                 db.collection("products").document(product.id).set(product)
