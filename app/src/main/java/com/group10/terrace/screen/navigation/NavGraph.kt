@@ -191,6 +191,7 @@ fun TerracNavGraph(
         composable(Routes.CATALOG) {
             CatalogScreen(
                 viewModel = homeViewModel,
+                onBack = { navController.popBackStack() },
                 onNavigateToDetail = { plantId ->
                     navController.navigate(Routes.plantDetail(plantId))
                 },

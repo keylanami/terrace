@@ -6,8 +6,6 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
@@ -31,7 +29,7 @@ import com.group10.terrace.viewmodel.LeaderboardViewModel
 fun PlantControlScreen(
     viewModel: HomeViewModel,
     leaderboardViewModel: LeaderboardViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    onNavigateBack: () -> Unit,
+    onNavigateBack: () -> Unit, // Parameter ini bisa diabaikan karena ini menu utama
     onNavigateToAddPlant: () -> Unit,
     onNavigateToDetail: (String) -> Unit,
     onNavigateToNav: (String) -> Unit
@@ -65,28 +63,23 @@ fun PlantControlScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Neutral50)
+                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top)) // Anti-Mendelep
                 .padding(paddingValues)
         ) {
+            // FIX: Menghapus Arrow Back karena ini adalah Tab Utama Bottom Nav
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 20.dp, vertical = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    Icons.AutoMirrored.Filled.ArrowBack,
-                    contentDescription = "Back",
-                    modifier = Modifier.size(24.dp).clickable { onNavigateBack() },
-                    tint = Neutral900
-                )
                 Text(
                     text = "Pantau Tanaman",
                     style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp),
                     color = Neutral900,
-                    modifier = Modifier.weight(1f),
+                    modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Center
                 )
-                Spacer(modifier = Modifier.size(24.dp))
             }
 
             LazyColumn(
@@ -118,10 +111,7 @@ fun PlantControlScreen(
                                 horizontalAlignment = Alignment.CenterHorizontally,
                                 verticalArrangement = Arrangement.spacedBy(12.dp)
                             ) {
-                                Text(
-                                    text = "🌱",
-                                    fontSize = 48.sp
-                                )
+                                Text(text = "🌱", fontSize = 48.sp)
                                 Text(
                                     text = "Belum ada tanaman aktif.\nAyo menanam di terasmu sekarang!",
                                     style = Typography.bodyMedium.copy(fontWeight = FontWeight.Medium),
@@ -141,8 +131,6 @@ fun PlantControlScreen(
                 } else {
                     items(activePlants) { plant ->
                         val masterPlantData = masterPlants.find { it.id == plant.plantId }
-
-
                         val safeMasterPlant = masterPlantData ?: Plant(
                             id = plant.plantId,
                             name = plant.plantName,
@@ -150,14 +138,12 @@ fun PlantControlScreen(
                             harvest_duration = "30 hari"
                         )
 
-                        val dynamicDifficulty = safeMasterPlant.difficulty
-                        val durationText = safeMasterPlant.harvest_duration
-                        val dynamicEstimationDays = extractMaxDays(durationText)
+                        val dynamicEstimationDays = extractMaxDays(safeMasterPlant.harvest_duration)
 
                         ActivePlantCard(
                             userPlant = plant,
                             estimationDays = dynamicEstimationDays,
-                            difficulty = dynamicDifficulty,
+                            difficulty = safeMasterPlant.difficulty,
                             isPriority = plant == activePlants.first(),
                             masterPlant = safeMasterPlant,
                             onClick = { onNavigateToDetail(plant.userPlantId) }

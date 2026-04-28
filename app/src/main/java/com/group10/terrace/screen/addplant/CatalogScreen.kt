@@ -9,6 +9,8 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.text.BasicTextField
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -30,6 +32,7 @@ import com.group10.terrace.viewmodel.HomeViewModel
 @Composable
 fun CatalogScreen(
     viewModel: HomeViewModel,
+    onBack: () -> Unit, // FIX: Menambahkan parameter back
     onNavigateToDetail: (String) -> Unit,
     onNavigateToNav: (String) -> Unit
 ) {
@@ -45,11 +48,15 @@ fun CatalogScreen(
         derivedStateOf {
             masterPlants.filter { plant ->
                 val matchSearch = plant.name.contains(searchQuery, ignoreCase = true)
-                val matchCategory =
-                    if (selectedCategory == "Semua") true else plant.category.contains(
-                        selectedCategory,
-                        ignoreCase = true
-                    )
+
+                // FIX BUG 2: Logika Filter Sayuran vs Sayur & Buah
+                val matchCategory = when (selectedCategory) {
+                    "Semua" -> true
+                    "Sayuran" -> plant.category.contains("Sayur", ignoreCase = true)
+                    "Buah" -> plant.category.contains("Buah", ignoreCase = true)
+                    else -> plant.category.contains(selectedCategory, ignoreCase = true)
+                }
+
                 matchSearch && matchCategory
             }
         }
@@ -62,16 +69,39 @@ fun CatalogScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Neutral50)
+                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top)) // Anti Mendelep
                 .padding(paddingValues)
         ) {
+
+            // ── FIX BUG 4: Menambahkan Topbar Back Navigation ──
+            Box(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .background(Green700) // Menyatu dengan Header search
+                    .padding(horizontal = 20.dp, vertical = 16.dp)
+            ) {
+                Icon(
+                    imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                    contentDescription = "Back",
+                    modifier = Modifier.align(Alignment.CenterStart).size(24.dp).clickable { onBack() },
+                    tint = Neutral50
+                )
+                Text(
+                    text = "Katalog Tanaman",
+                    style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                    color = Neutral50,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp))
                     .background(Green700)
-                    .padding(horizontal = 24.dp, vertical = 24.dp)
+                    .padding(horizontal = 24.dp, vertical = 16.dp)
             ) {
-                Column(modifier = Modifier.padding(top = 16.dp)) {
+                Column {
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -87,11 +117,7 @@ fun CatalogScreen(
                             modifier = Modifier.weight(1f),
                             cursorBrush = SolidColor(Neutral50),
                             decorationBox = { inner ->
-                                if (searchQuery.isEmpty()) Text(
-                                    "Cari tanaman...",
-                                    color = Neutral200,
-                                    fontSize = 14.sp
-                                )
+                                if (searchQuery.isEmpty()) Text("Cari tanaman...", color = Neutral200, fontSize = 14.sp)
                                 inner()
                             }
                         )
@@ -113,22 +139,15 @@ fun CatalogScreen(
                             modifier = Modifier.size(16.dp)
                         )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(
-                            text = "${user?.totalPoints ?: 0} Points",
-                            style = Typography.labelMedium,
-                            color = Neutral50
-                        )
+                        Text(text = "${user?.totalPoints ?: 0} Points", style = Typography.labelMedium, color = Neutral50)
                     }
                 }
             }
 
             Column(modifier = Modifier.padding(24.dp)) {
                 Text(
-                    text = "Tanaman",
-                    style = Typography.titleLarge.copy(
-                        fontWeight = FontWeight.Bold,
-                        fontSize = 24.sp
-                    ),
+                    text = "Kategori",
+                    style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp),
                     color = Neutral900
                 )
                 Spacer(modifier = Modifier.height(16.dp))
@@ -139,10 +158,7 @@ fun CatalogScreen(
                         Box(
                             modifier = Modifier
                                 .border(1.dp, Green700, RoundedCornerShape(30.dp))
-                                .background(
-                                    if (isSelected) Green700 else Color.Transparent,
-                                    RoundedCornerShape(30.dp)
-                                )
+                                .background(if (isSelected) Green700 else Color.Transparent, RoundedCornerShape(30.dp))
                                 .clickable { selectedCategory = category }
                                 .padding(horizontal = 16.dp, vertical = 6.dp)
                         ) {
@@ -166,7 +182,8 @@ fun CatalogScreen(
                 items(filteredPlants) { plant ->
                     PlantRecommendationCard(
                         plant = plant,
-                        onClick = { onNavigateToDetail(plant.id) })
+                        onClick = { onNavigateToDetail(plant.id) }
+                    )
                 }
             }
         }
