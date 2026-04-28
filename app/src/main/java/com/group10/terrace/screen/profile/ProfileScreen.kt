@@ -8,6 +8,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.automirrored.filled.ArrowBack
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -28,21 +30,35 @@ import com.group10.terrace.ui.components.ActivePlantCard
 import com.group10.terrace.ui.components.BottomNavBar
 import com.group10.terrace.ui.theme.*
 import com.group10.terrace.viewmodel.HomeViewModel
+import com.group10.terrace.viewmodel.LeaderboardViewModel
 
 @Composable
 fun ProfileScreen(
     viewModel: HomeViewModel,
+    leaderboardViewModel: LeaderboardViewModel, // FIX: Menggunakan Leaderboard VM
     onNavigate: (String) -> Unit,
+    onBack: () -> Unit, // FIX: Parameter baru untuk tombol back
     onSettingsClick: () -> Unit
 ) {
     val userData by viewModel.userData.collectAsState()
     val activePlants by viewModel.activePlants.collectAsState()
     val masterPlants by viewModel.masterPlants.collectAsState()
 
-    Box(modifier = Modifier.fillMaxSize().background(Neutral100)) {
-        Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+    // Tarik data leaderboard
+    val leaderboardData by leaderboardViewModel.leaderboardData.collectAsState()
 
-            // ── Green Header Section ──
+    // FIX: Kalkulasi Rank sesungguhnya berdasarkan urutan di Leaderboard
+    val rankIndex = leaderboardData.indexOfFirst { it.uid == userData?.uid }
+    val userRank = if (rankIndex != -1) "#${rankIndex + 1}" else "#-"
+
+    Box(modifier = Modifier.fillMaxSize().background(Neutral100)) {
+        Column(
+            modifier = Modifier
+                .fillMaxSize()
+                // FIX: Menahan UI agar tidak tertutup bar baterai / wifi
+                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
+                .verticalScroll(rememberScrollState())
+        ) {
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -55,11 +71,15 @@ fun ProfileScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
+                        // FIX: Tombol Arrow Back
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
-                            Image(
-                                painter = painterResource(id = R.drawable.putih_full),
-                                contentDescription = "Logo",
-                                modifier = Modifier.height(24.dp)
+                            Icon(
+                                imageVector = Icons.AutoMirrored.Filled.ArrowBack,
+                                contentDescription = "Back",
+                                modifier = Modifier
+                                    .size(28.dp)
+                                    .clickable { onBack() },
+                                tint = Neutral50
                             )
                         }
                         Icon(
@@ -81,9 +101,6 @@ fun ProfileScreen(
                                 error = painterResource(id = R.drawable.fototanaman),
                                 placeholder = painterResource(id = R.drawable.fototanaman)
                             )
-                            Box(modifier = Modifier.size(24.dp).background(Neutral900, CircleShape), contentAlignment = Alignment.Center) {
-                                Text("2", style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold, fontSize = 10.sp), color = Neutral50)
-                            }
                         }
                         Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
                             Text(userData?.name ?: "—", style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 22.sp), color = Neutral50)
@@ -106,7 +123,8 @@ fun ProfileScreen(
                     }
 
                     Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.SpaceBetween, verticalAlignment = Alignment.CenterVertically) {
-                        StatItem("#2", "Rank")
+                        // Rank Asli Dimasukkan
+                        StatItem(userRank, "Rank")
                         StatDivider()
                         StatItem("${activePlants.size}", "Plants")
                         StatDivider()
@@ -115,7 +133,6 @@ fun ProfileScreen(
 
                     Spacer(modifier = Modifier.height(20.dp))
 
-                    // Badges Section
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         listOf(
                             R.drawable.badge_plant,
@@ -134,7 +151,7 @@ fun ProfileScreen(
                 }
             }
 
-            // ── Progress Card Section ──
+            // Progress Card
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -151,14 +168,13 @@ fun ProfileScreen(
                         modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    val plantsToShow = activePlants.take(2)
-                    if (plantsToShow.isEmpty()) {
+                    // FIX: Tampilkan semua tanaman, hapus pembatasan .take(2)
+                    if (activePlants.isEmpty()) {
                         Text("Belum ada tanaman aktif.", style = Typography.bodyMedium, color = Neutral400,
                             modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                     } else {
                         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
-                            plantsToShow.forEachIndexed { index, userPlant ->
-                                // Cari masterPlant untuk diserahkan ke ActivePlantCard
+                            activePlants.forEachIndexed { index, userPlant ->
                                 val master = masterPlants.find { it.id == userPlant.plantId }
                                 val safeMasterPlant = master ?: Plant(
                                     id = userPlant.plantId,
@@ -167,18 +183,17 @@ fun ProfileScreen(
                                     harvest_duration = "30 hari"
                                 )
 
-                                // FIX BESAR: Biarkan ActivePlantCard yang menghitung max days & current days
-                                // Kita cukup ekstrak max days sederhana untuk parameternya
                                 val numbers = Regex("\\d+").findAll(safeMasterPlant.harvest_duration).map { it.value.toInt() }.toList()
                                 val estimationDays = numbers.maxOrNull() ?: 30
 
                                 ActivePlantCard(
-                                    userPlant = userPlant, // Membawa progress yang sudah akurat dari ViewModel
+                                    userPlant = userPlant,
                                     estimationDays = estimationDays,
                                     difficulty = safeMasterPlant.difficulty,
                                     isPriority = index == 0,
                                     masterPlant = safeMasterPlant,
-                                    onClick = {} // Opsional: Beri navigasi ke detail jika mau
+                                    // FIX: Mengarahkan klik langsung ke ID tanaman terkait
+                                    onClick = { onNavigate("plant_detail/${safeMasterPlant.id}") }
                                 )
                             }
                         }
@@ -189,10 +204,10 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(80.dp))
         }
 
-        // Bottom Navigation Bar
         Box(modifier = Modifier.align(Alignment.BottomCenter)) {
+            // FIX: Menjaga warna Home tetap aktif/hijau
             BottomNavBar(
-                currentRoute = "profile",
+                currentRoute = "home",
                 onNavigate = onNavigate
             )
         }

@@ -64,7 +64,8 @@ fun TerracNavGraph(
     homeViewModel: HomeViewModel,
     marketplaceViewModel: MarketplaceViewModel,
     academyViewModel: AcademyViewModel,
-    missionViewModel: MissionViewModel
+    missionViewModel: MissionViewModel,
+    leaderboardViewModel: LeaderboardViewModel
 ) {
     val userData by authViewModel.userData.collectAsState()
     val masterPlants by homeViewModel.masterPlants.collectAsState()
@@ -340,7 +341,9 @@ fun TerracNavGraph(
         composable(Routes.PROFILE) {
             ProfileScreen(
                 viewModel = homeViewModel,
+                leaderboardViewModel = leaderboardViewModel,
                 onNavigate = { route -> navigateBottomNav(route) },
+                onBack = { navController.popBackStack() },
                 onSettingsClick = { navController.navigate(Routes.SETTINGS) }
             )
         }

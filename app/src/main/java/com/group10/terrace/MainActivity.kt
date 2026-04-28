@@ -15,6 +15,7 @@ import com.group10.terrace.ui.theme.TerraceTheme
 import com.group10.terrace.viewmodel.AcademyViewModel
 import com.group10.terrace.viewmodel.AuthViewModel
 import com.group10.terrace.viewmodel.HomeViewModel
+import com.group10.terrace.viewmodel.LeaderboardViewModel
 import com.group10.terrace.viewmodel.MarketplaceViewModel
 import com.group10.terrace.viewmodel.MissionViewModel
 
@@ -25,6 +26,7 @@ class MainActivity : ComponentActivity() {
     private val marketplaceViewModel: MarketplaceViewModel by viewModels()
     private val academyViewModel: AcademyViewModel by viewModels()
     private val missionViewModel: MissionViewModel by viewModels()
+    private val leaderboardViewModel: LeaderboardViewModel by viewModels()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -38,7 +40,8 @@ class MainActivity : ComponentActivity() {
                         homeViewModel = homeViewModel,
                         marketplaceViewModel = marketplaceViewModel,
                         academyViewModel = academyViewModel,
-                        missionViewModel = missionViewModel
+                        missionViewModel = missionViewModel,
+                        leaderboardViewModel = leaderboardViewModel
                     )
                 }
             }
