@@ -29,7 +29,7 @@ import com.group10.terrace.viewmodel.LeaderboardViewModel
 fun PlantControlScreen(
     viewModel: HomeViewModel,
     leaderboardViewModel: LeaderboardViewModel = androidx.lifecycle.viewmodel.compose.viewModel(),
-    onNavigateBack: () -> Unit, // Parameter ini bisa diabaikan karena ini menu utama
+    onNavigateBack: () -> Unit,
     onNavigateToAddPlant: () -> Unit,
     onNavigateToDetail: (String) -> Unit,
     onNavigateToNav: (String) -> Unit
@@ -63,10 +63,8 @@ fun PlantControlScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Neutral50)
-                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top)) // Anti-Mendelep
                 .padding(paddingValues)
         ) {
-            // FIX: Menghapus Arrow Back karena ini adalah Tab Utama Bottom Nav
             Row(
                 modifier = Modifier
                     .fillMaxWidth()

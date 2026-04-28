@@ -32,7 +32,7 @@ import com.group10.terrace.viewmodel.HomeViewModel
 @Composable
 fun CatalogScreen(
     viewModel: HomeViewModel,
-    onBack: () -> Unit, // FIX: Menambahkan parameter back
+    onBack: () -> Unit,
     onNavigateToDetail: (String) -> Unit,
     onNavigateToNav: (String) -> Unit
 ) {
@@ -49,7 +49,6 @@ fun CatalogScreen(
             masterPlants.filter { plant ->
                 val matchSearch = plant.name.contains(searchQuery, ignoreCase = true)
 
-                // FIX BUG 2: Logika Filter Sayuran vs Sayur & Buah
                 val matchCategory = when (selectedCategory) {
                     "Semua" -> true
                     "Sayuran" -> plant.category.contains("Sayur", ignoreCase = true)
@@ -69,15 +68,13 @@ fun CatalogScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Neutral50)
-                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top)) // Anti Mendelep
                 .padding(paddingValues)
         ) {
 
-            // ── FIX BUG 4: Menambahkan Topbar Back Navigation ──
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
-                    .background(Green700) // Menyatu dengan Header search
+                    .background(Green700)
                     .padding(horizontal = 20.dp, vertical = 16.dp)
             ) {
                 Icon(

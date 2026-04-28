@@ -36,7 +36,8 @@ import java.util.concurrent.TimeUnit
 
 fun extractMaxDays(harvestDuration: String): Int {
     return try {
-        val numbers = harvestDuration.replace("+", "").split("-", " ").mapNotNull { it.trim().toIntOrNull() }
+        val numbers =
+            harvestDuration.replace("+", "").split("-", " ").mapNotNull { it.trim().toIntOrNull() }
         (numbers.maxOrNull() ?: 30).coerceAtMost(30)
     } catch (e: Exception) {
         30
@@ -76,7 +77,13 @@ fun PlantDetailScreen(
     val realCurrentDay = if (isActive) calculateDaysPassed(userPlant!!.startDate).toInt() else 0
     val maxDays = extractMaxDays(masterPlant.harvest_duration)
 
-    var selectedPreviewDay by remember { mutableIntStateOf(if (isActive) realCurrentDay.coerceAtMost(maxDays) else 1) }
+    var selectedPreviewDay by remember {
+        mutableIntStateOf(
+            if (isActive) realCurrentDay.coerceAtMost(
+                maxDays
+            ) else 1
+        )
+    }
 
     val previewTasks = remember(selectedPreviewDay) {
         val recurring = masterPlant.tasks_logic?.recurringTask
@@ -107,24 +114,42 @@ fun PlantDetailScreen(
                 viewModel.loadDashboardData()
                 missionViewModel.clearEvent()
             }
+
             is GamificationEvent.Error -> {
                 snackbarMessage = event.message
                 missionViewModel.clearEvent()
             }
+
             null -> {}
         }
     }
 
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
-            modifier = Modifier.fillMaxSize().background(Neutral50).verticalScroll(rememberScrollState())
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Neutral50)
+                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
+                .verticalScroll(rememberScrollState())
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 16.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(horizontal = 20.dp, vertical = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(Icons.AutoMirrored.Outlined.ArrowBack, contentDescription = "Back", modifier = Modifier.size(24.dp).clickable { onBack() })
-                Text("Tanaman Mu", style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold), modifier = Modifier.weight(1f), textAlign = TextAlign.Center)
+                Icon(
+                    Icons.AutoMirrored.Outlined.ArrowBack,
+                    contentDescription = "Back",
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable { onBack() })
+                Text(
+                    "Tanaman Mu",
+                    style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                    modifier = Modifier.weight(1f),
+                    textAlign = TextAlign.Center
+                )
                 Spacer(modifier = Modifier.size(24.dp))
             }
 
@@ -132,15 +157,28 @@ fun PlantDetailScreen(
                 model = masterPlant.imageUrl.ifBlank { null },
                 contentDescription = masterPlant.name,
                 contentScale = ContentScale.Crop,
-                modifier = Modifier.fillMaxWidth().height(198.dp),
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .height(198.dp),
                 error = painterResource(id = R.drawable.fototanaman),
                 placeholder = painterResource(id = R.drawable.fototanaman)
             )
 
             Column(modifier = Modifier.padding(24.dp)) {
-                Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
-                    Box(modifier = Modifier.background(Green700, RoundedCornerShape(10.dp)).padding(horizontal = 10.dp, vertical = 4.dp)) {
-                        Text(masterPlant.category.ifEmpty { "Sayuran & Buah" }, style = Typography.labelMedium.copy(fontSize = 10.sp), color = Neutral50)
+                Row(
+                    horizontalArrangement = Arrangement.spacedBy(8.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Box(
+                        modifier = Modifier
+                            .background(Green700, RoundedCornerShape(10.dp))
+                            .padding(horizontal = 10.dp, vertical = 4.dp)
+                    ) {
+                        Text(
+                            masterPlant.category.ifEmpty { "Sayuran & Buah" },
+                            style = Typography.labelMedium.copy(fontSize = 10.sp),
+                            color = Neutral50
+                        )
                     }
                     DifficultyBadge(difficulty = masterPlant.difficulty)
                 }
@@ -149,8 +187,16 @@ fun PlantDetailScreen(
 
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (isActive && activePlants.firstOrNull()?.plantId == plantId) {
-                        Box(modifier = Modifier.background(Yellow500, RoundedCornerShape(10.dp)).padding(horizontal = 10.dp, vertical = 4.dp)) {
-                            Text("Priority", style = Typography.labelMedium.copy(fontSize = 10.sp), color = Neutral50)
+                        Box(
+                            modifier = Modifier
+                                .background(Yellow500, RoundedCornerShape(10.dp))
+                                .padding(horizontal = 10.dp, vertical = 4.dp)
+                        ) {
+                            Text(
+                                "Priority",
+                                style = Typography.labelMedium.copy(fontSize = 10.sp),
+                                color = Neutral50
+                            )
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                     }
@@ -162,31 +208,86 @@ fun PlantDetailScreen(
                             "Layu" -> Red600
                             else -> Green600
                         }
-                        Box(modifier = Modifier.background(healthColor, RoundedCornerShape(10.dp)).padding(horizontal = 10.dp, vertical = 4.dp)) {
-                            Text(userPlant?.healthStatus ?: "Subur", style = Typography.labelMedium.copy(fontSize = 10.sp), color = Neutral50)
+                        Box(
+                            modifier = Modifier
+                                .background(healthColor, RoundedCornerShape(10.dp))
+                                .padding(horizontal = 10.dp, vertical = 4.dp)
+                        ) {
+                            Text(
+                                userPlant?.healthStatus ?: "Subur",
+                                style = Typography.labelMedium.copy(fontSize = 10.sp),
+                                color = Neutral50
+                            )
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                     }
 
-                    Text(masterPlant.name, style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp), color = Neutral900, modifier = Modifier.weight(1f))
+                    Text(
+                        masterPlant.name,
+                        style = Typography.titleLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp
+                        ),
+                        color = Neutral900,
+                        modifier = Modifier.weight(1f)
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
                 Column(
-                    modifier = Modifier.fillMaxWidth().shadow(elevation = 30.dp, shape = RoundedCornerShape(20.dp), spotColor = Neutral900.copy(alpha = 0.1f)).background(Neutral50, RoundedCornerShape(20.dp)).padding(horizontal = 17.dp, vertical = 30.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(
+                            elevation = 30.dp,
+                            shape = RoundedCornerShape(20.dp),
+                            spotColor = Neutral900.copy(alpha = 0.1f)
+                        )
+                        .background(Neutral50, RoundedCornerShape(20.dp))
+                        .padding(horizontal = 17.dp, vertical = 30.dp)
                 ) {
-                    Text("Progress", style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp), color = Yellow800)
+                    Text(
+                        "Progress",
+                        style = Typography.titleLarge.copy(
+                            fontWeight = FontWeight.Bold,
+                            fontSize = 20.sp
+                        ),
+                        color = Yellow800
+                    )
                     Spacer(modifier = Modifier.height(16.dp))
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Box(modifier = Modifier.weight(1f).height(19.dp).background(Neutral300, RoundedCornerShape(20.dp))) {
-                            Box(modifier = Modifier.fillMaxWidth(fraction = progressFraction).height(19.dp).background(Yellow300, RoundedCornerShape(20.dp)))
+                        Box(
+                            modifier = Modifier
+                                .weight(1f)
+                                .height(19.dp)
+                                .background(Neutral300, RoundedCornerShape(20.dp))
+                        ) {
+                            Box(
+                                modifier = Modifier
+                                    .fillMaxWidth(fraction = progressFraction)
+                                    .height(19.dp)
+                                    .background(Yellow300, RoundedCornerShape(20.dp))
+                            )
                         }
                         Spacer(modifier = Modifier.width(12.dp))
-                        Text("$finalProgress%", style = Typography.labelMedium.copy(fontWeight = FontWeight.Medium, fontSize = 10.sp), color = Neutral900)
+                        Text(
+                            "$finalProgress%",
+                            style = Typography.labelMedium.copy(
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 10.sp
+                            ),
+                            color = Neutral900
+                        )
                     }
                     Spacer(modifier = Modifier.height(8.dp))
-                    Text("$realCurrentDay/$maxDays Hari Tumbuh", style = Typography.labelMedium.copy(fontWeight = FontWeight.SemiBold, fontSize = 10.sp), color = Yellow800)
+                    Text(
+                        "$realCurrentDay/$maxDays Hari Tumbuh",
+                        style = Typography.labelMedium.copy(
+                            fontWeight = FontWeight.SemiBold,
+                            fontSize = 10.sp
+                        ),
+                        color = Yellow800
+                    )
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -201,7 +302,10 @@ fun PlantDetailScreen(
                             isSelected -> Yellow400 to Neutral900
                             isActive && isCompleted -> Green600 to Neutral50
                             isActive && dayNum == realCurrentDay -> Yellow200 to Yellow800
-                            isActive && dayNum < realCurrentDay -> Color(0xFFFFEBEE) to Color(0xFFE57373)
+                            isActive && dayNum < realCurrentDay -> Color(0xFFFFEBEE) to Color(
+                                0xFFE57373
+                            )
+
                             else -> Neutral200 to Neutral600
                         }
 
@@ -212,7 +316,14 @@ fun PlantDetailScreen(
                                 .clickable { selectedPreviewDay = dayNum }
                                 .padding(horizontal = 16.dp, vertical = 10.dp)
                         ) {
-                            Text("Hari $dayNum", style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold, fontSize = 12.sp), color = textColor)
+                            Text(
+                                "Hari $dayNum",
+                                style = Typography.labelMedium.copy(
+                                    fontWeight = FontWeight.Bold,
+                                    fontSize = 12.sp
+                                ),
+                                color = textColor
+                            )
                         }
                     }
                 }
@@ -220,25 +331,46 @@ fun PlantDetailScreen(
                 Spacer(modifier = Modifier.height(32.dp))
 
                 Column(
-                    modifier = Modifier.fillMaxWidth().shadow(elevation = 15.dp, shape = RoundedCornerShape(20.dp), spotColor = Neutral900.copy(alpha = 0.1f)).background(Neutral50, RoundedCornerShape(20.dp)).padding(24.dp)
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .shadow(
+                            elevation = 15.dp,
+                            shape = RoundedCornerShape(20.dp),
+                            spotColor = Neutral900.copy(alpha = 0.1f)
+                        )
+                        .background(Neutral50, RoundedCornerShape(20.dp))
+                        .padding(24.dp)
                 ) {
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Text(if (selectedPreviewDay == realCurrentDay) "Daily Tasks" else "Preview Hari $selectedPreviewDay", style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp))
+                        Text(
+                            if (selectedPreviewDay == realCurrentDay) "Daily Tasks" else "Preview Hari $selectedPreviewDay",
+                            style = Typography.titleLarge.copy(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 20.sp
+                            )
+                        )
                         Spacer(modifier = Modifier.width(8.dp))
                         Icon(painter = painterResource(R.drawable.pin), contentDescription = "Pin")
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    val tasksToDisplay = if (isActive && selectedPreviewDay == realCurrentDay) todayMissions else previewTasks
+                    val tasksToDisplay =
+                        if (isActive && selectedPreviewDay == realCurrentDay) todayMissions else previewTasks
 
                     if (tasksToDisplay.isEmpty()) {
-                        Text("Tidak ada tugas untuk hari ini. Bersantailah!", style = Typography.bodyMedium, color = Neutral400)
+                        Text(
+                            "Tidak ada tugas untuk hari ini. Bersantailah!",
+                            style = Typography.bodyMedium,
+                            color = Neutral400
+                        )
                     } else {
                         tasksToDisplay.forEach { mission ->
 
-                            val isOverdue = selectedPreviewDay < realCurrentDay && !mission.isCompleted
-                            val canComplete = isActive && selectedPreviewDay == realCurrentDay && !mission.isCompleted
+                            val isOverdue =
+                                selectedPreviewDay < realCurrentDay && !mission.isCompleted
+                            val canComplete =
+                                isActive && selectedPreviewDay == realCurrentDay && !mission.isCompleted
 
                             Row(
                                 modifier = Modifier
@@ -246,7 +378,12 @@ fun PlantDetailScreen(
                                     .padding(vertical = 8.dp)
                                     .clickable(enabled = canComplete) {
                                         val userId = userData?.uid ?: return@clickable
-                                        missionViewModel.onTaskChecked(userId, userPlant!!.userPlantId, mission, masterPlant)
+                                        missionViewModel.onTaskChecked(
+                                            userId,
+                                            userPlant!!.userPlantId,
+                                            mission,
+                                            masterPlant
+                                        )
                                     }
                                     .then(if (isOverdue) Modifier.graphicsLayer(alpha = 0.5f) else Modifier),
                                 verticalAlignment = Alignment.CenterVertically
@@ -283,8 +420,19 @@ fun PlantDetailScreen(
                                     )
                                 }
                                 if (mission.isMilestone) {
-                                    Box(modifier = Modifier.background(if (isOverdue) Neutral200 else Yellow200, RoundedCornerShape(4.dp)).padding(horizontal = 6.dp, vertical = 2.dp)) {
-                                        Text("Milestone", style = Typography.labelMedium.copy(fontSize = 9.sp), color = if (isOverdue) Neutral400 else Yellow800)
+                                    Box(
+                                        modifier = Modifier
+                                            .background(
+                                                if (isOverdue) Neutral200 else Yellow200,
+                                                RoundedCornerShape(4.dp)
+                                            )
+                                            .padding(horizontal = 6.dp, vertical = 2.dp)
+                                    ) {
+                                        Text(
+                                            "Milestone",
+                                            style = Typography.labelMedium.copy(fontSize = 9.sp),
+                                            color = if (isOverdue) Neutral400 else Yellow800
+                                        )
                                     }
                                 }
                             }
@@ -297,11 +445,20 @@ fun PlantDetailScreen(
                 if (!isActive) {
                     Button(
                         onClick = onAddPlant,
-                        modifier = Modifier.fillMaxWidth().height(52.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(52.dp),
                         colors = ButtonDefaults.buttonColors(containerColor = Green700),
                         shape = RoundedCornerShape(12.dp)
                     ) {
-                        Text("Tambahkan Tanaman", style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold, fontSize = 16.sp), color = Neutral50)
+                        Text(
+                            "Tambahkan Tanaman",
+                            style = Typography.titleMedium.copy(
+                                fontWeight = FontWeight.Bold,
+                                fontSize = 16.sp
+                            ),
+                            color = Neutral50
+                        )
                     }
                 }
 
