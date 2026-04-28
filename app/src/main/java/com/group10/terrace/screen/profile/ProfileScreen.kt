@@ -29,12 +29,6 @@ import com.group10.terrace.ui.components.BottomNavBar
 import com.group10.terrace.ui.theme.*
 import com.group10.terrace.viewmodel.HomeViewModel
 
-// Tambahkan fungsi ekstrak untuk jaga-jaga
-fun extractMaxDaysProfile(duration: String): Int {
-    val numbers = Regex("\\d+").findAll(duration).map { it.value.toInt() }.toList()
-    return numbers.maxOrNull() ?: 30
-}
-
 @Composable
 fun ProfileScreen(
     viewModel: HomeViewModel,
@@ -47,6 +41,8 @@ fun ProfileScreen(
 
     Box(modifier = Modifier.fillMaxSize().background(Neutral100)) {
         Column(modifier = Modifier.fillMaxSize().verticalScroll(rememberScrollState())) {
+
+            // ── Green Header Section ──
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -61,7 +57,7 @@ fun ProfileScreen(
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(4.dp)) {
                             Image(
-                                painter = painterResource(id = R.drawable.putih_full), // Gunakan full image atau icon jika putih_full tidak ada
+                                painter = painterResource(id = R.drawable.putih_full),
                                 contentDescription = "Logo",
                                 modifier = Modifier.height(24.dp)
                             )
@@ -85,8 +81,6 @@ fun ProfileScreen(
                                 error = painterResource(id = R.drawable.fototanaman),
                                 placeholder = painterResource(id = R.drawable.fototanaman)
                             )
-
-
                             Box(modifier = Modifier.size(24.dp).background(Neutral900, CircleShape), contentAlignment = Alignment.Center) {
                                 Text("2", style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold, fontSize = 10.sp), color = Neutral50)
                             }
@@ -121,6 +115,7 @@ fun ProfileScreen(
 
                     Spacer(modifier = Modifier.height(20.dp))
 
+                    // Badges Section
                     Row(horizontalArrangement = Arrangement.spacedBy(12.dp)) {
                         listOf(
                             R.drawable.badge_plant,
@@ -139,7 +134,7 @@ fun ProfileScreen(
                 }
             }
 
-            // Progress Card
+            // ── Progress Card Section ──
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -156,16 +151,15 @@ fun ProfileScreen(
                         modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    val plantsToShow = activePlants.take(2) // Batasi hanya 2 tanaman di profil
+                    val plantsToShow = activePlants.take(2)
                     if (plantsToShow.isEmpty()) {
                         Text("Belum ada tanaman aktif.", style = Typography.bodyMedium, color = Neutral400,
                             modifier = Modifier.fillMaxWidth(), textAlign = TextAlign.Center)
                     } else {
                         Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
                             plantsToShow.forEachIndexed { index, userPlant ->
+                                // Cari masterPlant untuk diserahkan ke ActivePlantCard
                                 val master = masterPlants.find { it.id == userPlant.plantId }
-
-                                // FIX 1: Pembuatan Safe Master Plant
                                 val safeMasterPlant = master ?: Plant(
                                     id = userPlant.plantId,
                                     name = userPlant.plantName,
@@ -173,16 +167,18 @@ fun ProfileScreen(
                                     harvest_duration = "30 hari"
                                 )
 
-                                // FIX 2: Perbaikan kalkulasi hari
-                                val dynamicEstimationDays = extractMaxDaysProfile(safeMasterPlant.harvest_duration)
+                                // FIX BESAR: Biarkan ActivePlantCard yang menghitung max days & current days
+                                // Kita cukup ekstrak max days sederhana untuk parameternya
+                                val numbers = Regex("\\d+").findAll(safeMasterPlant.harvest_duration).map { it.value.toInt() }.toList()
+                                val estimationDays = numbers.maxOrNull() ?: 30
 
                                 ActivePlantCard(
-                                    userPlant = userPlant,
-                                    estimationDays = dynamicEstimationDays, // Sudah menggunakan data yang benar
-                                    difficulty = safeMasterPlant.difficulty, // Sudah menggunakan data yang benar
+                                    userPlant = userPlant, // Membawa progress yang sudah akurat dari ViewModel
+                                    estimationDays = estimationDays,
+                                    difficulty = safeMasterPlant.difficulty,
                                     isPriority = index == 0,
-                                    masterPlant = safeMasterPlant, // FIX 3: Tambahkan ini agar tidak error
-                                    onClick = {}
+                                    masterPlant = safeMasterPlant,
+                                    onClick = {} // Opsional: Beri navigasi ke detail jika mau
                                 )
                             }
                         }
@@ -193,7 +189,7 @@ fun ProfileScreen(
             Spacer(modifier = Modifier.height(80.dp))
         }
 
-        // FIX 4: Bungkus BottomNavBar dalam Box yang memiliki align BottomCenter
+        // Bottom Navigation Bar
         Box(modifier = Modifier.align(Alignment.BottomCenter)) {
             BottomNavBar(
                 currentRoute = "profile",
