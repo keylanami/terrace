@@ -45,7 +45,7 @@ fun PesananScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Neutral50)
-            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top)) // Anti Mendelep
+            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
     ) {
         // ── Top Bar ───────────────────────────────────────────────────────
         Box(
