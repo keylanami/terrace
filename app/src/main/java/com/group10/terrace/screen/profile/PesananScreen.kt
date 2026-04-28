@@ -149,7 +149,8 @@ private fun OrderItemRow(cartItem: CartItem, status: String) {
                     ),
                     color = Green600
                 )
-                // Status badge
+
+
                 Box(
                     modifier = Modifier
                         .background(

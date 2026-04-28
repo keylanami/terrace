@@ -15,6 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -68,12 +69,12 @@ fun PlantDetailScreen(
 
     val previewTasks = remember(selectedPreviewDay) {
         val recurring = masterPlant.tasks_logic?.recurringTask
-            ?.filter { selectedPreviewDay % it.frequency_days == 0 } // Fix parameter name based on updated logic
-            ?.map { Mission(name = it.task_name, points = it.points, isMilestone = false) } ?: emptyList() // Fix parameter name
+            ?.filter { selectedPreviewDay % it.frequency_days == 0 }
+            ?.map { Mission(name = it.task_name, points = it.points, isMilestone = false) } ?: emptyList()
 
         val milestones = masterPlant.tasks_logic?.milestoneTask
             ?.filter { it.day == selectedPreviewDay }
-            ?.map { Mission(name = it.task_name, points = it.points, isMilestone = true) } ?: emptyList() // Fix parameter name
+            ?.map { Mission(name = it.task_name, points = it.points, isMilestone = true) } ?: emptyList()
 
         recurring + milestones
     }
@@ -105,7 +106,6 @@ fun PlantDetailScreen(
         Column(
             modifier = Modifier.fillMaxSize().background(Neutral50).verticalScroll(rememberScrollState())
         ) {
-            // ── Top Bar ───────────────────────────────────────────────────
             Row(
                 modifier = Modifier.fillMaxWidth().padding(horizontal = 20.dp, vertical = 16.dp),
                 verticalAlignment = Alignment.CenterVertically
@@ -115,7 +115,6 @@ fun PlantDetailScreen(
                 Spacer(modifier = Modifier.size(24.dp))
             }
 
-            // ── Hero Image ────────────────────────────────────────────────
             AsyncImage(
                 model = masterPlant.imageUrl.ifBlank { null },
                 contentDescription = masterPlant.name,
@@ -126,7 +125,6 @@ fun PlantDetailScreen(
             )
 
             Column(modifier = Modifier.padding(24.dp)) {
-                // ── Category + Difficulty ─────────────────────────────────
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp), verticalAlignment = Alignment.CenterVertically) {
                     Box(modifier = Modifier.background(Green700, RoundedCornerShape(10.dp)).padding(horizontal = 10.dp, vertical = 4.dp)) {
                         Text(masterPlant.category.ifEmpty { "Sayuran & Buah" }, style = Typography.labelMedium.copy(fontSize = 10.sp), color = Neutral50)
@@ -136,7 +134,6 @@ fun PlantDetailScreen(
 
                 Spacer(modifier = Modifier.height(12.dp))
 
-                // ── Name + Priority badge (only if active) ────────────────
                 Row(verticalAlignment = Alignment.CenterVertically) {
                     if (isActive && activePlants.firstOrNull()?.plantId == plantId) {
                         Box(modifier = Modifier.background(Yellow500, RoundedCornerShape(10.dp)).padding(horizontal = 10.dp, vertical = 4.dp)) {
@@ -144,12 +141,25 @@ fun PlantDetailScreen(
                         }
                         Spacer(modifier = Modifier.width(8.dp))
                     }
+
+                    if (isActive) {
+                        val healthColor = when (userPlant?.healthStatus) {
+                            "Subur" -> Green600
+                            "Kering" -> Color(0xFFFFA000) // Orange
+                            "Layu" -> Red600
+                            else -> Green600
+                        }
+                        Box(modifier = Modifier.background(healthColor, RoundedCornerShape(10.dp)).padding(horizontal = 10.dp, vertical = 4.dp)) {
+                            Text(userPlant?.healthStatus ?: "Subur", style = Typography.labelMedium.copy(fontSize = 10.sp), color = Neutral50)
+                        }
+                        Spacer(modifier = Modifier.width(8.dp))
+                    }
+
                     Text(masterPlant.name, style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 20.sp), color = Neutral900, modifier = Modifier.weight(1f))
                 }
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // ── PROGRESS CARD (NEW) ────────────────────────────────────
                 Column(
                     modifier = Modifier.fillMaxWidth().shadow(elevation = 30.dp, shape = RoundedCornerShape(20.dp), spotColor = Neutral900.copy(alpha = 0.1f)).background(Neutral50, RoundedCornerShape(20.dp)).padding(horizontal = 17.dp, vertical = 30.dp)
                 ) {
@@ -168,22 +178,26 @@ fun PlantDetailScreen(
 
                 Spacer(modifier = Modifier.height(24.dp))
 
-                // ── INTERACTIVE DAYS ROW ───────────────────────────────────
                 LazyRow(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
                     items(maxDays) { index ->
                         val dayNum = index + 1
                         val isSelected = dayNum == selectedPreviewDay
+
+                        // --- LOGIC BUG 3: WARNA HISTORY HARI ---
+                        val isCompleted = userPlant?.taskHistory?.contains(dayNum) == true
                         val (bgColor, textColor) = when {
                             isSelected -> Yellow400 to Neutral900
-                            isActive && dayNum <= realCurrentDay -> Green600 to Neutral50
-                            else -> Neutral200 to Neutral600
+                            isActive && isCompleted -> Green600 to Neutral50 // Selesai -> Hijau
+                            isActive && dayNum == realCurrentDay -> Yellow200 to Yellow800 // Hari ini -> Kuning
+                            isActive && dayNum < realCurrentDay -> Color(0xFFFFEBEE) to Color(0xFFE57373) // Bolos (Merah Pudar)
+                            else -> Neutral200 to Neutral600 // Belum lewat -> Abu-abu
                         }
 
                         Box(
                             modifier = Modifier
                                 .clip(RoundedCornerShape(20.dp))
                                 .background(color = bgColor)
-                                .clickable { selectedPreviewDay = dayNum } // Ubah preview hari
+                                .clickable { selectedPreviewDay = dayNum }
                                 .padding(horizontal = 16.dp, vertical = 10.dp)
                         ) {
                             Text("Hari $dayNum", style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold, fontSize = 12.sp), color = textColor)
@@ -193,7 +207,6 @@ fun PlantDetailScreen(
 
                 Spacer(modifier = Modifier.height(32.dp))
 
-                // ── DAILY TASKS / PREVIEW CARD ────────────────────────────
                 Column(
                     modifier = Modifier.fillMaxWidth().shadow(elevation = 15.dp, shape = RoundedCornerShape(20.dp), spotColor = Neutral900.copy(alpha = 0.1f)).background(Neutral50, RoundedCornerShape(20.dp)).padding(24.dp)
                 ) {
@@ -205,14 +218,12 @@ fun PlantDetailScreen(
 
                     Spacer(modifier = Modifier.height(16.dp))
 
-                    // Gunakan data dari Database JIKA user melihat hari ini, JIKA BUKAN pakai data preview kalkulasi
                     val tasksToDisplay = if (isActive && selectedPreviewDay == realCurrentDay) todayMissions else previewTasks
 
                     if (tasksToDisplay.isEmpty()) {
                         Text("Tidak ada tugas untuk hari ini. Bersantailah!", style = Typography.bodyMedium, color = Neutral400)
                     } else {
                         tasksToDisplay.forEach { mission ->
-                            // Tombol aktif JIKA: Tanaman sudah di-add AND melihat hari ini AND tugas belum selesai
                             val canComplete = isActive && selectedPreviewDay == realCurrentDay && !mission.isCompleted
 
                             Row(

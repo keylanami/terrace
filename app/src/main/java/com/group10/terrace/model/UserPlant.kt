@@ -9,5 +9,8 @@ data class UserPlant(
     val status: String = "Growing",
     val lastTaskCompletionDate: Long = 0L,
     val completedTaskToday: List<String> =emptyList(),
-    val startDate: Long = System.currentTimeMillis()
+    val startDate: Long = System.currentTimeMillis(),
+
+    val taskHistory: List<Int> = emptyList(),
+    val healthStatus: String = "Subur"
 )

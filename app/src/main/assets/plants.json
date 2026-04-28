@@ -3,6 +3,7 @@
     {
       "id": "orn_01",
       "name": "Lidah Mertua (Sansevieria)",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fb/Snake_Plant_%28Sansevieria_trifasciata_%27Laurentii%27%29.jpg/800px-Snake_Plant_%28Sansevieria_trifasciata_%27Laurentii%27%29.jpg",
       "category": "Tanaman Hias",
       "difficulty": "Easy",
       "harvest_duration": "90-120 hari",
@@ -26,6 +27,7 @@
     {
       "id": "orn_02",
       "name": "Monstera Deliciosa",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Monstera_deliciosa_3.jpg/800px-Monstera_deliciosa_3.jpg",
       "category": "Tanaman Hias",
       "difficulty": "Medium",
       "harvest_duration": "120-180 hari",
@@ -50,6 +52,7 @@
     {
       "id": "orn_03",
       "name": "Sirih Gading (Pothos)",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Epipremnum_aureum_120808.jpg/800px-Epipremnum_aureum_120808.jpg",
       "category": "Tanaman Hias",
       "difficulty": "Easy",
       "harvest_duration": "30-60 hari",
@@ -73,6 +76,7 @@
     {
       "id": "orn_04",
       "name": "Aglaonema (Sri Rejeki)",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/02/Aglaonema_commutatum_1.jpg/800px-Aglaonema_commutatum_1.jpg",
       "category": "Tanaman Hias",
       "difficulty": "Easy",
       "harvest_duration": "90-150 hari",
@@ -96,6 +100,7 @@
     {
       "id": "orn_05",
       "name": "Lidah Buaya (Aloe Vera)",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/4/4b/Aloe_vera_flower_inset.png/800px-Aloe_vera_flower_inset.png",
       "category": "Tanaman Hias",
       "difficulty": "Easy",
       "harvest_duration": "90-120 hari",
@@ -119,6 +124,7 @@
     {
       "id": "orn_06",
       "name": "Bougenville (Bunga Kertas)",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/18/Bougainvillea_glabra_in_Hyderabad_W_IMG_8604.jpg/800px-Bougainvillea_glabra_in_Hyderabad_W_IMG_8604.jpg",
       "category": "Tanaman Hias",
       "difficulty": "Medium",
       "harvest_duration": "180+ hari",
@@ -143,6 +149,7 @@
     {
       "id": "orn_07",
       "name": "Bunga Melati",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/7/77/Jasminum_sambac_%28Arabian_jasmine%29.jpg/800px-Jasminum_sambac_%28Arabian_jasmine%29.jpg",
       "category": "Tanaman Hias",
       "difficulty": "Medium",
       "harvest_duration": "90-120 hari",
@@ -166,6 +173,7 @@
     {
       "id": "orn_08",
       "name": "Pucuk Merah (Syzygium oleana)",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/f/fa/Syzygium_myrtifolium.jpg/800px-Syzygium_myrtifolium.jpg",
       "category": "Tanaman Hias",
       "difficulty": "Medium",
       "harvest_duration": "180+ hari",
@@ -190,6 +198,7 @@
     {
       "id": "orn_09",
       "name": "Adenium (Kamboja Jepang)",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/1/14/Adenium_obesum_1.jpg/800px-Adenium_obesum_1.jpg",
       "category": "Tanaman Hias",
       "difficulty": "Medium",
       "harvest_duration": "180+ hari",
@@ -214,6 +223,7 @@
     {
       "id": "orn_10",
       "name": "Anggrek",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Phalaenopsis_amabilis_1.jpg/800px-Phalaenopsis_amabilis_1.jpg",
       "category": "Tanaman Hias",
       "difficulty": "Hard",
       "harvest_duration": "120-180 hari",
@@ -238,6 +248,7 @@
     {
       "id": "orn_11",
       "name": "Peace Lily",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/0c/Spathiphyllum_floribundum_1.jpg/800px-Spathiphyllum_floribundum_1.jpg",
       "category": "Tanaman Hias",
       "difficulty": "Easy",
       "harvest_duration": "60-120 hari",
@@ -261,6 +272,7 @@
     {
       "id": "orn_12",
       "name": "Kembang Sepatu (Hibiscus)",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/22/Hibiscus_rosa-sinensis_1.jpg/800px-Hibiscus_rosa-sinensis_1.jpg",
       "category": "Tanaman Hias",
       "difficulty": "Medium",
       "harvest_duration": "120-180 hari",
@@ -285,6 +297,7 @@
     {
       "id": "food_01",
       "name": "Kangkung",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6b/Ipomoea_aquatica_02.jpg/800px-Ipomoea_aquatica_02.jpg",
       "category": "Sayur & Buah",
       "difficulty": "Easy",
       "harvest_duration": "21-28 hari",
@@ -308,6 +321,7 @@
     {
       "id": "food_02",
       "name": "Bayam",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/b/b2/Amaranthus_viridis_1.jpg/800px-Amaranthus_viridis_1.jpg",
       "category": "Sayur & Buah",
       "difficulty": "Easy",
       "harvest_duration": "30-35 hari",
@@ -331,6 +345,7 @@
     {
       "id": "food_03",
       "name": "Sawi (Caisim/Pakcoy)",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/d/d4/Brassica_rapa_subsp_chinensis_1.jpg/800px-Brassica_rapa_subsp_chinensis_1.jpg",
       "category": "Sayur & Buah",
       "difficulty": "Easy",
       "harvest_duration": "30-45 hari",
@@ -354,6 +369,7 @@
     {
       "id": "food_04",
       "name": "Cabai Rawit",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/03/Capsicum_frutescens_2.jpg/800px-Capsicum_frutescens_2.jpg",
       "category": "Sayur & Buah",
       "difficulty": "Medium",
       "harvest_duration": "60-90 hari",
@@ -377,6 +393,7 @@
     {
       "id": "food_05",
       "name": "Tomat Cherry",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/23/Cherry_tomatoes_on_vine.jpg/800px-Cherry_tomatoes_on_vine.jpg",
       "category": "Sayur & Buah",
       "difficulty": "Easy",
       "harvest_duration": "60-70 hari",
@@ -400,6 +417,7 @@
     {
       "id": "food_06",
       "name": "Strawberry",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/2/29/Fragaria_ananassa.jpg/800px-Fragaria_ananassa.jpg",
       "category": "Sayur & Buah",
       "difficulty": "Hard",
       "harvest_duration": "120-150 hari",
@@ -424,6 +442,7 @@
     {
       "id": "food_07",
       "name": "Terong",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/0/04/Solanum_melongena_1.jpg/800px-Solanum_melongena_1.jpg",
       "category": "Sayur & Buah",
       "difficulty": "Medium",
       "harvest_duration": "70-90 hari",
@@ -447,6 +466,7 @@
     {
       "id": "food_08",
       "name": "Bawang Merah",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/8/82/Shallot.jpg/800px-Shallot.jpg",
       "category": "Sayur & Buah",
       "difficulty": "Medium",
       "harvest_duration": "60-70 hari",
@@ -470,6 +490,7 @@
     {
       "id": "food_09",
       "name": "Jeruk Nipis/Lemon",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/62/Citrus_aurantiifolia_1.jpg/800px-Citrus_aurantiifolia_1.jpg",
       "category": "Sayur & Buah",
       "difficulty": "Hard",
       "harvest_duration": "365+ hari",
@@ -494,6 +515,7 @@
     {
       "id": "food_10",
       "name": "Jambu Kristal",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/3/36/Psidium_guajava_1.jpg/800px-Psidium_guajava_1.jpg",
       "category": "Sayur & Buah",
       "difficulty": "Hard",
       "harvest_duration": "180-365 hari",
@@ -518,6 +540,7 @@
     {
       "id": "food_11",
       "name": "Mangga (Varietas Mini)",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/c/cb/Mangifera_indica_1.jpg/800px-Mangifera_indica_1.jpg",
       "category": "Sayur & Buah",
       "difficulty": "Hard",
       "harvest_duration": "365+ hari",
@@ -542,6 +565,7 @@
     {
       "id": "food_12",
       "name": "Pepaya California",
+      "image_url": "https://upload.wikimedia.org/wikipedia/commons/thumb/6/6f/Carica_papaya_1.jpg/800px-Carica_papaya_1.jpg",
       "category": "Sayur & Buah",
       "difficulty": "Hard",
       "harvest_duration": "210-270 hari",

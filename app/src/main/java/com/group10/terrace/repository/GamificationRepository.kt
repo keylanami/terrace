@@ -53,11 +53,28 @@ class GamificationRepository {
         return todayMissions
     }
 
+    // --- TAMBAHAN UNTUK BUG 1: RESET STREAK OTOMATIS ---
+    fun checkAndResetStreak(userId: String, lastActiveMillis: Long, currentStreak: Int) {
+        if (lastActiveMillis == 0L || currentStreak == 0) return
+
+        val todayMidnight = getMidnight(System.currentTimeMillis())
+        val lastActiveMidnight = getMidnight(lastActiveMillis)
+
+        val diffMillis = todayMidnight.timeInMillis - lastActiveMidnight.timeInMillis
+        val diffDays = (diffMillis / (1000 * 60 * 60 * 24)).toInt()
+
+        // Jika tidak login > 1 hari (kemarin lusa), reset ke 0
+        if (diffDays > 1) {
+            db.collection("users").document(userId).update("currentStreak", 0)
+                .addOnSuccessListener { Log.d("TERRACE_GAME", "Streak otomatis reset ke 0 karena user bolos.") }
+        }
+    }
+
     fun completeMissionAndUpdateStats(
         userId: String,
         userPlantId: String,
         mission: Mission,
-        plantMaster: Plant, // TAMBAHAN PARAMETER: Kita butuh data master untuk hitung total hari
+        plantMaster: Plant,
         onResult: (Boolean, Int, Int) -> Unit
     ) {
         val userRef = db.collection("users").document(userId)
@@ -73,7 +90,6 @@ class GamificationRepository {
             val plantSnapshot = transaction.get(plantRef)
             val userPlant = plantSnapshot.toObject(UserPlant::class.java) ?: return@runTransaction
 
-
             val pointsEarned = mission.points
             updatedTotalPoints = user.totalPoints + pointsEarned
             val newCurrentPoints = user.currentPoint + pointsEarned
@@ -84,16 +100,18 @@ class GamificationRepository {
             transaction.update(userRef, "currentStreak", updatedStreak)
             transaction.update(userRef, "lastActiveDays", System.currentTimeMillis())
 
-
             val currentDay = calculateDaysBetween(userPlant.startDate, System.currentTimeMillis()).toInt().coerceAtLeast(1)
             val maxDays = extractMaxDaysRepo(plantMaster.harvest_duration)
-
             val rawProgressFraction = if (maxDays > 0) currentDay.toFloat() / maxDays.toFloat() else 0f
             val progressPercentage = (rawProgressFraction.coerceIn(0f, 1f) * 100).toInt()
 
             transaction.update(plantRef, "progress", progressPercentage)
             transaction.update(plantRef, "completedTaskToday", FieldValue.arrayUnion(mission.name))
             transaction.update(plantRef, "lastTaskCompletionDate", System.currentTimeMillis())
+
+            // --- TAMBAHAN UNTUK BUG 3: CATAT HISTORY HARI & PULIHKAN TANAMAN ---
+            transaction.update(plantRef, "taskHistory", FieldValue.arrayUnion(currentDay)) // Simpan hari ini ke history
+            transaction.update(plantRef, "healthStatus", "Subur") // Karena dirawat, tanaman kembali subur
 
         }.addOnSuccessListener {
             Log.d("TERRACE_GAME", "Misi Selesai! +${mission.points} Poin. Streak: $updatedStreak")

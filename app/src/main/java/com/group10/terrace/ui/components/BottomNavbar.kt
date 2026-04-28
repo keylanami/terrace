@@ -25,7 +25,10 @@ fun BottomNavBar(
             .fillMaxWidth()
             .height(79.dp)
             .shadow(elevation = 20.dp, shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
-            .background(color = Neutral50, shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp))
+            .background(
+                color = Neutral50,
+                shape = RoundedCornerShape(topStart = 10.dp, topEnd = 10.dp)
+            )
             .padding(horizontal = 32.dp, vertical = 20.dp),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
@@ -33,22 +36,30 @@ fun BottomNavBar(
         Image(
             painter = painterResource(id = if (currentRoute == "home") R.drawable.dashboard_on else R.drawable.dashboard_off),
             contentDescription = "Home",
-            modifier = Modifier.size(28.dp).clickable { onNavigate("home") }
+            modifier = Modifier
+                .size(28.dp)
+                .clickable { onNavigate("home") }
         )
         Image(
             painter = painterResource(id = if (currentRoute == "plant") R.drawable.plant_on else R.drawable.plant_off),
             contentDescription = "Pantau Tanaman",
-            modifier = Modifier.size(28.dp).clickable { onNavigate("plant") }
+            modifier = Modifier
+                .size(28.dp)
+                .clickable { onNavigate("plant") }
         )
         Image(
             painter = painterResource(id = if (currentRoute == "market") R.drawable.marketplace_on else R.drawable.marketplace_off),
             contentDescription = "Marketplace",
-            modifier = Modifier.size(28.dp).clickable { onNavigate("market") }
+            modifier = Modifier
+                .size(28.dp)
+                .clickable { onNavigate("market") }
         )
         Image(
             painter = painterResource(id = if (currentRoute == "academy") R.drawable.profile_on else R.drawable.profile_off),
             contentDescription = "Academy",
-            modifier = Modifier.size(28.dp).clickable { onNavigate("academy") }
+            modifier = Modifier
+                .size(28.dp)
+                .clickable { onNavigate("academy") }
         )
     }
 }

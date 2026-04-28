@@ -31,7 +31,11 @@ fun PlantRecommendationCard(plant: Plant, onClick: () -> Unit) {
     Column(
         modifier = Modifier
             .width(160.dp)
-            .shadow(elevation = 12.dp, shape = RoundedCornerShape(16.dp), spotColor = Neutral900.copy(alpha = 0.08f))
+            .shadow(
+                elevation = 12.dp,
+                shape = RoundedCornerShape(16.dp),
+                spotColor = Neutral900.copy(alpha = 0.08f)
+            )
             .clip(RoundedCornerShape(16.dp))
             .background(color = Neutral50)
             .clickable { onClick() }

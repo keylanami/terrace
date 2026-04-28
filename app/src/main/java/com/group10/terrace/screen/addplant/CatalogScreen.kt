@@ -45,14 +45,18 @@ fun CatalogScreen(
         derivedStateOf {
             masterPlants.filter { plant ->
                 val matchSearch = plant.name.contains(searchQuery, ignoreCase = true)
-                val matchCategory = if (selectedCategory == "Semua") true else plant.category.contains(selectedCategory, ignoreCase = true)
+                val matchCategory =
+                    if (selectedCategory == "Semua") true else plant.category.contains(
+                        selectedCategory,
+                        ignoreCase = true
+                    )
                 matchSearch && matchCategory
             }
         }
     }
 
     Scaffold(
-        bottomBar = { BottomNavBar(currentRoute = "plant", onNavigate = onNavigateToNav,) }
+        bottomBar = { BottomNavBar(currentRoute = "plant", onNavigate = onNavigateToNav) }
     ) { paddingValues ->
         Column(
             modifier = Modifier
@@ -83,25 +87,50 @@ fun CatalogScreen(
                             modifier = Modifier.weight(1f),
                             cursorBrush = SolidColor(Neutral50),
                             decorationBox = { inner ->
-                                if (searchQuery.isEmpty()) Text("Cari tanaman...", color = Neutral200, fontSize = 14.sp)
+                                if (searchQuery.isEmpty()) Text(
+                                    "Cari tanaman...",
+                                    color = Neutral200,
+                                    fontSize = 14.sp
+                                )
                                 inner()
                             }
                         )
-                        Icon(painter = painterResource(id = R.drawable.search), contentDescription = "Search", tint = Neutral50, modifier = Modifier.size(20.dp))
+                        Icon(
+                            painter = painterResource(id = R.drawable.search),
+                            contentDescription = "Search",
+                            tint = Neutral50,
+                            modifier = Modifier.size(20.dp)
+                        )
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(painter = painterResource(id = R.drawable.clover), contentDescription = "Points", tint = Neutral50, modifier = Modifier.size(16.dp))
+                        Icon(
+                            painter = painterResource(id = R.drawable.clover),
+                            contentDescription = "Points",
+                            tint = Neutral50,
+                            modifier = Modifier.size(16.dp)
+                        )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = "${user?.totalPoints ?: 0} Points", style = Typography.labelMedium, color = Neutral50)
+                        Text(
+                            text = "${user?.totalPoints ?: 0} Points",
+                            style = Typography.labelMedium,
+                            color = Neutral50
+                        )
                     }
                 }
             }
 
             Column(modifier = Modifier.padding(24.dp)) {
-                Text(text = "Tanaman", style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold, fontSize = 24.sp), color = Neutral900)
+                Text(
+                    text = "Tanaman",
+                    style = Typography.titleLarge.copy(
+                        fontWeight = FontWeight.Bold,
+                        fontSize = 24.sp
+                    ),
+                    color = Neutral900
+                )
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
@@ -110,7 +139,10 @@ fun CatalogScreen(
                         Box(
                             modifier = Modifier
                                 .border(1.dp, Green700, RoundedCornerShape(30.dp))
-                                .background(if (isSelected) Green700 else Color.Transparent, RoundedCornerShape(30.dp))
+                                .background(
+                                    if (isSelected) Green700 else Color.Transparent,
+                                    RoundedCornerShape(30.dp)
+                                )
                                 .clickable { selectedCategory = category }
                                 .padding(horizontal = 16.dp, vertical = 6.dp)
                         ) {
@@ -132,7 +164,9 @@ fun CatalogScreen(
                 modifier = Modifier.weight(1f)
             ) {
                 items(filteredPlants) { plant ->
-                    PlantRecommendationCard(plant = plant, onClick = { onNavigateToDetail(plant.id) })
+                    PlantRecommendationCard(
+                        plant = plant,
+                        onClick = { onNavigateToDetail(plant.id) })
                 }
             }
         }

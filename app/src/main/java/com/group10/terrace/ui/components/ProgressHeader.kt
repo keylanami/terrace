@@ -27,8 +27,16 @@ fun ProgressHeader(step: Int, percentageText: String, progress: Float) {
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.Bottom
         ) {
-            Text("Step $step of 2", style = Typography.titleMedium.copy(fontWeight = FontWeight.Medium), color = Color(0xFF41493F))
-            Text(percentageText, style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold), color = ColorDarkGreenText)
+            Text(
+                "Step $step of 2",
+                style = Typography.titleMedium.copy(fontWeight = FontWeight.Medium),
+                color = Color(0xFF41493F)
+            )
+            Text(
+                percentageText,
+                style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                color = ColorDarkGreenText
+            )
         }
         Spacer(modifier = Modifier.height(8.dp))
         Box(
