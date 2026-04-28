@@ -32,7 +32,16 @@ fun ActivePlantCard(
     masterPlant: Plant,
     onClick: () -> Unit
 ) {
-    val currentDay = calculateDaysPassed(userPlant.startDate).coerceAtMost(estimationDays.toLong())
+    val currentDay =
+        calculateDaysPassedActive(userPlant.startDate).coerceAtMost(estimationDays.toLong())
+
+    // Penentuan Warna Badge Kesehatan
+    val healthColor = when (userPlant.healthStatus) {
+        "Subur" -> Green600
+        "Kering" -> Color(0xFFFFA000) // Orange
+        "Layu" -> Red600
+        else -> Green600
+    }
 
     Row(
         modifier = Modifier
@@ -86,6 +95,23 @@ fun ActivePlantCard(
                         )
                     }
                 }
+
+                // --- BADGE KESEHATAN DISINI ---
+                Box(
+                    modifier = Modifier
+                        .background(healthColor, RoundedCornerShape(10.dp))
+                        .padding(horizontal = 8.dp, vertical = 4.dp)
+                ) {
+                    Text(
+                        userPlant.healthStatus,
+                        style = Typography.labelMedium.copy(
+                            fontSize = 10.sp,
+                            fontWeight = FontWeight.Bold
+                        ),
+                        color = Neutral50
+                    )
+                }
+
                 Text(
                     text = userPlant.plantName,
                     style = Typography.bodyLarge.copy(
@@ -147,7 +173,7 @@ fun ActivePlantCard(
     }
 }
 
-fun calculateDaysPassed(startDateMillis: Long): Long {
+private fun calculateDaysPassedActive(startDateMillis: Long): Long {
     val diff = System.currentTimeMillis() - startDateMillis
     return TimeUnit.MILLISECONDS.toDays(diff).coerceAtLeast(1L)
 }

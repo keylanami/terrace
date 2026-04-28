@@ -16,27 +16,36 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.graphics.graphicsLayer
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.text.style.TextDecoration
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.group10.terrace.R
 import com.group10.terrace.model.Mission
 import com.group10.terrace.ui.components.DifficultyBadge
-import com.group10.terrace.ui.components.calculateDaysPassed
 import com.group10.terrace.ui.theme.*
 import com.group10.terrace.viewmodel.GamificationEvent
 import com.group10.terrace.viewmodel.HomeViewModel
 import com.group10.terrace.viewmodel.MissionViewModel
+import java.util.concurrent.TimeUnit
 
 fun extractMaxDays(harvestDuration: String): Int {
     return try {
         val numbers = harvestDuration.replace("+", "").split("-", " ").mapNotNull { it.trim().toIntOrNull() }
         (numbers.maxOrNull() ?: 30).coerceAtMost(30)
-    } catch (e: Exception) { 30 }
+    } catch (e: Exception) {
+        30
+    }
+}
+
+fun calculateDaysPassed(startDateMillis: Long): Long {
+    val diff = System.currentTimeMillis() - startDateMillis
+    return TimeUnit.MILLISECONDS.toDays(diff).coerceAtLeast(1L)
 }
 
 @Composable
@@ -58,7 +67,9 @@ fun PlantDetailScreen(
     val isActive = userPlant != null
 
     if (masterPlant == null) {
-        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) { CircularProgressIndicator(color = Green600) }
+        Box(modifier = Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+            CircularProgressIndicator(color = Green600)
+        }
         return
     }
 
@@ -70,11 +81,13 @@ fun PlantDetailScreen(
     val previewTasks = remember(selectedPreviewDay) {
         val recurring = masterPlant.tasks_logic?.recurringTask
             ?.filter { selectedPreviewDay % it.frequency_days == 0 }
-            ?.map { Mission(name = it.task_name, points = it.points, isMilestone = false) } ?: emptyList()
+            ?.map { Mission(name = it.task_name, points = it.points, isMilestone = false) }
+            ?: emptyList()
 
         val milestones = masterPlant.tasks_logic?.milestoneTask
             ?.filter { it.day == selectedPreviewDay }
-            ?.map { Mission(name = it.task_name, points = it.points, isMilestone = true) } ?: emptyList()
+            ?.map { Mission(name = it.task_name, points = it.points, isMilestone = true) }
+            ?: emptyList()
 
         recurring + milestones
     }
@@ -145,7 +158,7 @@ fun PlantDetailScreen(
                     if (isActive) {
                         val healthColor = when (userPlant?.healthStatus) {
                             "Subur" -> Green600
-                            "Kering" -> Color(0xFFFFA000) // Orange
+                            "Kering" -> Color(0xFFFFA000)
                             "Layu" -> Red600
                             else -> Green600
                         }
@@ -183,14 +196,13 @@ fun PlantDetailScreen(
                         val dayNum = index + 1
                         val isSelected = dayNum == selectedPreviewDay
 
-                        // --- LOGIC BUG 3: WARNA HISTORY HARI ---
                         val isCompleted = userPlant?.taskHistory?.contains(dayNum) == true
                         val (bgColor, textColor) = when {
                             isSelected -> Yellow400 to Neutral900
-                            isActive && isCompleted -> Green600 to Neutral50 // Selesai -> Hijau
-                            isActive && dayNum == realCurrentDay -> Yellow200 to Yellow800 // Hari ini -> Kuning
-                            isActive && dayNum < realCurrentDay -> Color(0xFFFFEBEE) to Color(0xFFE57373) // Bolos (Merah Pudar)
-                            else -> Neutral200 to Neutral600 // Belum lewat -> Abu-abu
+                            isActive && isCompleted -> Green600 to Neutral50
+                            isActive && dayNum == realCurrentDay -> Yellow200 to Yellow800
+                            isActive && dayNum < realCurrentDay -> Color(0xFFFFEBEE) to Color(0xFFE57373)
+                            else -> Neutral200 to Neutral600
                         }
 
                         Box(
@@ -224,6 +236,8 @@ fun PlantDetailScreen(
                         Text("Tidak ada tugas untuk hari ini. Bersantailah!", style = Typography.bodyMedium, color = Neutral400)
                     } else {
                         tasksToDisplay.forEach { mission ->
+
+                            val isOverdue = selectedPreviewDay < realCurrentDay && !mission.isCompleted
                             val canComplete = isActive && selectedPreviewDay == realCurrentDay && !mission.isCompleted
 
                             Row(
@@ -233,23 +247,44 @@ fun PlantDetailScreen(
                                     .clickable(enabled = canComplete) {
                                         val userId = userData?.uid ?: return@clickable
                                         missionViewModel.onTaskChecked(userId, userPlant!!.userPlantId, mission, masterPlant)
-                                    },
+                                    }
+                                    .then(if (isOverdue) Modifier.graphicsLayer(alpha = 0.5f) else Modifier),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
                                 Icon(
-                                    painter = painterResource(id = R.drawable.checklist),
+                                    painter = painterResource(id = if (isOverdue) R.drawable.cross else R.drawable.checklist),
                                     contentDescription = null,
-                                    tint = if (mission.isCompleted) Green600 else Neutral400,
+                                    tint = when {
+                                        mission.isCompleted -> Green600
+                                        isOverdue -> Red600
+                                        else -> Neutral400
+                                    },
                                     modifier = Modifier.size(24.dp)
                                 )
                                 Spacer(modifier = Modifier.width(12.dp))
                                 Column(modifier = Modifier.weight(1f)) {
-                                    Text(mission.name, style = Typography.bodyMedium.copy(fontWeight = FontWeight.Medium), color = if (mission.isCompleted) Neutral400 else Neutral900)
-                                    Text("+${mission.points} poin", style = Typography.labelMedium.copy(fontSize = 10.sp), color = if (mission.isCompleted) Neutral400 else Green500)
+                                    Text(
+                                        text = mission.name,
+                                        style = Typography.bodyMedium.copy(
+                                            fontWeight = FontWeight.Medium,
+                                            textDecoration = if (mission.isCompleted || isOverdue) TextDecoration.LineThrough else TextDecoration.None
+                                        ),
+                                        color = if (mission.isCompleted || isOverdue) Neutral400 else Neutral900
+                                    )
+
+                                    Text(
+                                        text = if (isOverdue) "Terlewat" else "+${mission.points} poin",
+                                        style = Typography.labelMedium.copy(fontSize = 10.sp),
+                                        color = when {
+                                            isOverdue -> Red600
+                                            mission.isCompleted -> Neutral400
+                                            else -> Green500
+                                        }
+                                    )
                                 }
                                 if (mission.isMilestone) {
-                                    Box(modifier = Modifier.background(Yellow200, RoundedCornerShape(4.dp)).padding(horizontal = 6.dp, vertical = 2.dp)) {
-                                        Text("Milestone", style = Typography.labelMedium.copy(fontSize = 9.sp), color = Yellow800)
+                                    Box(modifier = Modifier.background(if (isOverdue) Neutral200 else Yellow200, RoundedCornerShape(4.dp)).padding(horizontal = 6.dp, vertical = 2.dp)) {
+                                        Text("Milestone", style = Typography.labelMedium.copy(fontSize = 9.sp), color = if (isOverdue) Neutral400 else Yellow800)
                                     }
                                 }
                             }
@@ -275,7 +310,13 @@ fun PlantDetailScreen(
         }
 
         snackbarMessage?.let { msg ->
-            Box(modifier = Modifier.align(Alignment.BottomCenter).padding(24.dp).background(Green700, RoundedCornerShape(12.dp)).padding(horizontal = 20.dp, vertical = 12.dp)) {
+            Box(
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .padding(24.dp)
+                    .background(Green700, RoundedCornerShape(12.dp))
+                    .padding(horizontal = 20.dp, vertical = 12.dp)
+            ) {
                 Text(msg, style = Typography.bodyMedium, color = Neutral50)
             }
             LaunchedEffect(msg) { kotlinx.coroutines.delay(3000); snackbarMessage = null }

@@ -10,6 +10,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.draw.shadow
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -27,6 +28,14 @@ fun PriorityPlantCard(
     masterPlant: Plant,
     onClick: () -> Unit
 ) {
+    // Penentuan Warna Badge Kesehatan
+    val healthColor = when (userPlant.healthStatus) {
+        "Subur" -> Green600
+        "Kering" -> Color(0xFFFFA000) // Orange
+        "Layu" -> Red600
+        else -> Green600
+    }
+
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -48,13 +57,21 @@ fun PriorityPlantCard(
         )
 
         Column(modifier = Modifier.weight(1f), verticalArrangement = Arrangement.spacedBy(12.dp)) {
-            Text(text = userPlant.plantName, style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold, fontSize = 16.sp), color = Neutral900, maxLines = 1)
 
+            // Baris Nama & Badge Kesehatan
+            Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                Box(modifier = Modifier.background(healthColor, RoundedCornerShape(6.dp)).padding(horizontal = 6.dp, vertical = 2.dp)) {
+                    Text(userPlant.healthStatus, style = Typography.labelSmall.copy(fontSize = 9.sp, fontWeight = FontWeight.Bold), color = Neutral50)
+                }
+                Text(text = userPlant.plantName, style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold, fontSize = 16.sp), color = Neutral900, maxLines = 1, modifier = Modifier.weight(1f))
+            }
+
+            // Progress Bar
             Row(verticalAlignment = Alignment.CenterVertically, horizontalArrangement = Arrangement.spacedBy(10.dp)) {
                 Box(modifier = Modifier.weight(1f).height(8.dp).background(color = Neutral200, shape = RoundedCornerShape(100.dp))) {
                     Box(
                         modifier = Modifier
-                            .fillMaxWidth(fraction = (userPlant.progress / 100f).coerceIn(0f, 1f)) // LANGSUNG DR VIEWMODEL
+                            .fillMaxWidth(fraction = (userPlant.progress / 100f).coerceIn(0f, 1f))
                             .height(8.dp)
                             .background(color = Green600, shape = RoundedCornerShape(100.dp))
                     )
