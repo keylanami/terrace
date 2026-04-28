@@ -9,6 +9,7 @@ import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
 import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.foundation.lazy.items
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -24,6 +25,7 @@ import com.group10.terrace.ui.components.MarketProductCard
 import com.group10.terrace.ui.theme.*
 import com.group10.terrace.viewmodel.AuthViewModel
 import com.group10.terrace.viewmodel.MarketplaceViewModel
+import androidx.compose.material.icons.outlined.ShoppingCart
 
 @Composable
 fun MarketplaceScreen(
@@ -61,7 +63,7 @@ fun MarketplaceScreen(
                     .clickable { onNavigateToCart() },
                 contentAlignment = Alignment.Center
             ) {
-                Icon(painter = painterResource(id = android.R.drawable.ic_menu_myplaces), contentDescription = "Cart", tint = Neutral50)
+                Icon(imageVector = Icons.Outlined.ShoppingCart, contentDescription = "Cart", tint = Neutral50)
             }
         }
     ) { paddingValues ->
@@ -131,7 +133,14 @@ fun MarketplaceScreen(
                 modifier = Modifier.weight(1f)
             ) {
                 items(filteredProducts) { product ->
-                    MarketProductCard(product = product, onClick = { onNavigateToDetail(product.id) })
+                    MarketProductCard(
+                        product = product,
+                        onClick = { onNavigateToDetail(product.id) },
+                        onAddToCartClick = {
+                            val userId = user?.uid ?: return@MarketProductCard
+                            marketplaceViewModel.addToCart(userId, product, 1)
+                        }
+                    )
                 }
             }
         }

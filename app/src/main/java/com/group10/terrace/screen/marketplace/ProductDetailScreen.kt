@@ -50,7 +50,6 @@ fun ProductDetailScreen(
 
     Box(modifier = Modifier.fillMaxSize().background(Neutral50)) {
 
-        // PERUBAHAN HANYA DI SINI: Image diganti menjadi AsyncImage untuk menarik gambar dari URL
         AsyncImage(
             model = product.imageUrl,
             contentDescription = product.name,
