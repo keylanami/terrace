@@ -225,7 +225,7 @@ fun TerracNavGraph(
                     productId = productId,
                     userId = userData?.uid ?: "",
                     onBack = { navController.popBackStack() },
-                    onNavigate = { route -> navigateBottomNav(route) }
+                    onNavigateToCart = { navController.navigate(Routes.CART) }
                 )
             }
         }
