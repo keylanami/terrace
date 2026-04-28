@@ -48,10 +48,10 @@ fun CartScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Neutral50)
+            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
     ) {
         Column(modifier = Modifier.fillMaxSize()) {
 
-            // --- Top Bar (Mengikuti gaya Checkout) ---
             Box(
                 modifier = Modifier
                     .fillMaxWidth()

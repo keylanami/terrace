@@ -46,14 +46,17 @@ fun MarketplaceScreen(
         derivedStateOf {
             products.filter { p ->
                 val matchSearch = p.name.contains(searchQuery, ignoreCase = true)
-                val matchCategory = if (selectedCategory == "Semua") true else p.category.contains(selectedCategory, ignoreCase = true)
+                val matchCategory = if (selectedCategory == "Semua") true else p.category.contains(
+                    selectedCategory,
+                    ignoreCase = true
+                )
                 matchSearch && matchCategory
             }
         }
     }
 
     Scaffold(
-        bottomBar = { BottomNavBar(currentRoute = "market", onNavigate = onNavigateToNav,) },
+        bottomBar = { BottomNavBar(currentRoute = "market", onNavigate = onNavigateToNav) },
         floatingActionButton = {
             Box(
                 modifier = Modifier
@@ -63,12 +66,19 @@ fun MarketplaceScreen(
                     .clickable { onNavigateToCart() },
                 contentAlignment = Alignment.Center
             ) {
-                Icon(imageVector = Icons.Outlined.ShoppingCart, contentDescription = "Cart", tint = Neutral50)
+                Icon(
+                    imageVector = Icons.Outlined.ShoppingCart,
+                    contentDescription = "Cart",
+                    tint = Neutral50
+                )
             }
         }
     ) { paddingValues ->
         Column(
-            modifier = Modifier.fillMaxSize().background(Neutral50).padding(paddingValues)
+            modifier = Modifier
+                .fillMaxSize()
+                .background(Neutral50)
+                .padding(paddingValues)
         ) {
             Box(
                 modifier = Modifier
@@ -76,30 +86,58 @@ fun MarketplaceScreen(
                     .clip(RoundedCornerShape(bottomStart = 30.dp, bottomEnd = 30.dp))
                     .background(Green700)
                     .padding(horizontal = 24.dp, vertical = 24.dp)
-            ) {
-                Column(modifier = Modifier.padding(top = 16.dp)) {
+            ) { Text(
+                text = "Marketplace",
+                style = Typography.titleLarge.copy(fontWeight = FontWeight.Bold),
+                color = Neutral50
+            )
+
+                Column(modifier = Modifier.padding(top = 48.dp)) {
 
                     OutlinedTextField(
                         value = searchQuery,
                         onValueChange = { searchQuery = it },
-                        placeholder = { Text("Cari produk...", color = Neutral200, fontSize = 14.sp) },
-                        leadingIcon = { Icon(painter = painterResource(id = R.drawable.search), contentDescription = null, tint = Neutral50) },
+                        placeholder = {
+                            Text(
+                                "Cari produk...",
+                                color = Neutral200,
+                                fontSize = 14.sp
+                            )
+                        },
+                        leadingIcon = {
+                            Icon(
+                                painter = painterResource(id = R.drawable.search),
+                                contentDescription = null,
+                                tint = Neutral50
+                            )
+                        },
                         colors = OutlinedTextFieldDefaults.colors(
                             focusedBorderColor = Neutral50,
                             unfocusedBorderColor = Neutral50,
                             focusedTextColor = Neutral50,
                             unfocusedTextColor = Neutral50
                         ),
-                        modifier = Modifier.fillMaxWidth().height(50.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(50.dp),
                         shape = RoundedCornerShape(25.dp)
                     )
 
                     Spacer(modifier = Modifier.height(16.dp))
 
                     Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(painter = painterResource(id = R.drawable.clover), contentDescription = null, tint = Neutral50, modifier = Modifier.size(20.dp))
+                        Icon(
+                            painter = painterResource(id = R.drawable.clover),
+                            contentDescription = null,
+                            tint = Neutral50,
+                            modifier = Modifier.size(20.dp)
+                        )
                         Spacer(modifier = Modifier.width(8.dp))
-                        Text(text = "${user?.totalPoints ?: 0} EXP", style = Typography.labelMedium.copy(fontSize = 12.sp), color = Neutral50)
+                        Text(
+                            text = "${user?.totalPoints ?: 0} EXP",
+                            style = Typography.labelMedium.copy(fontSize = 12.sp),
+                            color = Neutral50
+                        )
                     }
                 }
             }
@@ -112,7 +150,10 @@ fun MarketplaceScreen(
                     val isSelected = selectedCategory == category
                     Box(
                         modifier = Modifier
-                            .background(if (isSelected) Green600 else Neutral200, RoundedCornerShape(9999.dp))
+                            .background(
+                                if (isSelected) Green600 else Neutral200,
+                                RoundedCornerShape(9999.dp)
+                            )
                             .clickable { selectedCategory = category }
                             .padding(horizontal = 24.dp, vertical = 8.dp)
                     ) {
