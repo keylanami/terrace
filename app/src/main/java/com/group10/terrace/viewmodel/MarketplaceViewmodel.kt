@@ -205,6 +205,14 @@ class MarketplaceViewModel : ViewModel() {
     fun seedDatabase(context: android.content.Context) {
         repository.uploadKatalogKeFirestore(context)
     }
+
+    fun markOrderAsCompleted(userId: String, orderId: String) {
+        repository.completeOrder(userId, orderId) { success ->
+            if (success) {
+                loadOrderHistory(userId)
+            }
+        }
+    }
 }
 
 enum class PaymentMethod { QRIS, BANK_VIRTUAL_ACCOUNT }

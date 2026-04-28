@@ -13,6 +13,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
@@ -22,10 +23,9 @@ import androidx.compose.ui.unit.sp
 import coil.compose.AsyncImage
 import com.group10.terrace.R
 import com.group10.terrace.model.CartItem
+import com.group10.terrace.model.Order
 import com.group10.terrace.ui.theme.*
 import com.group10.terrace.viewmodel.MarketplaceViewModel
-import androidx.compose.runtime.collectAsState
-import androidx.compose.ui.graphics.Color
 import java.text.NumberFormat
 import java.util.Locale
 
@@ -45,14 +45,13 @@ fun PesananScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(Neutral50)
+            .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top)) // Anti Mendelep
     ) {
         // ── Top Bar ───────────────────────────────────────────────────────
         Box(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp, vertical = 16.dp)
-                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
-
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Outlined.ArrowBack,
@@ -87,13 +86,47 @@ fun PesananScreen(
                 modifier = Modifier
                     .fillMaxSize()
                     .padding(horizontal = 16.dp),
-                verticalArrangement = Arrangement.spacedBy(12.dp),
-                contentPadding = PaddingValues(vertical = 16.dp)
+                verticalArrangement = Arrangement.spacedBy(16.dp),
+                contentPadding = PaddingValues(vertical = 16.dp, horizontal = 16.dp)
             ) {
                 items(orders) { order ->
+                    Column(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Neutral100, RoundedCornerShape(12.dp))
+                            .padding(12.dp),
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
 
-                    order.items.forEach { cartItem ->
-                        OrderItemRow(cartItem = cartItem, status = order.status)
+                        order.items.forEach { cartItem ->
+                            OrderItemRow(cartItem = cartItem, status = order.status)
+                        }
+
+                        HorizontalDivider(color = Neutral200)
+
+                        Row(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalArrangement = Arrangement.SpaceBetween,
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            val formatRupiah = NumberFormat.getNumberInstance(Locale("id", "ID"))
+                            Column {
+                                Text("Total Pesanan", style = Typography.labelMedium, color = Neutral600)
+                                Text("Rp ${formatRupiah.format(order.totalAmount)}", style = Typography.bodyMedium.copy(fontWeight = FontWeight.Bold), color = Green700)
+                            }
+
+                            if (order.status.equals("Dikirim", ignoreCase = true)) {
+                                Button(
+                                    onClick = { viewModel.markOrderAsCompleted(userId, order.orderId) },
+                                    colors = ButtonDefaults.buttonColors(containerColor = Green600),
+                                    shape = RoundedCornerShape(8.dp),
+                                    contentPadding = PaddingValues(horizontal = 12.dp, vertical = 6.dp),
+                                    modifier = Modifier.height(36.dp)
+                                ) {
+                                    Text("Selesaikan Pesanan", style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold), color = Neutral50)
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -106,10 +139,7 @@ private fun OrderItemRow(cartItem: CartItem, status: String) {
     val formatRupiah = NumberFormat.getNumberInstance(Locale("id", "ID"))
 
     Row(
-        modifier = Modifier
-            .fillMaxWidth()
-            .background(Neutral100, RoundedCornerShape(12.dp))
-            .padding(12.dp),
+        modifier = Modifier.fillMaxWidth(),
         horizontalArrangement = Arrangement.spacedBy(12.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
@@ -132,7 +162,8 @@ private fun OrderItemRow(cartItem: CartItem, status: String) {
             Text(
                 text = cartItem.productName,
                 style = Typography.bodyLarge.copy(fontWeight = FontWeight.Bold, fontSize = 16.sp),
-                color = Neutral900
+                color = Neutral900,
+                maxLines = 1
             )
             Text(
                 text = "Per ${cartItem.quantity}pcs",
@@ -151,7 +182,6 @@ private fun OrderItemRow(cartItem: CartItem, status: String) {
                     ),
                     color = Green600
                 )
-
 
                 Box(
                     modifier = Modifier
@@ -179,4 +209,3 @@ private fun OrderItemRow(cartItem: CartItem, status: String) {
         }
     }
 }
-
