@@ -48,7 +48,9 @@ fun HomeScreen(
     val todayTasks = remember(priorityPlant, masterPlant) {
         if (priorityPlant == null || masterPlant == null) emptyList<String>()
         else {
-            val currentDay = ((System.currentTimeMillis() - priorityPlant.startDate) / (1000L * 60 * 60 * 24)).toInt().coerceAtLeast(1)
+            val currentDay =
+                ((System.currentTimeMillis() - priorityPlant.startDate) / (1000L * 60 * 60 * 24)).toInt()
+                    .coerceAtLeast(1)
             val recurring = masterPlant.tasks_logic?.recurringTask
                 ?.filter { currentDay % it.frequency_days == 0 }
                 ?.map { it.task_name } ?: emptyList()
@@ -69,18 +71,32 @@ fun HomeScreen(
                 enter = slideInVertically(initialOffsetY = { it }),
                 exit = slideOutVertically(targetOffsetY = { it })
             ) {
-                Row(
+                // FIX: Gunakan Button atau bungkus Box untuk clickable area yang kuat di FAB
+                Box(
                     modifier = Modifier
                         .padding(bottom = 16.dp, end = 16.dp)
                         .shadow(10.dp, RoundedCornerShape(12.dp))
-                        .background(Green700, RoundedCornerShape(12.dp))
-                        .clickable { onNavigateToNav("plant_control") }
+                        .clip(RoundedCornerShape(12.dp)) // Clip wajib agar ripple masuk akal
+                        .background(Green700)
+                        // FIX: Panggil "plant", bukan "plant_control" karena rute BottomNav adalah "plant"
+                        .clickable { onNavigateToNav("plant") }
                         .padding(horizontal = 16.dp, vertical = 12.dp),
-                    verticalAlignment = Alignment.CenterVertically
+                    contentAlignment = Alignment.Center
                 ) {
-                    Icon(painter = painterResource(id = R.drawable.plant_on), contentDescription = null, tint = Neutral50, modifier = Modifier.size(20.dp))
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text("Pantau Tanaman", style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold), color = Neutral50)
+                    Row(verticalAlignment = Alignment.CenterVertically) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.plant_on),
+                            contentDescription = null,
+                            tint = Neutral50,
+                            modifier = Modifier.size(20.dp)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(
+                            "Pantau Tanaman",
+                            style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                            color = Neutral50
+                        )
+                    }
                 }
             }
         }
@@ -122,7 +138,9 @@ fun HomeScreen(
                                 painter = painterResource(id = R.drawable.ic_person),
                                 contentDescription = "Profile",
                                 tint = Neutral50,
-                                modifier = Modifier.size(24.dp).clickable { onNavigateToProfile() }
+                                modifier = Modifier
+                                    .size(24.dp)
+                                    .clickable { onNavigateToProfile() }
                             )
                         }
                     }
@@ -131,33 +149,61 @@ fun HomeScreen(
 
                     Text(
                         text = "Hi, ${user?.name ?: "User"}!",
-                        style = Typography.titleLarge.copy(fontSize = 24.sp, fontWeight = FontWeight.Bold),
+                        style = Typography.titleLarge.copy(
+                            fontSize = 24.sp,
+                            fontWeight = FontWeight.Bold
+                        ),
                         color = Neutral50
                     )
                     Row(
-                        modifier = Modifier.fillMaxWidth().padding(top = 8.dp),
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .padding(top = 8.dp),
                         horizontalArrangement = Arrangement.SpaceBetween,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Icon(painter = painterResource(id = R.drawable.fire), contentDescription = "EXP", tint = Neutral50, modifier = Modifier.size(16.dp))
+                            Icon(
+                                painter = painterResource(id = R.drawable.fire),
+                                contentDescription = "EXP",
+                                tint = Neutral50,
+                                modifier = Modifier.size(16.dp)
+                            )
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("${user?.totalPoints ?: 0} EXP", style = Typography.labelMedium, color = Neutral50)
+                            Text(
+                                "${user?.totalPoints ?: 0} EXP",
+                                style = Typography.labelMedium,
+                                color = Neutral50
+                            )
                         }
                         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-                            Text("${activePlants.size} Active Plants", style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold), color = Neutral50)
-                            Text("${user?.totalHarvested ?: 0} Plants Done", style = Typography.labelMedium, color = Neutral50)
+                            Text(
+                                "${activePlants.size} Active Plants",
+                                style = Typography.labelMedium.copy(fontWeight = FontWeight.Bold),
+                                color = Neutral50
+                            )
+                            Text(
+                                "${user?.totalHarvested ?: 0} Plants Done",
+                                style = Typography.labelMedium,
+                                color = Neutral50
+                            )
                         }
                     }
                 }
             }
 
             // ── Daily Tasks Card ──────────────────────────────────────────
-            Box(modifier = Modifier.offset(y = (-30).dp).padding(horizontal = 20.dp)) {
+            Box(modifier = Modifier
+                .offset(y = (-30).dp)
+                .padding(horizontal = 20.dp)) {
                 Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .shadow(elevation = 12.dp, shape = RoundedCornerShape(20.dp), spotColor = Green700.copy(alpha = 0.3f))
+                        .shadow(
+                            elevation = 12.dp,
+                            shape = RoundedCornerShape(20.dp),
+                            spotColor = Green700.copy(alpha = 0.3f)
+                        )
                         .background(color = Green800, shape = RoundedCornerShape(20.dp))
                         .padding(20.dp)
                 ) {
@@ -169,21 +215,34 @@ fun HomeScreen(
                         Row {
                             Text("You're an ", style = Typography.bodyMedium, color = Neutral50)
                             Text(
-                                text = user?.experience?.ifBlank { "Urban Farmer" } ?: "Urban Farmer",
+                                text = user?.experience?.ifBlank { "Urban Farmer" }
+                                    ?: "Urban Farmer",
                                 style = Typography.bodyMedium.copy(fontWeight = FontWeight.Bold),
                                 color = Yellow400
                             )
                             Text("!", style = Typography.bodyMedium, color = Neutral50)
                         }
                         Row(verticalAlignment = Alignment.CenterVertically) {
-                            Image(painter = painterResource(id = R.drawable.fire), contentDescription = "Streak", modifier = Modifier.size(24.dp))
+                            Image(
+                                painter = painterResource(id = R.drawable.fire),
+                                contentDescription = "Streak",
+                                modifier = Modifier.size(24.dp)
+                            )
                             Spacer(modifier = Modifier.width(4.dp))
-                            Text("${user?.currentStreak ?: 0}", style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold), color = Yellow400)
+                            Text(
+                                "${user?.currentStreak ?: 0}",
+                                style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                                color = Yellow400
+                            )
                         }
                     }
 
                     Spacer(modifier = Modifier.height(16.dp))
-                    Text("Daily Tasks", style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold), color = Neutral50)
+                    Text(
+                        "Daily Tasks",
+                        style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                        color = Neutral50
+                    )
                     Spacer(modifier = Modifier.height(8.dp))
 
                     if (todayTasks.isEmpty()) {
@@ -195,8 +254,16 @@ fun HomeScreen(
                         )
                     } else {
                         todayTasks.forEach { taskName ->
-                            Row(modifier = Modifier.padding(vertical = 4.dp), verticalAlignment = Alignment.CenterVertically) {
-                                Icon(painter = painterResource(id = R.drawable.checklist), contentDescription = null, tint = Neutral50, modifier = Modifier.size(20.dp))
+                            Row(
+                                modifier = Modifier.padding(vertical = 4.dp),
+                                verticalAlignment = Alignment.CenterVertically
+                            ) {
+                                Icon(
+                                    painter = painterResource(id = R.drawable.checklist),
+                                    contentDescription = null,
+                                    tint = Neutral50,
+                                    modifier = Modifier.size(20.dp)
+                                )
                                 Spacer(modifier = Modifier.width(8.dp))
                                 Text(taskName, style = Typography.bodyMedium, color = Neutral50)
                             }
@@ -207,7 +274,14 @@ fun HomeScreen(
 
             // ── Priority Plant ────────────────────────────────────────────
             Column(modifier = Modifier.padding(horizontal = 24.dp)) {
-                Text("Priority Plant", style = Typography.titleLarge.copy(fontSize = 20.sp, fontWeight = FontWeight.Bold), color = Neutral900)
+                Text(
+                    "Priority Plant",
+                    style = Typography.titleLarge.copy(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.Bold
+                    ),
+                    color = Neutral900
+                )
                 Spacer(modifier = Modifier.height(16.dp))
 
                 if (priorityPlant != null && masterPlant != null) {
@@ -220,14 +294,23 @@ fun HomeScreen(
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
-                            .shadow(elevation = 10.dp, shape = RoundedCornerShape(20.dp), spotColor = Neutral900.copy(alpha = 0.05f))
+                            .shadow(
+                                elevation = 10.dp,
+                                shape = RoundedCornerShape(20.dp),
+                                spotColor = Neutral900.copy(alpha = 0.05f)
+                            )
                             .background(color = Neutral50, shape = RoundedCornerShape(20.dp))
                             .clickable { onNavigateToAddPlant() }
                             .padding(vertical = 40.dp),
                         horizontalArrangement = Arrangement.Center,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-                        Box(modifier = Modifier.size(42.dp).background(color = Neutral300, shape = RoundedCornerShape(100.dp)), contentAlignment = Alignment.Center) {
+                        Box(
+                            modifier = Modifier
+                                .size(42.dp)
+                                .background(color = Neutral300, shape = RoundedCornerShape(100.dp)),
+                            contentAlignment = Alignment.Center
+                        ) {
                             Text("+", fontSize = 24.sp, color = Neutral50)
                         }
                         Spacer(modifier = Modifier.width(12.dp))
@@ -240,10 +323,20 @@ fun HomeScreen(
 
             // ── Recommendations ───────────────────────────────────────────
             Column(modifier = Modifier.padding(start = 24.dp)) {
-                Text("Recommendations", style = Typography.titleLarge.copy(fontSize = 20.sp, fontWeight = FontWeight.SemiBold), color = Neutral900)
+                Text(
+                    "Recommendations",
+                    style = Typography.titleLarge.copy(
+                        fontSize = 20.sp,
+                        fontWeight = FontWeight.SemiBold
+                    ),
+                    color = Neutral900
+                )
                 Spacer(modifier = Modifier.height(16.dp))
 
-                LazyRow(horizontalArrangement = Arrangement.spacedBy(16.dp), contentPadding = PaddingValues(end = 24.dp)) {
+                LazyRow(
+                    horizontalArrangement = Arrangement.spacedBy(16.dp),
+                    contentPadding = PaddingValues(end = 24.dp)
+                ) {
                     items(recommendations) { plant ->
                         PlantRecommendationCard(
                             plant = plant,
@@ -253,7 +346,12 @@ fun HomeScreen(
                 }
 
                 if (recommendations.isEmpty()) {
-                    Text("Lengkapi personalisasi untuk rekomendasi tanaman.", style = Typography.bodyMedium, color = Neutral400, modifier = Modifier.padding(end = 24.dp))
+                    Text(
+                        "Lengkapi personalisasi untuk rekomendasi tanaman.",
+                        style = Typography.bodyMedium,
+                        color = Neutral400,
+                        modifier = Modifier.padding(end = 24.dp)
+                    )
                 }
             }
             Spacer(modifier = Modifier.height(40.dp))
