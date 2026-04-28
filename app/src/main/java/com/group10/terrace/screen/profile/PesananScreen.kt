@@ -51,6 +51,8 @@ fun PesananScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp, vertical = 16.dp)
+                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
+
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Outlined.ArrowBack,

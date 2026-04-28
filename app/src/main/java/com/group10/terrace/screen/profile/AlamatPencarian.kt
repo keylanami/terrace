@@ -41,7 +41,6 @@ fun AlamatPenerimaScreen(
     val orders by viewModel.orderHistory.collectAsState()
     val userData by homeViewModel.userData.collectAsState()
 
-    // Flatten semua items dari semua order
     val allItems: List<CartItem> = orders.flatMap { it.items }
 
     Column(
@@ -54,6 +53,7 @@ fun AlamatPenerimaScreen(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 20.dp, vertical = 16.dp)
+                .windowInsetsPadding(WindowInsets.systemBars.only(WindowInsetsSides.Top))
         ) {
             Icon(
                 imageVector = Icons.AutoMirrored.Filled.ArrowBack,
