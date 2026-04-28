@@ -2,6 +2,7 @@ package com.group10.terrace.viewmodel
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.firebase.firestore.firestore
 import com.group10.terrace.model.CartItem
 import com.group10.terrace.model.Order
 import com.group10.terrace.model.Product
@@ -55,6 +56,7 @@ class MarketplaceViewModel : ViewModel() {
 
     companion object {
         const val ONGKOS_KIRIM = 10_000.0
+        const val NILAI_RUPIAH_PER_POIN = 10.0 // Asumsi: 1 Poin = Rp 10
     }
 
     init {
@@ -119,9 +121,10 @@ class MarketplaceViewModel : ViewModel() {
 
     fun potonganPoin(userPoints: Int): Double {
         if (!_usePoints.value) return 0.0
-        // max diskon poin = 50% dari subtotal
-        val maxDiskon = subtotal * 0.5
-        return minOf(userPoints.toDouble(), maxDiskon)
+        val konversiRupiah = userPoints * NILAI_RUPIAH_PER_POIN
+        val maxDiskon = (subtotal + ONGKOS_KIRIM) * 0.5
+
+        return minOf(konversiRupiah, maxDiskon)
     }
 
     fun totalPembayaran(userPoints: Int): Double {
@@ -140,11 +143,27 @@ class MarketplaceViewModel : ViewModel() {
         _checkoutState.value = CheckoutState.Loading
 
         val total = totalPembayaran(_userCurrentPoints.value)
+        val potongan = potonganPoin(_userCurrentPoints.value)
 
         viewModelScope.launch {
             val result = repository.processCheckoutSimulator(userId, _cartItems.value, total)
             if (result.isSuccess) {
+
+                if (_usePoints.value && potongan > 0) {
+                    val poinYangDihabiskan = (potongan / NILAI_RUPIAH_PER_POIN).toInt()
+                    val sisaPoin = (_userCurrentPoints.value - poinYangDihabiskan).coerceAtLeast(0)
+
+                    val db = com.google.firebase.Firebase.firestore
+                    db.collection("users").document(userId)
+                        .update("currentPoint", sisaPoin)
+                        .addOnSuccessListener {
+                            _userCurrentPoints.value = sisaPoin
+                        }
+                }
+
                 _checkoutState.value = CheckoutState.Success(result.getOrNull() ?: "Berhasil!")
+                // Matikan opsi use point setelah transaksi berhasil
+                _usePoints.value = false
             } else {
                 _checkoutState.value = CheckoutState.Error(result.exceptionOrNull()?.message ?: "Transaksi Gagal")
             }
