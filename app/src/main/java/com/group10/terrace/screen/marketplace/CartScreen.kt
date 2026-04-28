@@ -178,20 +178,41 @@ fun CartScreen(
             }
 
             if (cartItems.isNotEmpty()) {
-                Box(
+                val totalKeranjang = cartItems.sumOf { it.price * it.quantity }
+
+                Column(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(horizontal = 16.dp, vertical = 8.dp)
-                        .background(Green700, RoundedCornerShape(12.dp))
-                        .clickable { onNavigateToCheckout() }
-                        .padding(vertical = 16.dp),
-                    contentAlignment = Alignment.Center
+                        .background(Neutral50)
+                        .padding(horizontal = 16.dp, vertical = 12.dp)
                 ) {
-                    Text(
-                        text = "Checkout Sekarang",
-                        style = Typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
-                        color = Neutral50
-                    )
+                    Row(
+                        modifier = Modifier.fillMaxWidth().padding(bottom = 12.dp),
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+                        Text("Total Pembayaran:", style = Typography.bodyMedium, color = Neutral600)
+                        Text(
+                            text = "Rp ${formatRupiah.format(totalKeranjang)}",
+                            style = Typography.titleMedium.copy(fontWeight = FontWeight.Bold),
+                            color = Green600
+                        )
+                    }
+
+                    Box(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .background(Green700, RoundedCornerShape(12.dp))
+                            .clickable { onNavigateToCheckout() }
+                            .padding(vertical = 16.dp),
+                        contentAlignment = Alignment.Center
+                    ) {
+                        Text(
+                            text = "Checkout Sekarang",
+                            style = Typography.bodyLarge.copy(fontWeight = FontWeight.Bold),
+                            color = Neutral50
+                        )
+                    }
                 }
             }
 

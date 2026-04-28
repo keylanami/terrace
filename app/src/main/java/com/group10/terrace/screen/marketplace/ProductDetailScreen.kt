@@ -1,6 +1,7 @@
 package com.group10.terrace.screen.marketplace
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
@@ -8,6 +9,7 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.outlined.ArrowBack
+import androidx.compose.material.icons.outlined.ShoppingCart
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -34,7 +36,7 @@ fun ProductDetailScreen(
     productId: String,
     userId: String,
     onBack: () -> Unit,
-    onNavigate: (String) -> Unit
+    onNavigateToCart: () -> Unit
 ) {
     val products by viewModel.products.collectAsState()
     val product = products.find { it.id == productId }
@@ -107,16 +109,35 @@ fun ProductDetailScreen(
 
             Spacer(modifier = Modifier.height(40.dp))
 
-            Button(
-                onClick = {
-                    viewModel.addToCart(userId, product, 1)
-                    onBack()
-                },
-                modifier = Modifier.fillMaxWidth().height(50.dp),
-                colors = ButtonDefaults.buttonColors(containerColor = Green600),
-                shape = RoundedCornerShape(10.dp)
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(12.dp)
             ) {
-                Text("Tambah Ke Keranjang", style = Typography.titleMedium.copy(fontSize = 16.sp), color = Neutral50)
+                Box(
+                    modifier = Modifier
+                        .size(50.dp)
+                        .background(Neutral50, RoundedCornerShape(10.dp))
+                        .border(1.dp, Green600, RoundedCornerShape(10.dp))
+                        .clickable {
+                            viewModel.addToCart(userId, product, 1)
+                            onBack()
+                        },
+                    contentAlignment = Alignment.Center
+                ) {
+                    Icon(Icons.Outlined.ShoppingCart, contentDescription = "Add to Cart", tint = Green600)
+                }
+
+                Button(
+                    onClick = {
+                        viewModel.addToCart(userId, product, 1)
+                        onNavigateToCart()
+                    },
+                    modifier = Modifier.weight(1f).height(50.dp),
+                    colors = ButtonDefaults.buttonColors(containerColor = Green600),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+                    Text("Beli Sekarang", style = Typography.titleMedium.copy(fontSize = 16.sp), color = Neutral50)
+                }
             }
         }
     }
